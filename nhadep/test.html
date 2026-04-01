@@ -47,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">1/4/2026</span></div>
-  <div class="content">test</div>
+  <div class="content"></div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
@@ -135,7 +135,10 @@ gtag('config', 'G-B51EJTDD2L');
         // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
         function getDataJsonPath() {
             var currentPath = window.location.pathname;
-            var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
+            // Lấy tên file hiện tại (ví dụ: /nhadep/bai-viet.html)
+            var pathParts = currentPath.split('/').filter(function(p) { 
+                return p && !p.includes('.html'); 
+            });
             var depth = pathParts.length;
             var prefix = '';
             for (var i = 0; i < depth; i++) {
@@ -171,7 +174,7 @@ gtag('config', 'G-B51EJTDD2L');
                 // Lọc bỏ bài hiện tại
                 var filtered = postedArticles.filter(function(a) {
                     if (!a.url) return false;
-                    // Lấy slug từ url trong data.json
+                    // Lấy slug từ url trong data.json (url có dạng ./nhadep/ten-bai.html)
                     var urlSlug = a.url.split('/').pop().replace('.html', '');
                     try {
                         urlSlug = decodeURIComponent(urlSlug);
@@ -211,7 +214,7 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // SỬA LỖI: Dùng trực tiếp url từ data.json, KHÔNG thêm tiền tố
+                    // QUAN TRỌNG: Dùng trực tiếp url từ data.json, KHÔNG thêm tiền tố
                     var articleUrl = article.url || '#';
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
@@ -222,12 +225,19 @@ gtag('config', 'G-B51EJTDD2L');
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
-                    // Xác định đường dẫn thumbnail dựa trên vị trí hiện tại
-                    var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
+                    // Xác định đường dẫn thumbnail: cần đi lên đúng số cấp
+                    // Lấy depth hiện tại (số thư mục con so với thư mục gốc)
+                    var currentDepth = window.location.pathname.split('/').filter(function(p) { 
+                        return p && !p.includes('.html'); 
+                    }).length;
+                    
+                    // Tạo prefix để lên thư mục gốc
                     var prefix = '';
-                    for (var d = 0; d < depth; d++) {
+                    for (var d = 0; d < currentDepth; d++) {
                         prefix += '../';
                     }
+                    if (prefix === '') prefix = './';
+                    
                     var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
                     var shortSummary = articleSummary.substring(0, 80);
                     
@@ -247,6 +257,12 @@ gtag('config', 'G-B51EJTDD2L');
                 }
                 
                 grid.innerHTML = html;
+                
+                // Log để kiểm tra link
+                console.log('Đã tạo', relatedArticles.length, 'card bài viết liên quan');
+                document.querySelectorAll('.related-card').forEach(function(card, idx) {
+                    console.log('Card', idx+1, 'link:', card.getAttribute('href'));
+                });
                 
             } catch (error) {
                 console.error('Lỗi tải bài viết liên quan:', error);
