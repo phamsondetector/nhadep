@@ -213,13 +213,22 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // QUAN TRỌNG: Dùng trực tiếp url từ data.json, không thêm bất kỳ tiền tố nào
-                    var articleUrl = article.url || '#';
+                    // QUAN TRỌNG: Lấy url gốc và loại bỏ "./" ở đầu
+                    var rawUrl = article.url || '#';
+                    // Xóa bỏ "./" ở đầu nếu có
+                    var cleanUrl = rawUrl.replace(/^.//, '');
+                    // Nếu url bắt đầu bằng "/" thì giữ nguyên, nếu không thì thêm "/" vào đầu
+                    var finalUrl = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+                    
+                    console.log('Raw URL:', rawUrl);
+                    console.log('Clean URL:', cleanUrl);
+                    console.log('Final URL:', finalUrl);
+                    
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
                     
                     // Lấy slug từ url để tạo đường dẫn thumbnail
-                    var articleSlug = articleUrl.split('/').pop().replace('.html', '');
+                    var articleSlug = rawUrl.split('/').pop().replace('.html', '');
                     try {
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
@@ -238,7 +247,7 @@ gtag('config', 'G-B51EJTDD2L');
                     var shortSummary = articleSummary.substring(0, 80);
                     
                     html += `
-                        <a href="${articleUrl}" class="related-card">
+                        <a href="${finalUrl}" class="related-card">
                             <img src="${thumbnailPath}" alt="${escapeHtml(articleTitle)}" loading="lazy" onerror="this.style.display='none'">
                             <div class="card-content">
                                 <span class="card-tag">${escapeHtml(articleTag)}</span>
