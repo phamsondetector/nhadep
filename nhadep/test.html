@@ -135,7 +135,6 @@ gtag('config', 'G-B51EJTDD2L');
         // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
         function getDataJsonPath() {
             var currentPath = window.location.pathname;
-            // Lấy tên file hiện tại (ví dụ: /nhadep/bai-viet.html)
             var pathParts = currentPath.split('/').filter(function(p) { 
                 return p && !p.includes('.html'); 
             });
@@ -174,7 +173,7 @@ gtag('config', 'G-B51EJTDD2L');
                 // Lọc bỏ bài hiện tại
                 var filtered = postedArticles.filter(function(a) {
                     if (!a.url) return false;
-                    // Lấy slug từ url trong data.json (url có dạng ./nhadep/ten-bai.html)
+                    // Lấy slug từ url trong data.json
                     var urlSlug = a.url.split('/').pop().replace('.html', '');
                     try {
                         urlSlug = decodeURIComponent(urlSlug);
@@ -214,7 +213,7 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // QUAN TRỌNG: Dùng trực tiếp url từ data.json, KHÔNG thêm tiền tố
+                    // QUAN TRỌNG: Dùng trực tiếp url từ data.json, không thêm bất kỳ tiền tố nào
                     var articleUrl = article.url || '#';
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
@@ -225,13 +224,10 @@ gtag('config', 'G-B51EJTDD2L');
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
-                    // Xác định đường dẫn thumbnail: cần đi lên đúng số cấp
-                    // Lấy depth hiện tại (số thư mục con so với thư mục gốc)
+                    // Xác định đường dẫn thumbnail
                     var currentDepth = window.location.pathname.split('/').filter(function(p) { 
                         return p && !p.includes('.html'); 
                     }).length;
-                    
-                    // Tạo prefix để lên thư mục gốc
                     var prefix = '';
                     for (var d = 0; d < currentDepth; d++) {
                         prefix += '../';
@@ -258,14 +254,14 @@ gtag('config', 'G-B51EJTDD2L');
                 
                 grid.innerHTML = html;
                 
-                // Log để kiểm tra link
-                console.log('Đã tạo', relatedArticles.length, 'card bài viết liên quan');
+                // Log để kiểm tra link đã đúng chưa
+                console.log('✅ Đã tạo', relatedArticles.length, 'card bài viết liên quan');
                 document.querySelectorAll('.related-card').forEach(function(card, idx) {
-                    console.log('Card', idx+1, 'link:', card.getAttribute('href'));
+                    console.log('Card', idx+1, 'URL:', card.getAttribute('href'));
                 });
                 
             } catch (error) {
-                console.error('Lỗi tải bài viết liên quan:', error);
+                console.error('❌ Lỗi tải bài viết liên quan:', error);
                 var grid = document.getElementById('related-posts-grid');
                 if (grid) {
                     grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">Không thể tải bài viết liên quan<br><small style="color: var(--dim);">' + error.message + '</small></div>';
