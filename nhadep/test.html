@@ -132,106 +132,79 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
-        function getDataJsonPath() {
-            var currentPath = window.location.pathname;
-            var pathParts = currentPath.split('/').filter(function(p) { 
-                return p && !p.includes('.html'); 
-            });
-            var depth = pathParts.length;
-            var prefix = '';
-            for (var i = 0; i < depth; i++) {
-                prefix += '../';
-            }
-            if (prefix === '') prefix = './';
-            return prefix + 'data.json';
-        }
-        
-        // Hàm lấy bài viết liên quan từ data.json
-        async function loadRelatedPosts() {
-            var grid = document.getElementById('related-posts-grid');
+        (function() {
+            var currentSlug = "test";
+            var currentType = "nhadep";
             
-            try {
-                var currentSlug = 'test';
-                var currentType = 'nhadep';
-                var dataJsonPath = getDataJsonPath();
-                
-                console.log('🔍 Đang tải data.json từ:', dataJsonPath);
-                
-                var response = await fetch(dataJsonPath + '?t=' + Date.now());
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+            function getDataJsonPath() {
+                var currentPath = window.location.pathname;
+                var pathParts = currentPath.split('/').filter(function(p) { 
+                    return p && p.indexOf('.html') === -1; 
+                });
+                var depth = pathParts.length;
+                var prefix = '';
+                for (var i = 0; i < depth; i++) {
+                    prefix += '../';
                 }
+                if (prefix === '') prefix = './';
+                return prefix + 'data.json';
+            }
+            
+            async function loadRelatedPosts() {
+                var grid = document.getElementById('related-posts-grid');
+                if (!grid) return;
                 
-                var articles = await response.json();
-                console.log('✅ Đã tải', articles.length, 'bài viết từ data.json');
-                
-                // Lọc bài đã đăng (status = posted)
-                var postedArticles = articles.filter(function(a) {
-                    var status = (a.Status || a.status || '').toLowerCase();
-                    return status === 'posted';
-                });
-                console.log('📌 Bài đã đăng:', postedArticles.length, 'bài');
-                
-                // Lọc bỏ bài hiện tại
-                var filtered = postedArticles.filter(function(a) {
-                    if (!a.url) return false;
-                    var urlSlug = a.url.split('/').pop().replace('.html', '');
-                    try {
-                        urlSlug = decodeURIComponent(urlSlug);
-                    } catch(e) {}
-                    return urlSlug !== currentSlug;
-                });
-                console.log('🔍 Sau khi lọc bỏ bài hiện tại:', filtered.length, 'bài');
-                
-                // Ưu tiên bài cùng loại (kind)
-                if (currentType && filtered.length > 0) {
-                    var sameKind = filtered.filter(function(a) {
-                        var articleKind = a.kind || '';
-                        return articleKind.toLowerCase() === currentType.toLowerCase();
-                    });
-                    if (sameKind.length > 0) {
-                        filtered = sameKind;
-                        console.log('🎯 Ưu tiên bài cùng loại "' + currentType + '":', filtered.length, 'bài');
+                try {
+                    var dataJsonPath = getDataJsonPath();
+                    console.log('Loading data.json from:', dataJsonPath);
+                    
+                    var response = await fetch(dataJsonPath + '?t=' + Date.now());
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
                     }
-                }
-                
-                // Trộn ngẫu nhiên và lấy tối đa 5 bài
-                for (var i = filtered.length - 1; i > 0; i--) {
-                    var j = Math.floor(Math.random() * (i + 1));
-                    var temp = filtered[i];
-                    filtered[i] = filtered[j];
-                    filtered[j] = temp;
-                }
-                var relatedArticles = filtered.slice(0, 5);
-                console.log('✨ Kết quả:', relatedArticles.length, 'bài viết liên quan');
-                
-                if (relatedArticles.length === 0) {
-                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">📭 Chưa có bài viết liên quan</div>';
-                    return;
-                }
-                
-                // Tạo HTML cho các card
-                var html = '';
-                for (var k = 0; k < relatedArticles.length; k++) {
-                    var article = relatedArticles[k];
-                    var articleTitle = article.title || '';
-                    var articleSummary = article.summary || '';
-                    var rawUrl = article.url || '#';
-                    // Lấy url gốc, bỏ đi "./" ở đầu
-                    var finalUrl = rawUrl.replace(/^.//, '');
-                    var articleTag = article.tag || 'Bài viết';
-                    var articleKind = article.kind || currentType;
                     
-                    // Lấy slug từ url để tạo đường dẫn thumbnail
-                    var articleSlug = rawUrl.split('/').pop().replace('.html', '');
-                    try {
-                        articleSlug = decodeURIComponent(articleSlug);
-                    } catch(e) {}
+                    var articles = await response.json();
+                    console.log('Loaded', articles.length, 'articles');
                     
-                    // Xác định đường dẫn thumbnail
+                    var postedArticles = articles.filter(function(a) {
+                        var status = (a.Status || a.status || '').toLowerCase();
+                        return status === 'posted';
+                    });
+                    
+                    var filtered = postedArticles.filter(function(a) {
+                        if (!a.url) return false;
+                        var urlSlug = a.url.split('/').pop().replace('.html', '');
+                        try {
+                            urlSlug = decodeURIComponent(urlSlug);
+                        } catch(e) {}
+                        return urlSlug !== currentSlug;
+                    });
+                    
+                    if (currentType && filtered.length > 0) {
+                        var sameKind = filtered.filter(function(a) {
+                            var articleKind = a.kind || '';
+                            return articleKind.toLowerCase() === currentType.toLowerCase();
+                        });
+                        if (sameKind.length > 0) {
+                            filtered = sameKind;
+                        }
+                    }
+                    
+                    for (var i = filtered.length - 1; i > 0; i--) {
+                        var j = Math.floor(Math.random() * (i + 1));
+                        var temp = filtered[i];
+                        filtered[i] = filtered[j];
+                        filtered[j] = temp;
+                    }
+                    var relatedArticles = filtered.slice(0, 5);
+                    
+                    if (relatedArticles.length === 0) {
+                        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">📭 Chưa có bài viết liên quan</div>';
+                        return;
+                    }
+                    
                     var currentDepth = window.location.pathname.split('/').filter(function(p) { 
-                        return p && !p.includes('.html'); 
+                        return p && p.indexOf('.html') === -1; 
                     }).length;
                     var prefix = '';
                     for (var d = 0; d < currentDepth; d++) {
@@ -239,49 +212,61 @@ gtag('config', 'G-B51EJTDD2L');
                     }
                     if (prefix === '') prefix = './';
                     
-                    var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
-                    var shortSummary = articleSummary.substring(0, 80);
+                    var html = '';
+                    for (var k = 0; k < relatedArticles.length; k++) {
+                        var article = relatedArticles[k];
+                        var articleTitle = article.title || '';
+                        var articleSummary = article.summary || '';
+                        var rawUrl = article.url || '#';
+                        var finalUrl = rawUrl.replace(/^\.\//, '');
+                        var articleTag = article.tag || 'Bài viết';
+                        var articleKind = article.kind || currentType;
+                        
+                        var articleSlug = rawUrl.split('/').pop().replace('.html', '');
+                        try {
+                            articleSlug = decodeURIComponent(articleSlug);
+                        } catch(e) {}
+                        
+                        var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
+                        var shortSummary = articleSummary.substring(0, 80);
+                        
+                        html += '<a href="' + finalUrl + '" class="related-card">';
+                        html += '<img src="' + thumbnailPath + '" alt="' + escapeHtml(articleTitle) + '" loading="lazy" onerror="this.style.display='none'">';
+                        html += '<div class="card-content">';
+                        html += '<span class="card-tag">' + escapeHtml(articleTag) + '</span>';
+                        html += '<h4 class="card-title">' + escapeHtml(articleTitle) + '</h4>';
+                        if (shortSummary) {
+                            html += '<p class="card-summary">' + escapeHtml(shortSummary) + (shortSummary.length >= 80 ? '...' : '') + '</p>';
+                        }
+                        html += '<div class="read-more">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></div>';
+                        html += '</div></a>';
+                    }
                     
-                    html += `
-                        <a href="${finalUrl}" class="related-card">
-                            <img src="${thumbnailPath}" alt="${escapeHtml(articleTitle)}" loading="lazy" onerror="this.style.display='none'">
-                            <div class="card-content">
-                                <span class="card-tag">${escapeHtml(articleTag)}</span>
-                                <h4 class="card-title">${escapeHtml(articleTitle)}</h4>
-                                ${shortSummary ? `<p class="card-summary">${escapeHtml(shortSummary)}${shortSummary.length >= 80 ? '...' : ''}</p>` : ''}
-                                <div class="read-more">
-                                    Đọc tiếp <i class="fa-solid fa-arrow-right"></i>
-                                </div>
-                            </div>
-                        </a>
-                    `;
+                    grid.innerHTML = html;
+                    console.log('Displayed', relatedArticles.length, 'related articles');
+                    
+                } catch (error) {
+                    console.error('Error loading related posts:', error);
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--red); grid-column: 1 / -1;">⚠️ Không thể tải bài viết liên quan<br><small>' + error.message + '</small><br><button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--gold); color: #000; border: none; border-radius: 8px; cursor: pointer;">🔄 Thử lại</button></div>';
                 }
-                
-                grid.innerHTML = html;
-                console.log('✅ Đã hiển thị', relatedArticles.length, 'card bài viết liên quan');
-                
-            } catch (error) {
-                console.error('❌ Lỗi tải bài viết liên quan:', error);
-                grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--red); grid-column: 1 / -1;">⚠️ Không thể tải bài viết liên quan<br><small style="color: var(--dim);">' + error.message + '</small><br><button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--gold); color: #000; border: none; border-radius: 8px; cursor: pointer;">🔄 Thử lại</button></div>';
             }
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-        
-        // Tải bài viết liên quan khi trang load
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadRelatedPosts);
-        } else {
-            loadRelatedPosts();
-        }
+            
+            function escapeHtml(str) {
+                if (!str) return '';
+                return str.replace(/[&<>]/g, function(m) {
+                    if (m === '&') return '&amp;';
+                    if (m === '<') return '&lt;';
+                    if (m === '>') return '&gt;';
+                    return m;
+                });
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadRelatedPosts);
+            } else {
+                loadRelatedPosts();
+            }
+        })();
     </script>
     
   <div style="text-align: center; margin-top: 40px;">
