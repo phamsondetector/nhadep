@@ -132,7 +132,7 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
+         // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
         function getDataJsonPath() {
             var currentPath = window.location.pathname;
             var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
@@ -148,7 +148,7 @@ gtag('config', 'G-B51EJTDD2L');
         // Hàm lấy bài viết liên quan từ data.json
         async function loadRelatedPosts() {
             try {
-                var currentSlug = 'Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên Nhiệt Đới';
+                var currentSlug = 'test';
                 var currentType = 'nhadep';
                 var dataJsonPath = getDataJsonPath();
                 
@@ -171,6 +171,7 @@ gtag('config', 'G-B51EJTDD2L');
                 // Lọc bỏ bài hiện tại
                 var filtered = postedArticles.filter(function(a) {
                     if (!a.url) return false;
+                    // Lấy slug từ url trong data.json
                     var urlSlug = a.url.split('/').pop().replace('.html', '');
                     try {
                         urlSlug = decodeURIComponent(urlSlug);
@@ -210,10 +211,12 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
+                    // SỬA LỖI: Dùng trực tiếp url từ data.json, KHÔNG thêm tiền tố
                     var articleUrl = article.url || '#';
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
                     
+                    // Lấy slug từ url để tạo đường dẫn thumbnail
                     var articleSlug = articleUrl.split('/').pop().replace('.html', '');
                     try {
                         articleSlug = decodeURIComponent(articleSlug);
