@@ -236,19 +236,16 @@ gtag('config', 'G-B51EJTDD2L');
                     var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
                     var shortSummary = articleSummary.substring(0, 80);
                     
-                    html += `
-                        <a href="${finalUrl}" class="related-card">
-                            <img src="${thumbnailPath}" alt="${escapeHtml(articleTitle)}" loading="lazy" onerror="this.style.display='none'">
-                            <div class="card-content">
-                                <span class="card-tag">${escapeHtml(articleTag)}</span>
-                                <h4 class="card-title">${escapeHtml(articleTitle)}</h4>
-                                ${shortSummary ? `<p class="card-summary">${escapeHtml(shortSummary)}${shortSummary.length >= 80 ? '...' : ''}</p>` : ''}
-                                <div class="read-more">
-                                    Đọc tiếp <i class="fa-solid fa-arrow-right"></i>
-                                </div>
-                            </div>
-                        </a>
-                    `;
+                    var summaryHtml = shortSummary ? '<p class="card-summary">' + escapeHtml(shortSummary) + (shortSummary.length >= 80 ? '...' : '') + '</p>' : '';
+                    html += '<a href="' + finalUrl + '" class="related-card">'
+                        + '<img src="' + thumbnailPath + '" alt="' + escapeHtml(articleTitle) + '" loading="lazy" onerror="this.style.display='none'">'
+                        + '<div class="card-content">'
+                        + '<span class="card-tag">' + escapeHtml(articleTag) + '</span>'
+                        + '<h4 class="card-title">' + escapeHtml(articleTitle) + '</h4>'
+                        + summaryHtml
+                        + '<div class="read-more">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></div>'
+                        + '</div>'
+                        + '</a>';
                 }
                 
                 grid.innerHTML = html;
