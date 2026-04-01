@@ -47,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">1/4/2026</span></div>
-  <div class="content">test<div><br><img src="../images/nhadep/test/image_1.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br>test3</div></div>
+  <div class="content">test<div><br><img src="../images/nhadep/test/image_1.webp" alt="bath room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br>test4<br><img src="../images/nhadep/test/image_2.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br></div></div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: center;">
@@ -111,30 +111,49 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
+        // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
+        function getDataJsonPath() {
+            // Lấy đường dẫn hiện tại của trang
+            var currentPath = window.location.pathname;
+            // Đếm số lượng thư mục con (bỏ qua file html)
+            var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
+            var depth = pathParts.length;
+            // Tạo đường dẫn lên thư mục gốc
+            var prefix = '';
+            for (var i = 0; i < depth; i++) {
+                prefix += '../';
+            }
+            if (prefix === '') prefix = './';
+            return prefix + 'data.json';
+        }
+        
         // Hàm lấy bài viết liên quan từ data.json
         async function loadRelatedPosts() {
             try {
-                const currentSlug = 'test';
-                const currentType = 'nhadep';
+                var currentSlug = 'test';
+                var currentType = 'nhadep';
+                var dataJsonPath = getDataJsonPath();
                 
-                const response = await fetch('./data.json?t=' + Date.now());
+                console.log('Đang tải data.json từ:', dataJsonPath);
+                
+                var response = await fetch(dataJsonPath + '?t=' + Date.now());
                 if (!response.ok) {
-                    throw new Error('Không thể tải data.json');
+                    throw new Error('Không thể tải data.json từ ' + dataJsonPath);
                 }
                 
-                const articles = await response.json();
+                var articles = await response.json();
                 console.log('Đã tải', articles.length, 'bài viết');
                 
                 // Lọc bài đã đăng
-                const postedArticles = articles.filter(a => {
-                    const status = (a.Status || a.status || '').toLowerCase();
+                var postedArticles = articles.filter(function(a) {
+                    var status = (a.Status || a.status || '').toLowerCase();
                     return status === 'posted';
                 });
                 
                 // Lọc bỏ bài hiện tại
-                let filtered = postedArticles.filter(a => {
+                var filtered = postedArticles.filter(function(a) {
                     if (!a.url) return false;
-                    let urlSlug = a.url.split('/').pop().replace('.html', '');
+                    var urlSlug = a.url.split('/').pop().replace('.html', '');
                     try {
                         urlSlug = decodeURIComponent(urlSlug);
                     } catch(e) {}
@@ -143,8 +162,8 @@ gtag('config', 'G-B51EJTDD2L');
                 
                 // Ưu tiên bài cùng loại (kind)
                 if (currentType && filtered.length > 0) {
-                    const sameKind = filtered.filter(a => {
-                        const articleKind = a.kind || '';
+                    var sameKind = filtered.filter(function(a) {
+                        var articleKind = a.kind || '';
                         return articleKind.toLowerCase() === currentType.toLowerCase();
                     });
                     if (sameKind.length > 0) {
@@ -153,34 +172,43 @@ gtag('config', 'G-B51EJTDD2L');
                 }
                 
                 // Trộn ngẫu nhiên và lấy tối đa 5 bài
-                for (let i = filtered.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+                for (var i = filtered.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = filtered[i];
+                    filtered[i] = filtered[j];
+                    filtered[j] = temp;
                 }
-                const relatedArticles = filtered.slice(0, 5);
+                var relatedArticles = filtered.slice(0, 5);
                 
                 // Hiển thị bài viết
-                const grid = document.getElementById('related-posts-grid');
+                var grid = document.getElementById('related-posts-grid');
                 if (relatedArticles.length === 0) {
                     grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">Chưa có bài viết liên quan</div>';
                     return;
                 }
                 
-                let html = '';
-                relatedArticles.forEach(article => {
-                    const articleTitle = article.title || '';
-                    const articleSummary = article.summary || '';
-                    const articleUrl = article.url || '#';
-                    const articleTag = article.tag || 'Bài viết';
-                    const articleKind = article.kind || currentType;
+                var html = '';
+                for (var k = 0; k < relatedArticles.length; k++) {
+                    var article = relatedArticles[k];
+                    var articleTitle = article.title || '';
+                    var articleSummary = article.summary || '';
+                    var articleUrl = article.url || '#';
+                    var articleTag = article.tag || 'Bài viết';
+                    var articleKind = article.kind || currentType;
                     
-                    let articleSlug = articleUrl.split('/').pop().replace('.html', '');
+                    var articleSlug = articleUrl.split('/').pop().replace('.html', '');
                     try {
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
-                    const thumbnailPath = `../thumbnail/${articleKind}/${encodeURIComponent(articleSlug)}.webp`;
-                    const shortSummary = articleSummary.substring(0, 100);
+                    // Xác định đường dẫn thumbnail dựa trên vị trí hiện tại
+                    var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
+                    var prefix = '';
+                    for (var d = 0; d < depth; d++) {
+                        prefix += '../';
+                    }
+                    var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
+                    var shortSummary = articleSummary.substring(0, 100);
                     
                     html += `
                         <a href="${articleUrl}" class="related-card">
@@ -195,14 +223,16 @@ gtag('config', 'G-B51EJTDD2L');
                             </div>
                         </a>
                     `;
-                });
+                }
                 
                 grid.innerHTML = html;
                 
             } catch (error) {
                 console.error('Lỗi tải bài viết liên quan:', error);
-                document.getElementById('related-posts-grid').innerHTML = 
-                    '<div style="text-align: center; padding: 40px; color: var(--muted);">Không thể tải bài viết liên quan</div>';
+                var grid = document.getElementById('related-posts-grid');
+                if (grid) {
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">Không thể tải bài viết liên quan<br><small style="color: var(--dim);">' + error.message + '</small></div>';
+                }
             }
         }
         
@@ -217,7 +247,11 @@ gtag('config', 'G-B51EJTDD2L');
         }
         
         // Tải bài viết liên quan khi trang load
-        document.addEventListener('DOMContentLoaded', loadRelatedPosts);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadRelatedPosts);
+        } else {
+            loadRelatedPosts();
+        }
     </script>
     
   <div style="text-align: center; margin-top: 40px;">
