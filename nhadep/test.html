@@ -40,14 +40,26 @@ gtag('config', 'G-B51EJTDD2L');
         .content li{margin:10px 0;}
         .back-btn{display:inline-block;margin-top:48px;padding:12px 32px;background:var(--gold);color:#0A0A0A;text-decoration:none;border-radius:40px;font-weight:600;transition:all .2s;}
         .back-btn:hover{transform:translateY(-2px);background:#D4AF37;}
-        @media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}}
+        .related-posts{margin-top:60px;padding-top:40px;border-top:2px solid var(--gold);}
+        .related-posts h3{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:30px;color:var(--gold);text-align:center;}
+        .related-posts h3 i{margin-right:12px;}
+        .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;}
+        .related-card{text-decoration:none;display:block;background:rgba(255,255,255,.03);border-radius:20px;overflow:hidden;transition:all 0.3s ease;border:1px solid rgba(198,164,59,.2);}
+        .related-card:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 15px 30px rgba(0,0,0,0.3);}
+        .related-card img{width:100%;height:180px;object-fit:cover;}
+        .related-card .card-content{padding:20px;}
+        .related-card .card-tag{font-size:0.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;}
+        .related-card .card-title{font-size:1rem;margin-top:10px;color:var(--text);line-height:1.4;font-weight:600;}
+        .related-card .card-summary{font-size:0.8rem;color:var(--muted);margin-top:12px;line-height:1.5;}
+        .related-card .read-more{margin-top:15px;color:var(--gold);font-size:0.8rem;}
+        @media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}.related-card .card-title{font-size:0.9rem;}}
     </style>
 </head>
 <body>
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">1/4/2026</span></div>
-  <div class="content">test<div><img src="../images/nhadep/test/image_1.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;">test</div><div><br><img src="../images/nhadep/test/image_2.webp" alt="bath room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br><br><br></div></div>
+  <div class="content">teste<div><br><img src="../images/nhadep/test/image_1.webp" alt="bath room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br>test</div><div><br><img src="../images/nhadep/test/image_2.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br><br></div></div>
   
   <div style="text-align: center; margin-top: 40px;">
     <a href="../index.html" class="back-btn">← Quay lại trang chủ</a>
