@@ -26,7 +26,7 @@ gtag('config', 'G-B51EJTDD2L');
         nav h1 span{color:var(--gold);}
         nav a{color:var(--muted);text-decoration:none;}
         nav a:hover{color:var(--gold);}
-        .container{max-width:900px;margin:0 auto;padding:48px 24px;}
+        .container{max-width:1200px;margin:0 auto;padding:48px 24px;}
         .meta{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
         .tag{background:rgba(198,164,59,.2);color:var(--gold2);padding:6px 16px;border-radius:30px;font-size:.75rem;}
         .date{color:var(--muted);font-size:.85rem;line-height:2;}
@@ -47,14 +47,14 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">1/4/2026</span></div>
-  <div class="content">test<div><br><img src="../images/nhadep/test/image_1.webp" alt="bath room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br>test4<br><img src="../images/nhadep/test/image_2.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br></div></div>
+  <div class="content">test<div><br><img src="../images/nhadep/test/image_1.webp" alt="bed room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br>test2</div><div><br><img src="../images/nhadep/test/image_2.webp" alt="dining room.png" loading="lazy" style="max-width: 100%; border-radius: 12px; margin: 12px 0px; display: block;"><br><br></div></div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: center;">
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
             <i class="fa-regular fa-star" style="margin-right: 12px;"></i> Có thể bạn sẽ thích
         </h3>
-        <div id="related-posts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-            <div style="text-align: center; padding: 40px; color: var(--muted);">
+        <div id="related-posts-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;">
+            <div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">
                 <i class="fa-solid fa-spinner fa-spin"></i> Đang tải bài viết liên quan...
             </div>
         </div>
@@ -64,61 +64,79 @@ gtag('config', 'G-B51EJTDD2L');
             text-decoration: none;
             display: block;
             background: rgba(255,255,255,.03);
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
             transition: all 0.3s ease;
             border: 1px solid rgba(198,164,59,.2);
         }
         .related-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             border-color: var(--gold);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .related-card img {
             width: 100%;
-            height: 180px;
+            height: 140px;
             object-fit: cover;
         }
         .related-card .card-content {
-            padding: 20px;
+            padding: 12px;
         }
         .related-card .card-tag {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 6px;
         }
         .related-card .card-title {
-            font-size: 1rem;
-            margin-top: 10px;
+            font-size: 0.85rem;
+            margin-top: 6px;
             color: var(--text);
             line-height: 1.4;
             font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .related-card .card-summary {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--muted);
-            margin-top: 12px;
-            line-height: 1.5;
+            margin-top: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .related-card .read-more {
-            margin-top: 15px;
+            margin-top: 10px;
             color: var(--gold);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            display: inline-block;
+        }
+        @media (max-width: 1200px) {
+            #related-posts-grid { grid-template-columns: repeat(4, 1fr) !important; }
+        }
+        @media (max-width: 992px) {
+            #related-posts-grid { grid-template-columns: repeat(3, 1fr) !important; }
         }
         @media (max-width: 768px) {
-            .related-card .card-title { font-size: 0.9rem; }
+            #related-posts-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .related-card img { height: 120px; }
+        }
+        @media (max-width: 480px) {
+            #related-posts-grid { grid-template-columns: 1fr !important; }
         }
     </style>
     <script>
         // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
         function getDataJsonPath() {
-            // Lấy đường dẫn hiện tại của trang
             var currentPath = window.location.pathname;
-            // Đếm số lượng thư mục con (bỏ qua file html)
             var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
             var depth = pathParts.length;
-            // Tạo đường dẫn lên thư mục gốc
             var prefix = '';
             for (var i = 0; i < depth; i++) {
                 prefix += '../';
@@ -183,7 +201,7 @@ gtag('config', 'G-B51EJTDD2L');
                 // Hiển thị bài viết
                 var grid = document.getElementById('related-posts-grid');
                 if (relatedArticles.length === 0) {
-                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">Chưa có bài viết liên quan</div>';
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">Chưa có bài viết liên quan</div>';
                     return;
                 }
                 
@@ -208,7 +226,7 @@ gtag('config', 'G-B51EJTDD2L');
                         prefix += '../';
                     }
                     var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
-                    var shortSummary = articleSummary.substring(0, 100);
+                    var shortSummary = articleSummary.substring(0, 80);
                     
                     html += `
                         <a href="${articleUrl}" class="related-card">
@@ -216,7 +234,7 @@ gtag('config', 'G-B51EJTDD2L');
                             <div class="card-content">
                                 <span class="card-tag">${escapeHtml(articleTag)}</span>
                                 <h4 class="card-title">${escapeHtml(articleTitle)}</h4>
-                                ${shortSummary ? `<p class="card-summary">${escapeHtml(shortSummary)}${shortSummary.length >= 100 ? '...' : ''}</p>` : ''}
+                                ${shortSummary ? `<p class="card-summary">${escapeHtml(shortSummary)}${shortSummary.length >= 80 ? '...' : ''}</p>` : ''}
                                 <div class="read-more">
                                     Đọc tiếp <i class="fa-solid fa-arrow-right"></i>
                                 </div>
@@ -231,7 +249,7 @@ gtag('config', 'G-B51EJTDD2L');
                 console.error('Lỗi tải bài viết liên quan:', error);
                 var grid = document.getElementById('related-posts-grid');
                 if (grid) {
-                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">Không thể tải bài viết liên quan<br><small style="color: var(--dim);">' + error.message + '</small></div>';
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">Không thể tải bài viết liên quan<br><small style="color: var(--dim);">' + error.message + '</small></div>';
                 }
             }
         }
