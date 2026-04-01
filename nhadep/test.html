@@ -132,19 +132,26 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
-        function getDataJsonPath() {
-            var currentPath = window.location.pathname;
-            var pathParts = currentPath.split('/').filter(function(p) { 
-                return p && !p.includes('.html'); 
-            });
-            var depth = pathParts.length;
+        // Hàm tính prefix "../" dựa vào độ sâu thực tế của file HTML hiện tại
+        // File bài viết nằm ở: /nhadep/bai-viet.html => depth = 1 => prefix = "../"
+        function getDepthPrefix() {
+            var pathname = window.location.pathname;
+            // Đếm số segment thư mục (bỏ phần file .html cuối)
+            var parts = pathname.split('/').filter(function(p) { return p !== ''; });
+            // Bỏ phần tử cuối nếu là file .html
+            if (parts.length > 0 && parts[parts.length - 1].indexOf('.html') !== -1) {
+                parts.pop();
+            }
             var prefix = '';
-            for (var i = 0; i < depth; i++) {
+            for (var i = 0; i < parts.length; i++) {
                 prefix += '../';
             }
-            if (prefix === '') prefix = './';
-            return prefix + 'data.json';
+            return prefix || './';
+        }
+
+        // Hàm lấy đường dẫn đến data.json
+        function getDataJsonPath() {
+            return getDepthPrefix() + 'data.json';
         }
         
         // Hàm lấy bài viết liên quan từ data.json
@@ -173,11 +180,8 @@ gtag('config', 'G-B51EJTDD2L');
                 // Lọc bỏ bài hiện tại
                 var filtered = postedArticles.filter(function(a) {
                     if (!a.url) return false;
-                    // Lấy slug từ url trong data.json
                     var urlSlug = a.url.split('/').pop().replace('.html', '');
-                    try {
-                        urlSlug = decodeURIComponent(urlSlug);
-                    } catch(e) {}
+                    try { urlSlug = decodeURIComponent(urlSlug); } catch(e) {}
                     return urlSlug !== currentSlug;
                 });
                 
@@ -208,40 +212,26 @@ gtag('config', 'G-B51EJTDD2L');
                     return;
                 }
                 
+                var prefix = getDepthPrefix();
                 var html = '';
                 for (var k = 0; k < relatedArticles.length; k++) {
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // QUAN TRỌNG: Lấy url gốc và loại bỏ "./" ở đầu
-                    var rawUrl = article.url || '#';
-                    // Xóa bỏ "./" ở đầu nếu có
-                    var cleanUrl = rawUrl.replace(/^.//, '');
-                    // Nếu url bắt đầu bằng "/" thì giữ nguyên, nếu không thì thêm "/" vào đầu
-                    var finalUrl = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+                    var rawUrl = (article.url || '').replace(/^.//, '').replace(/^//, '');
+                    // Dùng đường dẫn tương đối: từ prefix (root) + rawUrl
+                    // Ví dụ: đang ở /nhadep/bai-viet.html => prefix = "../"
+                    // rawUrl = "blogs/bai-khac.html" => "../blogs/bai-khac.html"
+                    var finalUrl = rawUrl ? (prefix + rawUrl) : '#';
                     
-                    console.log('Raw URL:', rawUrl);
-                    console.log('Clean URL:', cleanUrl);
-                    console.log('Final URL:', finalUrl);
+                    console.log('Raw URL:', rawUrl, '=> Final:', finalUrl);
                     
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
                     
                     // Lấy slug từ url để tạo đường dẫn thumbnail
                     var articleSlug = rawUrl.split('/').pop().replace('.html', '');
-                    try {
-                        articleSlug = decodeURIComponent(articleSlug);
-                    } catch(e) {}
-                    
-                    // Xác định đường dẫn thumbnail
-                    var currentDepth = window.location.pathname.split('/').filter(function(p) { 
-                        return p && !p.includes('.html'); 
-                    }).length;
-                    var prefix = '';
-                    for (var d = 0; d < currentDepth; d++) {
-                        prefix += '../';
-                    }
-                    if (prefix === '') prefix = './';
+                    try { articleSlug = decodeURIComponent(articleSlug); } catch(e) {}
                     
                     var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
                     var shortSummary = articleSummary.substring(0, 80);
