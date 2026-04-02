@@ -28,7 +28,7 @@
     "summary": "Phong thủy là một phần quan trọng trong văn hóa Á Đông, đặc biệt với người Việt Nam khi xây dựng nhà ở.",
     "url": "./blogs/Ý nghĩa của phong thủy trong xây dựng.html",
     "tag": "Hiện đại",
-    "kind": "blogs",
+    "kind": "blog",
     "Status": "posted",
     "relatedlink": "./Ý nghĩa của phong thủy trong xây dựng.html"
   },
@@ -39,7 +39,7 @@
     "summary": "testblog",
     "url": "./blogs/testblog.html",
     "tag": "Hiện đại",
-    "kind": "blogs",
+    "kind": "blog",
     "Status": "posted",
     "relatedlink": "./testblog.html"
   }
