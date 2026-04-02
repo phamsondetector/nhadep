@@ -354,7 +354,6 @@
     <div class="grid" id="grid">
         <div class="loading"><div class="spinner"></div>Đang tải bài viết…</div>
     </div>
-</div>
 <script>
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
@@ -395,18 +394,21 @@ function formatDate(dateStr) {
 }
 
 function renderCard(item) {
-    if (!item || !item.title || !item.url || item.title.trim() === '') {
+    if (!item) return '';
+
+    // KIỂM TRA SIÊU CHẶT – loại bỏ card trống
+    const titleStr = String(item.title || '').trim();
+    const urlStr   = String(item.url || '').trim();
+    if (titleStr === '' || urlStr === '' || urlStr === '#') {
         return '';
     }
-    
+
     const url = buildArticleUrl(item);
-    if (url === '#' || url === '' || url.trim() === '') {
-        return '';
-    }
-    
+    if (url === '#' || url.trim() === '') return '';
+
     const thumbUrl = buildThumbUrl(item);
     const tags = getTags(item);
-    const title = escapeHtml(item.title.trim());
+    const title = escapeHtml(titleStr);
     const summary = escapeHtml((item.summary || '').substring(0, 100));
     const date = formatDate(item.date || '');
     const displaySummary = summary + (item.summary && item.summary.length > 100 ? '…' : '');
@@ -437,7 +439,7 @@ function renderCard(item) {
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
     allPosts.forEach(p => {
-        if (p && p.title && p.url && p.title.trim() !== '') {
+        if (p && p.title && p.url) {
             getTags(p).forEach(t => tagSet.add(t));
         }
     });
@@ -463,20 +465,18 @@ function renderTagsBar(allPosts) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // Lọc bài viết hợp lệ
+        // Filter siêu chặt + ép String() để tránh dữ liệu bẩn
         let validPosts = posts.filter(p => {
-            return p && 
-                   p.title && 
-                   p.url && 
-                   p.title.trim() !== '' &&
-                   p.url.trim() !== '' &&
-                   p.url !== '#';
+            if (!p) return false;
+            const titleStr = String(p.title || '').trim();
+            const urlStr   = String(p.url || '').trim();
+            return titleStr !== '' && urlStr !== '' && urlStr !== '#';
         });
 
-        // === SỬA Ở ĐÂY: DEDUPLICATE THEO URL ===
+        // Deduplicate theo URL
         const seenUrls = new Set();
         const uniqueValidPosts = validPosts.filter(p => {
-            const urlKey = p.url.trim();
+            const urlKey = String(p.url || '').trim();
             if (seenUrls.has(urlKey)) return false;
             seenUrls.add(urlKey);
             return true;
@@ -491,9 +491,7 @@ function renderTagsBar(allPosts) {
 
         // Lọc theo tag
         const filtered = activeTag
-            ? uniqueValidPosts.filter(p =>
-                getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase())
-              )
+            ? uniqueValidPosts.filter(p => getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase()))
             : uniqueValidPosts;
 
         const countText = filtered.length > 0
@@ -518,7 +516,6 @@ function renderTagsBar(allPosts) {
                     cardsHtml += cardHtml;
                 }
             }
-            
             grid.innerHTML = cardsHtml || `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
         }
 
