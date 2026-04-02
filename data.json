@@ -64,5 +64,16 @@
     "kind": "nhadep",
     "Status": "posted",
     "relatedlink": "./test6.html"
+  },
+  {
+    "id": "1775129338739",
+    "date": "02/04/2026",
+    "title": "test7",
+    "summary": "",
+    "url": "./nhadep/test7.html",
+    "tag": "Hiện đại, Biệt thự",
+    "kind": "nhadep",
+    "Status": "posted",
+    "relatedlink": "./test7.html"
   }
 ]
