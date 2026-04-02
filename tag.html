@@ -29,7 +29,6 @@
             min-height: 100vh;
         }
 
-        /* ── NAV ── */
         nav {
             background: rgba(10,10,10,.95);
             border-bottom: 1px solid var(--border);
@@ -47,7 +46,6 @@
         nav a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
         nav a:hover { color: var(--gold); }
 
-        /* ── HERO ── */
         .hero {
             padding: 56px 32px 36px;
             max-width: 1200px;
@@ -78,7 +76,6 @@
             border-top: 1px solid var(--border);
         }
 
-        /* ── ALL TAGS BAR ── */
         .all-tags-bar {
             max-width: 1200px;
             margin: 0 auto;
@@ -110,7 +107,6 @@
         .tag-pill:hover { background: rgba(198,164,59,.15); color: var(--gold); border-color: var(--gold); }
         .tag-pill.active { background: rgba(198,164,59,.25); color: var(--gold2); border-color: var(--gold); font-weight: 600; }
 
-        /* ── GRID ── */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -122,22 +118,17 @@
             gap: 28px;
         }
 
-        /* ── CARD - Overlay style (tiêu đề + summary chồng lên thumbnail) ── */
-        .card-link {
+        /* CARD - toàn bộ là link */
+        .card {
             text-decoration: none;
             color: inherit;
             display: block;
-        }
-        
-        .card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 20px;
             overflow: hidden;
             transition: transform .25s, border-color .25s, box-shadow .25s;
-            position: relative;
             cursor: pointer;
-            height: 100%;
         }
         .card:hover {
             transform: translateY(-4px);
@@ -145,7 +136,6 @@
             box-shadow: 0 12px 40px rgba(0,0,0,.5);
         }
         
-        /* Thumbnail container - relative để làm nền cho overlay */
         .card-thumb-wrap {
             position: relative;
             width: 100%;
@@ -164,7 +154,6 @@
             transform: scale(1.05);
         }
         
-        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên */
         .card-overlay {
             position: absolute;
             bottom: 0;
@@ -177,9 +166,9 @@
                 transparent 100%);
             padding: 20px 20px 18px;
             transition: all .3s ease;
+            pointer-events: none;
         }
         
-        /* Nội dung bên trong overlay */
         .card-body {
             display: flex;
             flex-direction: column;
@@ -190,6 +179,7 @@
             flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 8px;
+            pointer-events: auto;
         }
         .card-tag {
             font-size: .65rem;
@@ -204,8 +194,6 @@
             backdrop-filter: blur(4px);
             display: inline-block;
             pointer-events: auto;
-            position: relative;
-            z-index: 2;
         }
         .card-tag:hover { background: rgba(198,164,59,.4); color: #fff; }
         .card-tag.active-tag {
@@ -269,7 +257,6 @@
             font-size: .7rem;
         }
 
-        /* Hiệu ứng khi hover - overlay sáng hơn một chút */
         .card:hover .card-overlay {
             background: linear-gradient(to top, 
                 rgba(0,0,0,0.98) 0%,
@@ -282,7 +269,6 @@
             color: var(--gold2);
         }
 
-        /* ── EMPTY ── */
         .empty {
             grid-column: 1 / -1;
             text-align: center;
@@ -291,7 +277,6 @@
         }
         .empty i { font-size: 3rem; color: var(--dim); margin-bottom: 20px; display: block; }
 
-        /* ── LOADING ── */
         .loading {
             grid-column: 1 / -1;
             text-align: center;
@@ -308,7 +293,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
             nav { padding: 12px 16px; }
             .hero { padding: 36px 16px 24px; }
@@ -371,15 +355,12 @@
 </div>
 
 <script>
-// ── Đọc query param ?tag=... ──────────────────────────────────────────────────
-const params   = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
 
-// Cập nhật <title> và hero ngay
 document.title = activeTag ? `Tag: ${activeTag} — NhàĐẹp.vn` : 'Tags — NhàĐẹp.vn';
 document.getElementById('hero-tag-name').textContent = activeTag || 'Tất cả';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -401,7 +382,6 @@ function getTags(item) {
     return (item.tag || '').split(',').map(t => t.trim()).filter(Boolean);
 }
 
-// Format date helper
 function formatDate(dateStr) {
     if (!dateStr) return '';
     try {
@@ -413,46 +393,38 @@ function formatDate(dateStr) {
     }
 }
 
-// ── Render card - KHÔNG CÒN CARD TRỐNG ──
+// QUAN TRỌNG: CARD LÀ 1 THẺ <a> DUY NHẤT BAO BỌC TOÀN BỘ NỘI DUNG
 function renderCard(item) {
-    // Kiểm tra dữ liệu hợp lệ, nếu không có title thì bỏ qua
-    if (!item.title || !item.url) {
-        console.warn('Bỏ qua card thiếu dữ liệu:', item);
-        return '';
-    }
+    if (!item.title || !item.url) return '';
     
-    const url      = buildArticleUrl(item);
+    const url = buildArticleUrl(item);
     const thumbUrl = buildThumbUrl(item);
-    const tags     = getTags(item);
-    const title    = escapeHtml(item.title || '');
-    const summary  = escapeHtml((item.summary || '').substring(0, 100));
-    const date     = formatDate(item.date || '');
-    
+    const tags = getTags(item);
+    const title = escapeHtml(item.title || '');
+    const summary = escapeHtml((item.summary || '').substring(0, 100));
+    const date = formatDate(item.date || '');
     const displaySummary = summary + (item.summary && item.summary.length > 100 ? '…' : '');
 
-    const tagsHtml = tags.length > 0 ? 
-        tags.map(t => {
-            const isActive = t === activeTag ? ' active-tag' : '';
-            return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
-        }).join('') : '';
+    const tagsHtml = tags.map(t => {
+        const isActive = t === activeTag ? ' active-tag' : '';
+        return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
+    }).join('');
 
-    // Chỉ render card nếu có title hợp lệ
+    // CHÚ Ý: Thẻ <a class="card"> BAO BỌC toàn bộ nội dung bên trong
     return `
-    <a href="${escapeHtml(url)}" class="card-link">
-        <div class="card">
-            <div class="card-thumb-wrap">
-                <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
-                     loading="lazy"
-                     onerror="this.style.opacity='0.6'; this.style.backgroundColor='#1A1A1A'">
-                <div class="card-overlay">
-                    <div class="card-body">
-                        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
-                        <div class="card-title">${title}</div>
-                        ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
-                        <div class="card-footer">
-                            ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
-                            <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
-                        </div>
+    <a class="card" href="${escapeHtml(url)}">
+        <div class="card-thumb-wrap">
+            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
+                 loading="lazy"
+                 onerror="this.style.opacity='0.6'">
+            <div class="card-overlay">
+                <div class="card-body">
+                    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+                    <div class="card-title">${title}</div>
+                    ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
+                    <div class="card-footer">
+                        ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
+                        <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
                     </div>
                 </div>
             </div>
@@ -460,11 +432,10 @@ function renderCard(item) {
     </a>`;
 }
 
-// ── Render all-tags bar ───────────────────────────────────────────────────────
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
     allPosts.forEach(p => {
-        if (p.title && p.url) { // Chỉ lấy tag từ bài viết hợp lệ
+        if (p.title && p.url) {
             getTags(p).forEach(t => tagSet.add(t));
         }
     });
@@ -483,38 +454,32 @@ function renderTagsBar(allPosts) {
     bar.innerHTML = `<span class="bar-label"><i class="fa-solid fa-tags"></i> Tag:</span>${pills}`;
 }
 
-// ── Main: fetch data.json ─────────────────────────────────────────────────────
 (async function () {
     const grid = document.getElementById('grid');
     try {
-        const res   = await fetch('./data.json');
+        const res = await fetch('./data.json');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // Lọc bỏ bài viết không hợp lệ (thiếu title hoặc url)
         const validPosts = posts.filter(p => p.title && p.url);
         
         if (validPosts.length === 0) {
             throw new Error('Không có bài viết hợp lệ');
         }
 
-        // Render tag bar từ toàn bộ dữ liệu hợp lệ
         renderTagsBar(validPosts);
 
-        // Lọc theo tag
         const filtered = activeTag
             ? validPosts.filter(p =>
                 getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase())
               )
             : validPosts;
 
-        // Cập nhật đếm
         const countText = filtered.length > 0
             ? `${filtered.length} bài viết`
             : 'Chưa có bài viết nào';
         document.getElementById('hero-count').innerHTML = `<i class="fa-regular fa-newspaper"></i> ${countText}`;
 
-        // Render grid
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty">
@@ -526,11 +491,7 @@ function renderTagsBar(allPosts) {
                 </div>`;
         } else {
             const cardsHtml = filtered.map(renderCard).filter(html => html !== '').join('');
-            if (cardsHtml === '') {
-                grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
-            } else {
-                grid.innerHTML = cardsHtml;
-            }
+            grid.innerHTML = cardsHtml;
         }
 
     } catch (err) {
