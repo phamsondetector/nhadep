@@ -53,5 +53,16 @@
     "kind": "nhadep",
     "Status": "posted",
     "relatedlink": "./test5.html"
+  },
+  {
+    "id": "1775122641192",
+    "date": "02/04/2026",
+    "title": "test6",
+    "summary": "",
+    "url": "./nhadep/test6.html",
+    "tag": "Hiện đại",
+    "kind": "nhadep",
+    "Status": "posted",
+    "relatedlink": "./test6.html"
   }
 ]
