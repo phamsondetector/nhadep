@@ -47,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">2/4/2026</span></div>
-  <div class="content">test 111</div>
+  <div class="content">test4</div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
@@ -132,17 +132,11 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        // Hàm lấy đường dẫn đến data.json (tự động xác định vị trí)
+        // Hàm lấy đường dẫn đến data.json - data.json nằm ở thư mục gốc
         function getDataJsonPath() {
-            var currentPath = window.location.pathname;
-            var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
-            var depth = pathParts.length;
-            var prefix = '';
-            for (var i = 0; i < depth; i++) {
-                prefix += '../';
-            }
-            if (prefix === '') prefix = './';
-            return prefix + 'data.json';
+            // Bài viết đang ở trong thư mục /nhadep/ hoặc /blogs/
+            // Nên data.json nằm ở ../data.json
+            return '../data.json';
         }
         
         // Hàm lấy bài viết liên quan từ data.json
@@ -211,7 +205,7 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // SỬA LỖI: Dùng trực tiếp url từ data.json, KHÔNG thêm tiền tố
+                    // Dùng trực tiếp url từ data.json, KHÔNG thêm bất kỳ tiền tố nào
                     var articleUrl = article.url || '#';
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
@@ -222,13 +216,8 @@ gtag('config', 'G-B51EJTDD2L');
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
-                    // Xác định đường dẫn thumbnail dựa trên vị trí hiện tại
-                    var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
-                    var prefix = '';
-                    for (var d = 0; d < depth; d++) {
-                        prefix += '../';
-                    }
-                    var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
+                    // Xây dựng đường dẫn thumbnail: ../thumbnail/{loai}/{slug}.webp
+                    var thumbnailPath = '../thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
                     var shortSummary = articleSummary.substring(0, 80);
                     
                     html += `
