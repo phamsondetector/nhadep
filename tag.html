@@ -118,11 +118,8 @@
             gap: 28px;
         }
 
-        /* CARD - thẻ a bao bọc toàn bộ nội dung */
+        /* CARD - không cần thẻ a, dùng div và xử lý click bằng JS */
         .card {
-            text-decoration: none;
-            color: inherit;
-            display: block;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 20px;
@@ -395,7 +392,7 @@ function formatDate(dateStr) {
     }
 }
 
-// QUAN TRỌNG: Thẻ <a> BAO BỌC toàn bộ nội dung, KHÔNG bị đóng sớm
+// Render card KHÔNG có thẻ a, dùng div và data-url để xử lý click
 function renderCard(item) {
     if (!item || !item.title || !item.url || item.title.trim() === '') {
         return '';
@@ -418,8 +415,8 @@ function renderCard(item) {
         return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
-    // CẤU TRÚC ĐÚNG: <a class="card"> MỞ, SAU ĐÓ TOÀN BỘ NỘI DUNG, SAU ĐÓ ĐÓNG </a>
-    return '<a class="card" href="' + escapeHtml(url) + '">' +
+    // KHÔNG còn thẻ a.card, thay vào đó là div.card với data-url
+    return '<div class="card" data-url="' + escapeHtml(url) + '">' +
         '<div class="card-thumb-wrap">' +
             '<img class="card-thumb" src="' + escapeHtml(thumbUrl) + '" alt="' + title + '" loading="lazy" onerror="this.style.opacity=\'0.6\'">' +
             '<div class="card-overlay">' +
@@ -434,7 +431,7 @@ function renderCard(item) {
                 '</div>' +
             '</div>' +
         '</div>' +
-    '</a>';
+    '</div>';
 }
 
 function renderTagsBar(allPosts) {
@@ -457,6 +454,28 @@ function renderTagsBar(allPosts) {
     }).join('');
     
     bar.innerHTML = `<span class="bar-label"><i class="fa-solid fa-tags"></i> Tag:</span>${pills}`;
+}
+
+// Xử lý click trên card (điều hướng đến URL)
+function attachCardClickHandlers() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.removeEventListener('click', handleCardClick);
+        card.addEventListener('click', handleCardClick);
+    });
+}
+
+function handleCardClick(event) {
+    // Không xử lý nếu click vào tag (tag đã có link riêng)
+    if (event.target.closest('.card-tag')) {
+        return;
+    }
+    
+    const card = event.currentTarget;
+    const url = card.getAttribute('data-url');
+    if (url && url !== '#') {
+        window.location.href = url;
+    }
 }
 
 (async function () {
@@ -518,6 +537,8 @@ function renderTagsBar(allPosts) {
                 grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
             } else {
                 grid.innerHTML = cardsHtml;
+                // Gắn sự kiện click sau khi render
+                attachCardClickHandlers();
             }
         }
 
