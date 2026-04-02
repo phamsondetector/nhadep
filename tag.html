@@ -118,7 +118,6 @@
             gap: 28px;
         }
 
-        /* CARD - toàn bộ là link */
         .card {
             text-decoration: none;
             color: inherit;
@@ -393,15 +392,18 @@ function formatDate(dateStr) {
     }
 }
 
-// KIỂM TRA KỸ: CHỈ RENDER CARD KHI CÓ ĐẦY ĐỦ DỮ LIỆU
+// KIỂM TRA CỰC KỲ NGHIÊM NGẶT - KHÔNG BAO GIỜ TẠO CARD RỖNG
 function renderCard(item) {
     // Kiểm tra dữ liệu bắt buộc
     if (!item || !item.title || !item.url || item.title.trim() === '') {
-        console.warn('Bỏ qua card rỗng hoặc thiếu dữ liệu:', item);
         return null;
     }
     
     const url = buildArticleUrl(item);
+    if (url === '#' || url === '') {
+        return null;
+    }
+    
     const thumbUrl = buildThumbUrl(item);
     const tags = getTags(item);
     const title = escapeHtml(item.title.trim());
@@ -414,7 +416,7 @@ function renderCard(item) {
         return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
-    // Trả về HTML hoàn chỉnh
+    // Tạo card với đầy đủ nội dung
     return `
     <a class="card" href="${escapeHtml(url)}">
         <div class="card-thumb-wrap">
@@ -465,15 +467,21 @@ function renderTagsBar(allPosts) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // Lọc bài viết hợp lệ - LOẠI BỎ CARD RỖNG
+        // Lọc bài viết hợp lệ - LOẠI BỎ HOÀN TOÀN DỮ LIỆU RỖNG
         const validPosts = posts.filter(p => {
-            return p && p.title && p.url && p.title.trim() !== '';
+            return p && 
+                   p.title && 
+                   p.url && 
+                   p.title.trim() !== '' &&
+                   p.url !== '#' &&
+                   p.url !== '';
         });
         
-        console.log('Tổng số bài viết hợp lệ:', validPosts.length);
+        console.log('Số bài viết hợp lệ:', validPosts.length);
         
         if (validPosts.length === 0) {
-            throw new Error('Không có bài viết hợp lệ');
+            grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào</div></div>`;
+            return;
         }
 
         renderTagsBar(validPosts);
@@ -501,7 +509,15 @@ function renderTagsBar(allPosts) {
                 </div>`;
         } else {
             // Render từng card và loại bỏ card null
-            const cardsHtml = filtered.map(renderCard).filter(card => card !== null).join('');
+            const cardsArray = [];
+            for (let i = 0; i < filtered.length; i++) {
+                const cardHtml = renderCard(filtered[i]);
+                if (cardHtml && cardHtml.trim() !== '') {
+                    cardsArray.push(cardHtml);
+                }
+            }
+            
+            const cardsHtml = cardsArray.join('');
             
             if (!cardsHtml || cardsHtml.trim() === '') {
                 grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
