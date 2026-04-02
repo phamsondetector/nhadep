@@ -1,32 +1,35 @@
 [
   {
-    "id": 1775042238442,
+    "id": "1775042238442",
     "date": "01/04/2026",
     "title": "Biệt Thự Vườn Nhiệt Đới Phong Cách Modern Tropical Colonial",
     "summary": "Ngôi biệt thự này là một ví dụ điển hình cho sự kết hợp tinh tế giữa kiến trúc hiện đại và nét duyên dáng hoài cổ trong không gian nhiệt đới.",
     "url": "./nhadep/Biệt Thự Vườn Nhiệt Đới Phong Cách Modern Tropical Colonial.html",
     "tag": "Hiện đại",
     "kind": "nhadep",
-    "Status": "posted"
+    "Status": "posted",
+    "relatedlink": "./Biệt Thự Vườn Nhiệt Đới Phong Cách Modern Tropical Colonial.html"
   },
   {
-    "id": 1775047463742,
+    "id": "1775047463742",
     "date": "01/04/2026",
     "title": "Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên Nhiệt Đới",
     "summary": "Với ngôn ngữ kiến trúc tối giản nhưng đầy cảm xúc, công trình không chỉ đáp ứng nhu cầu sống mà còn mang đến một trải nghiệm không gian sâu sắc và thư thái.",
     "url": "./nhadep/Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên Nhiệt Đới.html",
     "tag": "Hiện đại",
     "kind": "nhadep",
-    "Status": "posted"
+    "Status": "posted",
+    "relatedlink": "./Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên Nhiệt Đới.html"
   },
   {
-    "id": 1775050104623,
-    "date": "01/04/2026",
+    "id": "1775097567184",
+    "date": "02/04/2026",
     "title": "test",
     "summary": "test",
     "url": "./nhadep/test.html",
     "tag": "Hiện đại",
     "kind": "nhadep",
-    "Status": "posted"
+    "Status": "posted",
+    "relatedlink": "./test.html"
   }
 ]

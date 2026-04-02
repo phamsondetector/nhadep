@@ -47,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">2/4/2026</span></div>
-  <div class="content">test5</div>
+  <div class="content">test 6</div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
@@ -132,19 +132,18 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        // Hàm lấy đường dẫn đến data.json - SỬA: data.json nằm ở thư mục gốc của website
         function getDataJsonPath() {
-            // Lấy đường dẫn hiện tại, ví dụ: /nhadep/bai-viet.html
             var currentPath = window.location.pathname;
-            // Nếu đang ở thư mục con (nhadep/ hoặc blogs/), data.json ở thư mục cha
-            if (currentPath.includes('/nhadep/') || currentPath.includes('/blogs/')) {
-                return '../data.json';
+            var pathParts = currentPath.split('/').filter(function(p) { return p && !p.includes('.html'); });
+            var depth = pathParts.length;
+            var prefix = '';
+            for (var i = 0; i < depth; i++) {
+                prefix += '../';
             }
-            // Nếu đang ở thư mục gốc
-            return './data.json';
+            if (prefix === '') prefix = './';
+            return prefix + 'data.json';
         }
         
-        // Hàm lấy bài viết liên quan từ data.json
         async function loadRelatedPosts() {
             try {
                 var currentSlug = 'test';
@@ -152,8 +151,6 @@ gtag('config', 'G-B51EJTDD2L');
                 var dataJsonPath = getDataJsonPath();
                 
                 console.log('Đang tải data.json từ:', dataJsonPath);
-                console.log('Current slug:', currentSlug);
-                console.log('Current type:', currentType);
                 
                 var response = await fetch(dataJsonPath + '?t=' + Date.now());
                 if (!response.ok) {
@@ -162,31 +159,25 @@ gtag('config', 'G-B51EJTDD2L');
                 
                 var articles = await response.json();
                 console.log('Đã tải', articles.length, 'bài viết');
-                console.log('Articles sample:', articles.slice(0, 2));
                 
-                // Lọc bài đã đăng
                 var postedArticles = articles.filter(function(a) {
                     var status = (a.Status || a.status || '').toLowerCase();
                     return status === 'posted';
                 });
                 
-                console.log('Bài viết đã đăng:', postedArticles.length);
-                
-                // Lọc bỏ bài hiện tại
                 var filtered = postedArticles.filter(function(a) {
-                    if (!a.url) return false;
-                    // Lấy slug từ url trong data.json
-                    var urlSlug = a.url.split('/').pop().replace('.html', '');
-                    try {
-                        urlSlug = decodeURIComponent(urlSlug);
-                    } catch(e) {}
-                    console.log('So sánh:', urlSlug, 'vs', currentSlug);
-                    return urlSlug !== currentSlug;
+                    if (!a.relatedlink && !a.url) return false;
+                    var relatedSlug = a.relatedlink || a.url;
+                    if (relatedSlug) {
+                        var slugPart = relatedSlug.split('/').pop().replace('.html', '');
+                        try {
+                            slugPart = decodeURIComponent(slugPart);
+                        } catch(e) {}
+                        return slugPart !== currentSlug;
+                    }
+                    return false;
                 });
                 
-                console.log('Sau khi lọc bỏ bài hiện tại:', filtered.length);
-                
-                // Ưu tiên bài cùng loại (kind)
                 if (currentType && filtered.length > 0) {
                     var sameKind = filtered.filter(function(a) {
                         var articleKind = a.kind || '';
@@ -194,11 +185,9 @@ gtag('config', 'G-B51EJTDD2L');
                     });
                     if (sameKind.length > 0) {
                         filtered = sameKind;
-                        console.log('Lọc cùng loại, còn lại:', filtered.length);
                     }
                 }
                 
-                // Trộn ngẫu nhiên và lấy tối đa 5 bài
                 for (var i = filtered.length - 1; i > 0; i--) {
                     var j = Math.floor(Math.random() * (i + 1));
                     var temp = filtered[i];
@@ -207,18 +196,7 @@ gtag('config', 'G-B51EJTDD2L');
                 }
                 var relatedArticles = filtered.slice(0, 5);
                 
-                console.log('Bài viết liên quan cuối cùng:', relatedArticles.length);
-                if (relatedArticles.length > 0) {
-                    console.log('URL bài đầu tiên:', relatedArticles[0].url);
-                }
-                
-                // Hiển thị bài viết
                 var grid = document.getElementById('related-posts-grid');
-                if (!grid) {
-                    console.error('Không tìm thấy grid element');
-                    return;
-                }
-                
                 if (relatedArticles.length === 0) {
                     grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">Chưa có bài viết liên quan</div>';
                     return;
@@ -229,22 +207,22 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // SỬA: Dùng trực tiếp url từ data.json, KHÔNG thêm bất kỳ tiền tố nào
-                    var articleUrl = article.url || '#';
+                    // SỬ DỤNG relatedlink THAY VÌ url
+                    var articleUrl = article.relatedlink || article.url || '#';
                     var articleTag = article.tag || 'Bài viết';
                     var articleKind = article.kind || currentType;
                     
-                    console.log('Article URL gốc:', articleUrl);
-                    
-                    // Lấy slug từ url để tạo đường dẫn thumbnail
                     var articleSlug = articleUrl.split('/').pop().replace('.html', '');
                     try {
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
-                    // SỬA: Đường dẫn thumbnail: ../thumbnail/{loai}/{slug}.webp
-                    var thumbnailPath = '../thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
-                    console.log('Thumbnail path:', thumbnailPath);
+                    var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
+                    var prefix = '';
+                    for (var d = 0; d < depth; d++) {
+                        prefix += '../';
+                    }
+                    var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
                     var shortSummary = articleSummary.substring(0, 80);
                     
                     html += `
@@ -283,7 +261,6 @@ gtag('config', 'G-B51EJTDD2L');
             });
         }
         
-        // Tải bài viết liên quan khi trang load
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', loadRelatedPosts);
         } else {
