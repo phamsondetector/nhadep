@@ -29,7 +29,7 @@
             min-height: 100vh;
         }
 
-        /* ── NAV ── */
+        /* NAV & HERO & TAGS BAR giữ nguyên */
         nav {
             background: rgba(10,10,10,.95);
             border-bottom: 1px solid var(--border);
@@ -47,38 +47,13 @@
         nav a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
         nav a:hover { color: var(--gold); }
 
-        /* ── HERO ── */
-        .hero {
-            padding: 56px 32px 36px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .hero-eyebrow {
-            font-size: .72rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--gold);
-            margin-bottom: 12px;
-        }
-        .hero h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.4rem;
-            font-weight: 900;
-            line-height: 1.2;
-        }
+        .hero { padding: 56px 32px 36px; max-width: 1200px; margin: 0 auto; }
+        .hero-eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: 12px; }
+        .hero h2 { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 900; line-height: 1.2; }
         .hero h2 .tag-name { color: var(--gold); }
-        .hero-count {
-            margin-top: 12px;
-            color: var(--muted);
-            font-size: .88rem;
-        }
-        .hero-divider {
-            margin-top: 32px;
-            border: none;
-            border-top: 1px solid var(--border);
-        }
+        .hero-count { margin-top: 12px; color: var(--muted); font-size: .88rem; }
+        .hero-divider { margin-top: 32px; border: none; border-top: 1px solid var(--border); }
 
-        /* ── ALL TAGS BAR ── */
         .all-tags-bar {
             max-width: 1200px;
             margin: 0 auto;
@@ -105,12 +80,11 @@
             color: var(--muted);
             border: 1px solid var(--border);
             transition: all .2s;
-            cursor: pointer;
         }
         .tag-pill:hover { background: rgba(198,164,59,.15); color: var(--gold); border-color: var(--gold); }
         .tag-pill.active { background: rgba(198,164,59,.25); color: var(--gold2); border-color: var(--gold); font-weight: 600; }
 
-        /* ── GRID ── */
+        /* GRID */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -122,7 +96,7 @@
             gap: 24px;
         }
 
-        /* ── CARD ── */
+        /* CARD – ĐÃ SỬA HOÀN TOÀN */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -131,7 +105,7 @@
             text-decoration: none;
             color: var(--text);
             display: flex;
-            flex-direction: column;           /* ← ĐÃ SỬA: dọc thay vì ngang */
+            flex-direction: column;           /* Luôn dọc */
             transition: transform .25s, border-color .25s, box-shadow .25s;
         }
         .card:hover {
@@ -141,12 +115,12 @@
         }
 
         .card-thumb-wrap {
+            width: 100%;
             flex-shrink: 0;
-            width: 100%;                      /* ← ĐÃ SỬA */
         }
         .card-thumb {
-            width: 100%;                      /* ← ĐÃ SỬA */
-            height: 220px;                    /* ← Chiều cao thumbnail desktop */
+            width: 100%;
+            height: 220px;
             object-fit: cover;
             display: block;
         }
@@ -166,22 +140,14 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            min-width: 0;
         }
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
         .card-tag {
             font-size: .68rem;
             padding: 3px 10px;
             border-radius: 20px;
             background: rgba(198,164,59,.15);
             color: var(--gold2);
-            text-decoration: none;
-            transition: background .2s;
         }
         .card-tag:hover { background: rgba(198,164,59,.35); }
         .card-tag.active-tag {
@@ -211,30 +177,9 @@
             border-top: 1px solid var(--border);
         }
         .card-date { font-size: .75rem; color: var(--dim); }
-        .card-arrow {
-            font-size: .75rem;
-            color: var(--gold);
-        }
+        .card-arrow { font-size: .75rem; color: var(--gold); }
 
-        /* ── EMPTY & LOADING ── */
-        .empty, .loading {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--muted);
-        }
-        .empty i, .loading .spinner { margin-bottom: 20px; display: block; }
-        .spinner {
-            width: 36px; height: 36px;
-            border: 3px solid var(--border);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── RESPONSIVE ── */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             nav { padding: 12px 16px; }
             .hero { padding: 36px 16px 24px; }
@@ -243,21 +188,16 @@
             .container { padding: 24px 16px 60px; }
             .grid { gap: 16px; }
 
-            .card-thumb, .card-thumb-placeholder {
-                height: 180px;               /* ← Chiều cao mobile */
-            }
+            .card-thumb,
+            .card-thumb-placeholder { height: 180px; }
         }
     </style>
 </head>
 <body>
-    <!-- Phần còn lại giữ nguyên (nav, hero, all-tags-bar, container, script) -->
-    <!-- Chỉ thay phần <style> như trên là đủ -->
 
 <nav>
     <h1>
-        <img src="./logo.webp" alt="Logo"
-             style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;"
-             onerror="this.style.display='none'">
+        <img src="./logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'">
         Nhà<span>Đẹp</span>
     </h1>
     <a href="./index.html">← Về trang chủ</a>
@@ -281,8 +221,7 @@
 </div>
 
 <script>
-// Script giữ nguyên 100% như cũ
-const params   = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
 
 document.title = activeTag ? `Tag: ${activeTag} — NhàĐẹp.vn` : 'Tags — NhàĐẹp.vn';
@@ -293,9 +232,7 @@ function escapeHtml(str) {
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-function buildArticleUrl(item) {
-    return item.url || '#';
-}
+function buildArticleUrl(item) { return item.url || '#'; }
 
 function buildThumbUrl(item) {
     const kind = item.kind || 'nhadep';
@@ -325,8 +262,7 @@ function renderCard(item) {
     return `
     <a class="card" href="${escapeHtml(url)}">
         <div class="card-thumb-wrap">
-            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
-                 loading="lazy"
+            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}" loading="lazy"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="card-thumb-placeholder" style="display:none">
                 <i class="fa-regular fa-image"></i>
@@ -347,7 +283,6 @@ function renderCard(item) {
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
     allPosts.forEach(p => getTags(p).forEach(t => tagSet.add(t)));
-
     const bar = document.getElementById('all-tags-bar');
     const pills = [...tagSet].sort().map(t => {
         const isActive = t === activeTag ? ' active' : '';
@@ -359,7 +294,7 @@ function renderTagsBar(allPosts) {
 (async function () {
     const grid = document.getElementById('grid');
     try {
-        const res   = await fetch('./data.json');
+        const res = await fetch('./data.json');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
 
@@ -372,24 +307,20 @@ function renderTagsBar(allPosts) {
         document.getElementById('hero-count').textContent =
             filtered.length > 0 ? `${filtered.length} bài viết` : 'Chưa có bài viết nào';
 
-        if (filtered.length === 0) {
-            grid.innerHTML = `
-                <div class="empty">
-                    <i class="fa-regular fa-folder-open"></i>
-                    <div>Không tìm thấy bài viết nào với tag <strong>"${escapeHtml(activeTag)}"</strong></div>
-                </div>`;
-        } else {
-            grid.innerHTML = filtered.map(renderCard).join('');
-        }
+        grid.innerHTML = filtered.length === 0
+            ? `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không tìm thấy bài viết nào với tag <strong>"${escapeHtml(activeTag)}"</strong></div></div>`
+            : filtered.map(renderCard).join('');
     } catch (err) {
-        grid.innerHTML = `
-            <div class="empty">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <div>Không thể tải dữ liệu.<br><small style="color:var(--dim)">${escapeHtml(err.message)}</small></div>
-            </div>`;
-        console.error('tag.html error:', err);
+        grid.innerHTML = `<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><div>Không thể tải dữ liệu.<br><small style="color:var(--dim)">${escapeHtml(err.message)}</small></div></div>`;
+        console.error(err);
     }
 })();
 </script>
+
+<style>
+.empty, .loading { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--muted); }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </body>
 </html>
