@@ -122,7 +122,7 @@
             gap: 28px;
         }
 
-        /* ── CARD - Layout ngang, thumbnail và nội dung trên 1 card ── */
+        /* ── CARD - Overlay style (tiêu đề + summary chồng lên thumbnail) ── */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -130,9 +130,9 @@
             overflow: hidden;
             text-decoration: none;
             color: var(--text);
-            display: flex;
-            flex-direction: column;
+            display: block;
             transition: transform .25s, border-color .25s, box-shadow .25s;
+            position: relative;
         }
         .card:hover {
             transform: translateY(-4px);
@@ -140,22 +140,22 @@
             box-shadow: 0 12px 40px rgba(0,0,0,.5);
         }
         
-        /* Thumbnail - chiếm toàn bộ chiều rộng card */
+        /* Thumbnail container - relative để làm nền cho overlay */
         .card-thumb-wrap {
-            width: 100%;
             position: relative;
-            overflow: hidden;
+            width: 100%;
             aspect-ratio: 16 / 9;
+            overflow: hidden;
         }
         .card-thumb {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform .3s ease;
+            transition: transform .5s ease;
         }
         .card:hover .card-thumb {
-            transform: scale(1.03);
+            transform: scale(1.05);
         }
         .card-thumb-placeholder {
             width: 100%;
@@ -168,73 +168,119 @@
             font-size: 2rem;
         }
         
-        /* Nội dung card (tiêu đề, tags, summary) nằm bên dưới thumbnail */
+        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, 
+                rgba(0,0,0,0.95) 0%,
+                rgba(0,0,0,0.85) 20%,
+                rgba(0,0,0,0.5) 60%,
+                transparent 100%);
+            padding: 20px 20px 18px;
+            transition: all .3s ease;
+        }
+        
+        /* Nội dung bên trong overlay */
         .card-body {
-            padding: 20px 22px 22px;
             display: flex;
             flex-direction: column;
-            flex: 1;
         }
+        
         .card-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
         .card-tag {
-            font-size: .7rem;
-            padding: 4px 12px;
+            font-size: .65rem;
+            padding: 3px 10px;
             border-radius: 20px;
-            background: rgba(198,164,59,.12);
+            background: rgba(198,164,59,.2);
             color: var(--gold2);
             text-decoration: none;
             transition: all .2s;
             font-weight: 500;
             letter-spacing: 0.3px;
+            backdrop-filter: blur(4px);
         }
-        .card-tag:hover { background: rgba(198,164,59,.3); color: #fff; }
+        .card-tag:hover { background: rgba(198,164,59,.4); color: #fff; }
         .card-tag.active-tag {
-            background: rgba(198,164,59,.4);
+            background: rgba(198,164,59,.5);
             color: #fff;
             font-weight: 600;
         }
+        
         .card-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 12px;
+            line-height: 1.35;
+            margin-bottom: 8px;
             color: var(--text);
-        }
-        .card-summary {
-            font-size: .85rem;
-            color: var(--muted);
-            line-height: 1.6;
-            margin-bottom: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+        
+        .card-summary {
+            font-size: .8rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+        }
+        
         .card-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: auto;
-            padding-top: 14px;
-            border-top: 1px solid var(--border);
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.15);
         }
-        .card-date { font-size: .75rem; color: var(--dim); }
+        .card-date { 
+            font-size: .7rem; 
+            color: rgba(255,255,255,0.6);
+        }
         .card-arrow {
-            font-size: .8rem;
+            font-size: .75rem;
             color: var(--gold);
             transition: transform .2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .card:hover .card-arrow i {
             transform: translateX(4px);
             transition: transform .2s;
         }
-        .card-arrow i { transition: transform .2s; }
+        .card-arrow i { 
+            transition: transform .2s;
+            font-size: .7rem;
+        }
+
+        /* Hiệu ứng khi hover - overlay sáng hơn một chút */
+        .card:hover .card-overlay {
+            background: linear-gradient(to top, 
+                rgba(0,0,0,0.98) 0%,
+                rgba(0,0,0,0.88) 20%,
+                rgba(0,0,0,0.55) 60%,
+                rgba(0,0,0,0.1) 100%);
+        }
+        
+        .card:hover .card-title {
+            color: var(--gold2);
+        }
 
         /* ── EMPTY ── */
         .empty {
@@ -273,15 +319,24 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            .card-body {
-                padding: 16px 18px 18px;
+            .card-overlay {
+                padding: 16px 16px 14px;
             }
             .card-title {
-                font-size: 1.1rem;
+                font-size: 1rem;
+                -webkit-line-clamp: 2;
             }
             .card-summary {
-                font-size: .8rem;
+                font-size: .75rem;
                 -webkit-line-clamp: 2;
+            }
+            .card-tags {
+                gap: 5px;
+                margin-bottom: 6px;
+            }
+            .card-tag {
+                font-size: .6rem;
+                padding: 2px 8px;
             }
         }
     </style>
@@ -358,17 +413,16 @@ function formatDate(dateStr) {
     }
 }
 
-// ── Render card (thumbnail ở trên, tiêu đề và summary ở dưới trong cùng 1 card) ──
+// ── Render card (tiêu đề + summary chồng lên thumbnail) ──
 function renderCard(item) {
     const url      = buildArticleUrl(item);
     const thumbUrl = buildThumbUrl(item);
     const tags     = getTags(item);
     const title    = escapeHtml(item.title || '');
-    const summary  = escapeHtml((item.summary || '').substring(0, 120));
+    const summary  = escapeHtml((item.summary || '').substring(0, 100));
     const date     = formatDate(item.date || '');
     
-    // Thêm dấu ... nếu summary quá dài
-    const displaySummary = summary + (item.summary && item.summary.length > 120 ? '…' : '');
+    const displaySummary = summary + (item.summary && item.summary.length > 100 ? '…' : '');
 
     const tagsHtml = tags.map(t => {
         const isActive = t === activeTag ? ' active-tag' : '';
@@ -384,14 +438,17 @@ function renderCard(item) {
             <div class="card-thumb-placeholder" style="display:none">
                 <i class="fa-regular fa-image"></i>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="card-tags">${tagsHtml}</div>
-            <div class="card-title">${title}</div>
-            ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
-            <div class="card-footer">
-                ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 5px;"></i>${date}</span>` : '<span></span>'}
-                <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+            <!-- Overlay chứa tiêu đề và summary chồng lên ảnh -->
+            <div class="card-overlay">
+                <div class="card-body">
+                    <div class="card-tags">${tagsHtml}</div>
+                    <div class="card-title">${title}</div>
+                    ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
+                    <div class="card-footer">
+                        ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
+                        <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
             </div>
         </div>
     </a>`;
