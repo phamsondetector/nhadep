@@ -344,18 +344,27 @@
         }
         .base-card:hover .card-img img { transform: scale(1.04); }
         
-        .card-cat {
+        /* Styles cho nhiều tag trên card */
+        .card-tags-group {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(0,0,0,.6);
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            max-width: 80%;
+        }
+        .card-tag-item {
+            background: rgba(0,0,0,.7);
             backdrop-filter: blur(8px);
             color: var(--gold);
             padding: 4px 12px;
             border-radius: 30px;
             font-size: .65rem;
-            border: 1px solid rgba(198,164,59,.3);
-            z-index: 2;
+            border: 1px solid rgba(198,164,59,.4);
+            white-space: nowrap;
+            font-weight: 500;
         }
         
         .card-body {
@@ -560,6 +569,13 @@
             .hero {
                 padding: 60px 20px 40px;
             }
+            .card-tags-group {
+                max-width: 90%;
+            }
+            .card-tag-item {
+                font-size: .6rem;
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
@@ -708,13 +724,50 @@ async function loadArticlesFromJSON() {
 function articleMatchesFilter(article, filterValue) {
     if (filterValue === 'all') return true;
     
-    // tag bây giờ có thể chứa nhiều tag cách nhau bằng dấu phẩy
+    // Lấy tags từ article (trường tag có thể chứa nhiều tag cách nhau bằng dấu phẩy)
     let articleTags = [];
     if (article.tag) {
         articleTags = article.tag.split(',').map(t => t.trim());
     }
     
     return articleTags.includes(filterValue);
+}
+
+// Hàm tạo HTML hiển thị nhiều tag trên card (tối đa 2 tag, còn lại hiển thị +n)
+function getCardTagsHtml(article) {
+    if (!article.tag) return '<div class="card-tags-group"><span class="card-tag-item">Bài viết</span></div>';
+    
+    const tags = article.tag.split(',').map(t => t.trim()).filter(t => t);
+    if (tags.length === 0) return '<div class="card-tags-group"><span class="card-tag-item">Bài viết</span></div>';
+    
+    const maxShow = 2;
+    let html = '<div class="card-tags-group">';
+    
+    // Hiển thị tối đa 2 tag đầu
+    tags.slice(0, maxShow).forEach(tag => {
+        html += `<span class="card-tag-item">${escapeHtml(tag)}</span>`;
+    });
+    
+    // Nếu còn tag, hiển thị +n
+    if (tags.length > maxShow) {
+        html += `<span class="card-tag-item">+${tags.length - maxShow}</span>`;
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+// Hàm tạo HTML hiển thị tag cho featured (hiển thị tag đầu + số lượng)
+function getFeaturedTagsHtml(article) {
+    if (!article.tag) return '<span class="featured-cat">⭐ Nhà đẹp</span>';
+    
+    const tags = article.tag.split(',').map(t => t.trim()).filter(t => t);
+    if (tags.length === 0) return '<span class="featured-cat">⭐ Nhà đẹp</span>';
+    if (tags.length === 1) {
+        return `<span class="featured-cat">⭐ ${escapeHtml(tags[0])}</span>`;
+    }
+    // Hiển thị tag đầu + số lượng tag còn lại
+    return `<span class="featured-cat">⭐ ${escapeHtml(tags[0])} +${tags.length - 1}</span>`;
 }
 
 function slugify(str) {
@@ -758,14 +811,6 @@ function getThumbnailHtml(fileName, type, altText) {
                  style="width:100%; height:100%; object-fit:cover;">`;
 }
 
-// Lấy tag hiển thị (lấy tag đầu tiên nếu có nhiều tag)
-function getDisplayTag(article) {
-    if (!article.tag) return 'Mẫu nhà';
-    // Lấy tag đầu tiên để hiển thị trên card
-    const firstTag = article.tag.split(',')[0].trim();
-    return firstTag;
-}
-
 function renderFeatured(articles) {
     const container = document.getElementById('nhadep-featured');
     const filtered = currentFilter === 'all' ? articles : articles.filter(a => articleMatchesFilter(a, currentFilter));
@@ -783,13 +828,13 @@ function renderFeatured(articles) {
     const desc = featured.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
     const articleUrl = featured.url || '#';
     const displayDate = featured.date || 'Cập nhật mới';
-    const displayTag = getDisplayTag(featured);
+    const tagsHtml = getFeaturedTagsHtml(featured);
     
     container.innerHTML = `
         <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
             <div class="featured-img">
                 ${getThumbnailHtml(fileName, 'nhadep', featured.title)}
-                <span class="featured-cat">⭐ ${escapeHtml(displayTag)}</span>
+                ${tagsHtml}
             </div>
             <div class="featured-body">
                 <h3 class="featured-title">${escapeHtml(featured.title)}</h3>
@@ -821,12 +866,12 @@ function renderMauKhac(articles) {
         const desc = article.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
-        const displayTag = getDisplayTag(article);
+        const tagsHtml = getCardTagsHtml(article);
         return `
             <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="card-img">
                     ${getThumbnailHtml(fileName, 'nhadep', article.title)}
-                    <span class="card-cat">${escapeHtml(displayTag)}</span>
+                    ${tagsHtml}
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${escapeHtml(article.title)}</h3>
@@ -856,7 +901,12 @@ function renderBlogs(articles) {
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
         const summary = article.summary || '';
-        const displayTag = getDisplayTag(article);
+        // Blogs cũng hiển thị tags (lấy tag đầu tiên để hiển thị trong blog-tag)
+        let firstTag = 'Bài viết';
+        if (article.tag) {
+            const tags = article.tag.split(',').map(t => t.trim());
+            if (tags.length > 0) firstTag = tags[0];
+        }
         return `
             <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="card-img">
@@ -865,7 +915,7 @@ function renderBlogs(articles) {
                 <div class="card-body">
                     <div class="blog-meta">
                         <span class="blog-date">${displayDate}</span>
-                        <span class="blog-tag">${escapeHtml(displayTag)}</span>
+                        <span class="blog-tag">${escapeHtml(firstTag)}</span>
                     </div>
                     <h3 class="card-title">${escapeHtml(article.title)}</h3>
                     <p class="card-desc">${escapeHtml(summary)}</p>
