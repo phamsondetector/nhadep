@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Nhà Đẹp — Kiến tạo không gian sống</title>
+    
+    <!-- Preconnect và DNS-prefetch cho các domain quan trọng -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Google tag (gtag.js) - Async loading -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B51EJTDD2L"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-B51EJTDD2L');
+    </script>
+    
+    <!-- Font Awesome với media attribute để không block render -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></noscript>
+    
+    <!-- Google Fonts với font-display swap để tránh FOIT -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <style>
+        /* Critical CSS - Inline styles cho phần đầu tiên hiển thị */
+        :root {
+            --bg: #0A0A0A;
+            --bg2: #111111;
+            --card: rgba(22,20,14,0.72);
+            --mid: #222222;
+            --bord: rgba(255,255,255,.09);
+            --gold: #C6A43B;
+            --gold2: #D4AF37;
+            --text: #F5F5F5;
+            --muted: #9C9C9C;
+            --dim: #6B6B6B;
+            --font-sans: 'Open Sans', system-ui, sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-sans);
+            background: #0d0b07;
+            color: var(--text);
+            font-weight: 400;
+            line-height: 1.5;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse 80% 55% at 15% 8%, rgba(198,164,59,0.14) 0%, transparent 55%),
+                radial-gradient(ellipse 65% 50% at 82% 25%, rgba(140,90,15,0.10) 0%, transparent 50%),
+                radial-gradient(ellipse 90% 60% at 50% 90%, rgba(80,55,10,0.11) 0%, transparent 60%),
+                linear-gradient(170deg, #100d04 0%, #0a0a0a 45%, #06060c 100%);
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                radial-gradient(circle at 12% 55%, rgba(198,164,59,0.06) 0%, transparent 38%),
+                radial-gradient(circle at 88% 65%, rgba(198,164,59,0.04) 0%, transparent 32%);
+            pointer-events: none;
+        }
+        h1, h2, h3, .logo, .hero-title, .sec-title, .featured-title {
+            font-family: var(--font-serif);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+        
+        nav {
+            background: rgba(12,10,5,0.82);
+            border-bottom: 1px solid rgba(198,164,59,0.12);
+            backdrop-filter: blur(24px) saturate(150%);
+            -webkit-backdrop-filter: blur(24px) saturate(150%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-in {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 1.4rem;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo span { color: var(--gold); }
+        .nav-links { 
+            display: flex; 
+            gap: 6px; 
+            align-items: center;
+        }
+        .nl {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: .85rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: all .25s;
+        }
+        .nl:hover { color: var(--gold); background: rgba(198,164,59,.1); }
+        .btn-pro {
+            background: transparent;
+            border: 1px solid rgba(198,164,59,.4);
+            color: var(--gold);
+            padding: 8px 22px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: .8rem;
+            transition: all .25s;
+        }
+        .btn-pro:hover { background: rgba(198,164,59,.1); }
+        
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px 70px;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+            background: linear-gradient(135deg, #fff, var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .hero-sub {
+            color: var(--muted);
+            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            line-height: 1.45;
+            margin: 0 auto;
+            max-width: 720px;
+            padding: 0 10px;
+        }
+        
+        .sec {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }
+        .sec-title {
+            font-size: 1.6rem;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sec-title-center {
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            background: linear-gradient(120deg, #fff 30%, var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .sec-title-center i { color: var(--gold); -webkit-text-fill-color: var(--gold); }
+        
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+            justify-content: center;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--bord);
+            border-radius: 40px;
+            padding: 8px 26px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: .8rem;
+            transition: all .25s;
+        }
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            color: #0A0A0A;
+            border-color: var(--gold);
+        }
+        
+        .featured-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .featured-card {
+            background: rgba(22,20,14,0.68);
+            backdrop-filter: blur(18px) saturate(130%);
+            -webkit-backdrop-filter: blur(18px) saturate(130%);
+            border-radius: 32px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+            border: 1px solid rgba(198,164,59,0.1);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .featured-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(198,164,59,.45);
+            box-shadow: 0 20px 56px rgba(198,164,59,0.10), 0 6px 20px rgba(0,0,0,0.45);
+        }
+        .featured-img {
+            height: 550px;
+            overflow: hidden;
+            position: relative;
+            background: var(--mid);
+        }
+        .featured-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .featured-card:hover .featured-img img { transform: scale(1.05); }
+        .featured-cat {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,.7);
+            backdrop-filter: blur(8px);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(198,164,59,.4);
+            z-index: 2;
+        }
+        .featured-body { padding: 40px; }
+        .featured-title { font-size: 2rem; margin-bottom: 16px; }
+        .featured-desc {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .featured-meta {
+            display: flex;
+            gap: 24px;
+            color: var(--dim);
+            font-size: 0.9rem;
+        }
+        .featured-meta i { margin-right: 6px; }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .base-card {
+            background: rgba(20,18,12,0.65);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid rgba(198,164,59,0.09);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+        }
+        .base-card:hover {
+            border-color: rgba(198,164,59,.42);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(198,164,59,0.07), 0 4px 14px rgba(0,0,0,0.35);
+        }
+        
+        .card-img {
+            height: 200px;
+            overflow: hidden;
+            background: var(--mid);
+            position: relative;
+        }
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .base-card:hover .card-img img { transform: scale(1.04); }
+        
+        .card-cat {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,.6);
+            backdrop-filter: blur(8px);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: .65rem;
+            border: 1px solid rgba(198,164,59,.3);
+            z-index: 2;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            line-height: 1.4;
+        }
+        .card-desc {
+            font-size: 0.75rem;
+            color: var(--muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 0.65rem;
+            color: var(--dim);
+        }
+        .card-meta i { margin-right: 4px; }
+        
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .blog-date {
+            font-size: .65rem;
+            color: var(--dim);
+        }
+        .blog-tag {
+            background: rgba(198,164,59,.12);
+            color: var(--gold);
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: .65rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 70px;
+            color: var(--dim);
+            grid-column: 1/-1;
+        }
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 18px;
+            display: block;
+            color: var(--gold);
+        }
+        
+        footer {
+            background: rgba(10,8,4,0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(198,164,59,0.12);
+            padding: 60px 40px;
+            text-align: center;
+        }
+        footer p {
+            color: var(--dim);
+            font-size: .75rem;
+        }
+        footer strong { color: var(--gold); }
+        
+        #about {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px 80px;
+        }
+        .about-content {
+            background: rgba(22,20,14,0.68);
+            backdrop-filter: blur(18px) saturate(130%);
+            -webkit-backdrop-filter: blur(18px) saturate(130%);
+            border-radius: 32px;
+            border: 1px solid rgba(198,164,59,0.1);
+            padding: 50px;
+            text-align: center;
+        }
+        .about-content h2 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: var(--gold);
+        }
+        .about-content p {
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .about-content i {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--mid) 25%, rgba(198,164,59,0.1) 50%, var(--mid) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 12px;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-card {
+            height: 320px;
+            border-radius: 20px;
+        }
+        
+        @media (max-width: 1024px) { 
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) { 
+            .nav-in {
+                padding: 0 20px;
+                height: 64px;
+            }
+            .hamburger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(12,10,5,0.98);
+                backdrop-filter: blur(24px);
+                flex-direction: column;
+                padding: 20px 20px 30px;
+                gap: 8px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+                z-index: 99;
+                border-top: 1px solid rgba(198,164,59,0.15);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nl {
+                font-size: 0.95rem;
+                padding: 12px 20px;
+                text-align: center;
+                width: 100%;
+            }
+            .btn-pro {
+                font-size: 0.9rem;
+                padding: 12px 24px;
+                width: 100%;
+                margin-top: 8px;
+            }
+            .hero {
+                padding: 70px 20px 50px;
+            }
+            .hero-title {
+                font-size: clamp(2.2rem, 7vw, 3.8rem);
+            }
+            .hero-sub {
+                font-size: clamp(0.85rem, 3vw, 0.95rem);
+                max-width: 90%;
+            }
+            .card-grid { 
+                grid-template-columns: 1fr; 
+                max-width: 500px; 
+                margin: 0 auto; 
+            }
+            .featured-img { height: 350px; }
+            .featured-body { padding: 24px; }
+            .featured-title { font-size: 1.5rem; }
+            .featured-grid { padding: 0 20px; }
+            .card-grid { padding: 0 20px; }
+            .sec { padding: 0 20px 60px; }
+            .about-content { padding: 30px 20px; }
+            .about-content h2 { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-in {
+                height: 60px;
+            }
+            .logo {
+                font-size: 1.2rem;
+            }
+            .hero {
+                padding: 60px 20px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-in">
+        <a href="#" class="logo">
+            <img src="logo.png" alt="Logo" style="height:38px;width:38px;object-fit:cover;border-radius:8px;" loading="eager">
+            Nhà <span>ĐẸP</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="#nhadep" class="nl">Nhà đẹp</a>
+            <a href="#maukhac" class="nl">Mẫu nhà khác</a>
+            <a href="#blogs" class="nl">Blogs</a>
+            <a href="#about" class="nl">Giới thiệu</a>
+            <button class="btn-pro" onclick="window.location.href='mailto:phamsondetector@gmail.com'">📞 Liên hệ</button>
+        </div>
+
+        <button class="hamburger" aria-label="Mở menu" id="hamburger-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1 class="hero-title">Kiến tạo không gian sống</h1>
+    <p class="hero-sub">Khám phá những mẫu nhà đẹp, thiết kế hiện đại, phong cách tinh tế dành riêng cho bạn</p>
+</div>
+
+<section id="nhadep" style="padding: 0 0 80px; width: 100%;">
+    <div style="text-align:center; padding: 0 40px;">
+        <div class="sec-title sec-title-center"><img src="featured.png" alt="" style="height:1em;width:1em;object-fit:contain;vertical-align:middle;" loading="lazy"> Nhà đẹp của tuần</div>
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all" data-section="nhadep">Tất cả</button>
+            <button class="filter-btn" data-filter="Hiện đại" data-section="nhadep">Hiện đại</button>
+            <button class="filter-btn" data-filter="Tân cổ điển" data-section="nhadep">Tân cổ điển</button>
+            <button class="filter-btn" data-filter="Biệt thự" data-section="nhadep">Biệt thự</button>
+            <button class="filter-btn" data-filter="Nhà phố" data-section="nhadep">Nhà phố</button>
+        </div>
+    </div>
+    <div class="featured-grid" id="nhadep-featured">
+        <div class="skeleton skeleton-card" style="width:100%; max-width:1000px; height:650px;"></div>
+    </div>
+</section>
+
+<section id="maukhac" class="sec">
+    <div class="sec-title"><i class="fa-regular fa-building"></i> Các mẫu nhà khác</div>
+    <div class="card-grid" id="maukhac-grid">
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+    </div>
+</section>
+
+<section id="blogs" class="sec">
+    <div class="sec-title"><i class="fa-regular fa-pen-to-square"></i> Blogs</div>
+    <div class="card-grid" id="blogs-grid">
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+    </div>
+</section>
+
+<section id="about">
+    <div class="about-content">
+        <i class="fa-regular fa-building"></i>
+        <h2>Về Nhà Đẹp</h2>
+        <p>Nhà Đẹp là nơi chia sẻ những ý tưởng thiết kế không gian sống tinh tế, hiện đại và đẳng cấp.</p>
+        <p>Chúng tôi tin rằng ngôi nhà không chỉ là nơi trú ngụ mà còn là nơi nuôi dưỡng tâm hồn và kết nối yêu thương.</p>
+    </div>
+</section>
+
+<footer>
+    <p><img src="logo.png" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:8px;" loading="lazy"> <strong>Nhà Đẹp</strong> — Kiến tạo không gian sống</p>
+    <p style="margin-top: 12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color: var(--gold);">phamsondetector@gmail.com</a></p>
+</footer>
+
+<script>
+// ==================== OPTIMIZED CODE ====================
+// Debounce utility
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Lazy load images with Intersection Observer
+function initLazyLoading() {
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
+    } else {
+        // Fallback
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
+}
+
+const DATA_JSON_PATH = './data.json';
+let allArticles = [];
+let currentFilter = 'all';
+
+async function loadArticlesFromJSON() {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch(DATA_JSON_PATH + '?t=' + Date.now(), { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+            console.error(`Không thể tải file JSON: ${response.status}`);
+            return null;
+        }
+        const articles = await response.json();
+        console.log(`✅ Đã tải ${articles.length} bài viết từ JSON`);
+        return articles;
+    } catch (error) {
+        console.error('Lỗi khi tải JSON:', error);
+        return null;
+    }
+}
+
+function slugify(str) {
+    if (!str) return 'bai-viet';
+    return str.toLowerCase()
+        .replace(/[àáảãạăắặẳẵằâấậẩẫ]/g, 'a')
+        .replace(/[èéẹẻẽêếềệểễ]/g, 'e')
+        .replace(/[ìíịỉĩ]/g, 'i')
+        .replace(/[òóọỏõôốồộổỗơớờợởỡ]/g, 'o')
+        .replace(/[ùúụủũưứừựửữ]/g, 'u')
+        .replace(/[ỳýỵỷỹ]/g, 'y')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim().replace(/\s+/g, '-').slice(0, 60);
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function getFileNameFromUrl(url) {
+    if (!url || url.trim() === '') return null;
+    const match = url.match(/\/([^\/]+)\.html$/);
+    if (match) return match[1];
+    return null;
+}
+
+function getThumbnailHtml(fileName, type, altText) {
+    const basePath = `thumbnail/${type}/${fileName}`;
+    return `<img data-src="${basePath}.webp" 
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+                 alt="${escapeHtml(altText)}" 
+                 loading="lazy"
+                 onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${basePath}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();"
+                 style="width:100%; height:100%; object-fit:cover;">`;
+}
+
+function renderFeatured(articles) {
+    const container = document.getElementById('nhadep-featured');
+    const filtered = currentFilter === 'all' ? articles : articles.filter(a => a.tag === currentFilter);
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <i class="fa-regular fa-images"></i>
+            <p>Chưa có bài viết nào trong danh mục "${currentFilter}".</p>
+        </div>`;
+        return;
+    }
+    
+    const featured = filtered[0];
+    const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title);
+    const desc = featured.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
+    const articleUrl = featured.url || '#';
+    const displayDate = featured.date || 'Cập nhật mới';
+    
+    container.innerHTML = `
+        <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
+            <div class="featured-img">
+                ${getThumbnailHtml(fileName, 'nhadep', featured.title)}
+                <span class="featured-cat">⭐ ${featured.tag || 'Nhà đẹp'}</span>
+            </div>
+            <div class="featured-body">
+                <h3 class="featured-title">${escapeHtml(featured.title)}</h3>
+                <p class="featured-desc">${escapeHtml(desc)}</p>
+                <div class="featured-meta">
+                    <span><i class="fa-regular fa-calendar"></i> ${displayDate}</span>
+                    <span><i class="fa-regular fa-eye"></i> Bài viết nổi bật</span>
+                </div>
+            </div>
+        </div>`;
+    
+    initLazyLoading();
+}
+
+function renderMauKhac(articles) {
+    const container = document.getElementById('maukhac-grid');
+    const otherArticles = articles.slice(1);
+    
+    if (otherArticles.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <i class="fa-regular fa-building"></i>
+            <p>Chưa có bài viết nào khác.</p>
+        </div>`;
+        return;
+    }
+    
+    container.innerHTML = otherArticles.slice(0, 6).map(article => {
+        const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
+        const desc = article.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
+        const articleUrl = article.url || '#';
+        const displayDate = article.date || '';
+        return `
+            <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+                <div class="card-img">
+                    ${getThumbnailHtml(fileName, 'nhadep', article.title)}
+                    <span class="card-cat">${escapeHtml(article.tag || 'Mẫu nhà')}</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">${escapeHtml(article.title)}</h3>
+                    <p class="card-desc">${escapeHtml(desc)}</p>
+                    <div class="card-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${displayDate}</span>
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+    
+    initLazyLoading();
+}
+
+function renderBlogs(articles) {
+    const container = document.getElementById('blogs-grid');
+    if (articles.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <p>Chưa có bài viết nào.</p>
+        </div>`;
+        return;
+    }
+    
+    container.innerHTML = articles.slice(0, 6).map(article => {
+        const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
+        const articleUrl = article.url || '#';
+        const displayDate = article.date || '';
+        const summary = article.summary || '';
+        return `
+            <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+                <div class="card-img">
+                    ${getThumbnailHtml(fileName, 'blogs', article.title)}
+                </div>
+                <div class="card-body">
+                    <div class="blog-meta">
+                        <span class="blog-date">${displayDate}</span>
+                        <span class="blog-tag">${escapeHtml(article.tag || 'Bài viết')}</span>
+                    </div>
+                    <h3 class="card-title">${escapeHtml(article.title)}</h3>
+                    <p class="card-desc">${escapeHtml(summary)}</p>
+                </div>
+            </div>`;
+    }).join('');
+    
+    initLazyLoading();
+}
+
+// Optimized filter with debounce
+function setupFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn[data-section="nhadep"]');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', debounce(() => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            
+            const nhadepArticles = allArticles.filter(a => a.kind === 'nhadep' && a.Status === 'posted');
+            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => a.tag === currentFilter);
+            
+            renderFeatured(filtered);
+            renderMauKhac(filtered);
+        }, 100));
+    });
+}
+
+// Mobile menu
+function initMobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = hamburger.querySelector('i');
+            if (icon) {
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-xmark');
+                } else {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+        
+        navLinks.querySelectorAll('a, button').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = hamburger.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+    }
+}
+
+async function init() {
+    const showError = (id, msg) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="empty-state">
+            <i class="fa-regular fa-circle-xmark" style="color:#c0392b;"></i>
+            <p style="color:#c0392b;">${msg}</p>
+            <p style="font-size:.75rem;margin-top:8px;">Vui lòng kiểm tra file <strong>data.json</strong> có tồn tại không.</p>
+        </div>`;
+    };
+
+    const articles = await loadArticlesFromJSON();
+    
+    if (articles === null || articles.length === 0) {
+        showError('nhadep-featured', 'Không thể tải dữ liệu.');
+        showError('maukhac-grid', 'Không thể tải dữ liệu.');
+        showError('blogs-grid', 'Không thể tải dữ liệu.');
+        return;
+    }
+    
+    allArticles = articles;
+    
+    const postedArticles = articles.filter(a => a.Status === 'posted');
+    const nhadepArticles = postedArticles.filter(a => a.kind === 'nhadep');
+    const blogArticles = postedArticles.filter(a => a.kind === 'blogs');
+    
+    console.log(`📊 Nhà đẹp: ${nhadepArticles.length} bài, Blogs: ${blogArticles.length} bài`);
+    
+    if (nhadepArticles.length === 0) {
+        showError('nhadep-featured', 'Chưa có bài viết nào được post trong mục Nhà đẹp.');
+        showError('maukhac-grid', 'Chưa có bài viết nào.');
+    } else {
+        renderFeatured(nhadepArticles);
+        renderMauKhac(nhadepArticles);
+    }
+    
+    if (blogArticles.length === 0) {
+        showError('blogs-grid', 'Chưa có bài viết nào trong mục Blogs.');
+    } else {
+        renderBlogs(blogArticles);
+    }
+
+    setupFilters();
+    initMobileMenu();
+    initLazyLoading();
+}
+
+// Start loading after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Preload next page on hover (optional)
+let preloadLink = null;
+document.addEventListener('mouseover', (e) => {
+    const card = e.target.closest('.base-card, .featured-card');
+    if (card && !preloadLink) {
+        const link = card.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+        if (link && link !== '#') {
+            preloadLink = document.createElement('link');
+            preloadLink.rel = 'prefetch';
+            preloadLink.href = link;
+            document.head.appendChild(preloadLink);
+        }
+    }
+});
+</script>
+</body>
+</html>
