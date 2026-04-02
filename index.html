@@ -211,6 +211,8 @@
             flex-wrap: wrap;
             margin-bottom: 48px;
             justify-content: center;
+            align-items: center;
+            position: relative;
         }
         .filter-btn {
             background: transparent;
@@ -227,6 +229,69 @@
             background: var(--gold);
             color: #0A0A0A;
             border-color: var(--gold);
+        }
+        
+        /* Dropdown cho nhiều tag */
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .filter-dropdown-btn {
+            background: transparent;
+            border: 1px solid var(--bord);
+            border-radius: 40px;
+            padding: 8px 26px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: .8rem;
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-dropdown-btn:hover {
+            background: rgba(198,164,59,.1);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .filter-dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px;
+            min-width: 180px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .filter-dropdown-content.show {
+            display: flex;
+        }
+        .filter-dropdown-item {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            text-align: left;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 30px;
+            font-size: .8rem;
+            transition: all .2s;
+        }
+        .filter-dropdown-item:hover {
+            background: rgba(198,164,59,.1);
+            color: var(--gold);
+        }
+        .filter-dropdown-item.active {
+            background: var(--gold);
+            color: #0A0A0A;
         }
         
         .featured-grid {
@@ -557,6 +622,13 @@
             .sec { padding: 0 20px 60px; }
             .about-content { padding: 30px 20px; }
             .about-content h2 { font-size: 1.5rem; }
+            .filter-bar {
+                gap: 8px;
+            }
+            .filter-btn, .filter-dropdown-btn {
+                padding: 6px 16px;
+                font-size: .75rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -610,14 +682,8 @@
 <section id="nhadep" style="padding: 0 0 80px; width: 100%;">
     <div style="text-align:center; padding: 0 40px;">
         <div class="sec-title sec-title-center"><img src="featured.png" alt="" style="height:1em;width:1em;object-fit:contain;vertical-align:middle;" loading="lazy"> Nhà đẹp của tuần</div>
-        <div class="filter-bar">
-            <button class="filter-btn active" data-filter="all" data-section="nhadep">Tất cả</button>
-            <button class="filter-btn" data-filter="Hiện đại" data-section="nhadep">Hiện đại</button>
-            <button class="filter-btn" data-filter="Tân cổ điển" data-section="nhadep">Tân cổ điển</button>
-            <button class="filter-btn" data-filter="Biệt thự" data-section="nhadep">Biệt thự</button>
-            <button class="filter-btn" data-filter="Nhà phố" data-section="nhadep">Nhà phố</button>
-            <button class="filter-btn" data-filter="Nội thất" data-section="nhadep">Nội thất</button>
-            <button class="filter-btn" data-filter="Xu hướng" data-section="nhadep">Xu hướng</button>
+        <div class="filter-bar" id="filter-bar">
+            <!-- Filter buttons sẽ được tạo động bằng JavaScript -->
         </div>
     </div>
     <div class="featured-grid" id="nhadep-featured">
@@ -700,6 +766,7 @@ function initLazyLoading() {
 const DATA_JSON_PATH = './data.json';
 let allArticles = [];
 let currentFilter = 'all';
+let allUniqueTags = [];
 
 async function loadArticlesFromJSON() {
     try {
@@ -719,6 +786,107 @@ async function loadArticlesFromJSON() {
         return null;
     }
 }
+
+// Hàm thu thập tất cả tag duy nhất từ các bài viết
+function collectUniqueTags(articles) {
+    const tagsSet = new Set();
+    articles.forEach(article => {
+        if (article.tag) {
+            const tags = article.tag.split(',').map(t => t.trim());
+            tags.forEach(tag => {
+                if (tag) tagsSet.add(tag);
+            });
+        }
+    });
+    // Sắp xếp theo alphabet
+    return Array.from(tagsSet).sort();
+}
+
+// Hàm tạo filter bar động
+function renderFilterBar() {
+    const filterBar = document.getElementById('filter-bar');
+    if (!filterBar) return;
+    
+    const maxShow = 4; // Số lượng tag hiển thị tối đa trước khi dùng dropdown
+    const visibleTags = allUniqueTags.slice(0, maxShow);
+    const hiddenTags = allUniqueTags.slice(maxShow);
+    
+    let html = `<button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">Tất cả</button>`;
+    
+    // Hiển thị các tag visible
+    visibleTags.forEach(tag => {
+        html += `<button class="filter-btn ${currentFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`;
+    });
+    
+    // Nếu có tag ẩn, tạo dropdown
+    if (hiddenTags.length > 0) {
+        html += `
+            <div class="filter-dropdown" id="filter-dropdown">
+                <button class="filter-dropdown-btn" onclick="toggleFilterDropdown(event)">
+                    ... <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="filter-dropdown-content" id="filter-dropdown-content">
+                    ${hiddenTags.map(tag => `
+                        <button class="filter-dropdown-item ${currentFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    filterBar.innerHTML = html;
+    
+    // Gắn sự kiện cho các nút filter
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filterValue = btn.dataset.filter;
+            currentFilter = filterValue;
+            renderFilterBar(); // Re-render để cập nhật active state
+            
+            const nhadepArticles = allArticles.filter(a => a.kind === 'nhadep' && a.Status === 'posted');
+            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => articleMatchesFilter(a, currentFilter));
+            
+            renderFeatured(filtered);
+            renderMauKhac(filtered);
+        });
+    });
+    
+    // Gắn sự kiện cho dropdown items
+    document.querySelectorAll('.filter-dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const filterValue = item.dataset.filter;
+            currentFilter = filterValue;
+            renderFilterBar();
+            
+            const nhadepArticles = allArticles.filter(a => a.kind === 'nhadep' && a.Status === 'posted');
+            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => articleMatchesFilter(a, currentFilter));
+            
+            renderFeatured(filtered);
+            renderMauKhac(filtered);
+            
+            // Đóng dropdown
+            const dropdown = document.getElementById('filter-dropdown-content');
+            if (dropdown) dropdown.classList.remove('show');
+        });
+    });
+}
+
+// Toggle dropdown
+function toggleFilterDropdown(event) {
+    event.stopPropagation();
+    const content = document.getElementById('filter-dropdown-content');
+    if (content) {
+        content.classList.toggle('show');
+    }
+}
+
+// Đóng dropdown khi click ra ngoài
+document.addEventListener('click', function() {
+    const content = document.getElementById('filter-dropdown-content');
+    if (content) {
+        content.classList.remove('show');
+    }
+});
 
 // Hàm kiểm tra bài viết có chứa tag cần lọc không (hỗ trợ nhiều tag)
 function articleMatchesFilter(article, filterValue) {
@@ -926,24 +1094,6 @@ function renderBlogs(articles) {
     initLazyLoading();
 }
 
-// Optimized filter with debounce
-function setupFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn[data-section="nhadep"]');
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', debounce(() => {
-            filterButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            
-            const nhadepArticles = allArticles.filter(a => a.kind === 'nhadep' && a.Status === 'posted');
-            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => articleMatchesFilter(a, currentFilter));
-            
-            renderFeatured(filtered);
-            renderMauKhac(filtered);
-        }, 100));
-    });
-}
-
 // Mobile menu
 function initMobileMenu() {
     const hamburger = document.getElementById('hamburger-btn');
@@ -998,6 +1148,13 @@ async function init() {
     
     allArticles = articles;
     
+    // Thu thập tất cả tag duy nhất
+    allUniqueTags = collectUniqueTags(articles);
+    console.log(`📋 Có ${allUniqueTags.length} tag:`, allUniqueTags);
+    
+    // Tạo filter bar động
+    renderFilterBar();
+    
     const postedArticles = articles.filter(a => a.Status === 'posted');
     const nhadepArticles = postedArticles.filter(a => a.kind === 'nhadep');
     const blogArticles = postedArticles.filter(a => a.kind === 'blogs');
@@ -1018,7 +1175,6 @@ async function init() {
         renderBlogs(blogArticles);
     }
 
-    setupFilters();
     initMobileMenu();
     initLazyLoading();
 }
