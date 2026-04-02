@@ -352,7 +352,6 @@
 
 <div class="container">
     <div class="grid" id="grid">
-        <div class="loading"><div class="spinner"></div>Đang tải bài viết…</div>
 <script>
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
@@ -392,14 +391,13 @@ function formatDate(dateStr) {
     }
 }
 
+// ====================== HÀM RENDER CARD ĐÃ SỬA ======================
 function renderCard(item) {
     if (!item) return '';
 
     const titleStr = String(item.title || '').trim();
     const urlStr   = String(item.url || '').trim();
-    if (titleStr === '' || urlStr === '' || urlStr === '#') {
-        return '';
-    }
+    if (titleStr === '' || urlStr === '' || urlStr === '#') return '';
 
     const url = buildArticleUrl(item);
     if (url === '#' || url.trim() === '') return '';
@@ -407,39 +405,46 @@ function renderCard(item) {
     const thumbUrl = buildThumbUrl(item);
     const tags = getTags(item);
     const title = escapeHtml(titleStr);
-    const summary = escapeHtml((item.summary || '').substring(0, 100));
+    const summaryRaw = String(item.summary || '').trim();
+    const summary = escapeHtml(summaryRaw.substring(0, 100));
+    const displaySummary = summary + (summaryRaw.length > 100 ? '…' : '');
     const date = formatDate(item.date || '');
-    const displaySummary = summary + (item.summary && item.summary.length > 100 ? '…' : '');
 
     const tagsHtml = tags.map(t => {
         const isActive = t === activeTag ? ' active-tag' : '';
         return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
-    return '<a class="card" href="' + escapeHtml(url) + '">' +
-        '<div class="card-thumb-wrap">' +
-            '<img class="card-thumb" src="' + escapeHtml(thumbUrl) + '" alt="' + title + '" loading="lazy" onerror="this.style.opacity=\'0.6\'">' +
-            '<div class="card-overlay">' +
-                '<div class="card-body">' +
-                    (tagsHtml ? '<div class="card-tags">' + tagsHtml + '</div>' : '') +
-                    '<div class="card-title">' + title + '</div>' +
-                    (displaySummary ? '<div class="card-summary">' + displaySummary + '</div>' : '') +
-                    '<div class="card-footer">' +
-                        (date ? '<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>' + date + '</span>' : '<span></span>') +
-                        '<span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-        '</div>' +
-    '</a>';
+    // Cấu trúc sạch - CHỈ CÓ 1 THẺ <a class="card"> bao ngoài
+    return `
+        <a class="card" href="${escapeHtml(url)}">
+            <div class="card-thumb-wrap">
+                <img class="card-thumb" 
+                     src="${escapeHtml(thumbUrl)}" 
+                     alt="${title}" 
+                     loading="lazy" 
+                     onerror="this.style.opacity='0.6'">
+                <div class="card-overlay">
+                    <div class="card-body">
+                        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+                        <div class="card-title">${title}</div>
+                        ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
+                        <div class="card-footer">
+                            ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
+                            <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    `.trim();
 }
+// ===================================================================
 
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
     allPosts.forEach(p => {
-        if (p && p.title && p.url) {
-            getTags(p).forEach(t => tagSet.add(t));
-        }
+        if (p && p.title && p.url) getTags(p).forEach(t => tagSet.add(t));
     });
 
     const bar = document.getElementById('all-tags-bar');
@@ -463,7 +468,7 @@ function renderTagsBar(allPosts) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // === SỬA CHÍNH Ở ĐÂY: Xử lý duplicate URL + ưu tiên bản ghi đầy đủ nhất ===
+        // Xử lý duplicate + ưu tiên bản đầy đủ nhất
         const urlToBestItem = new Map();
         posts.forEach(p => {
             if (!p) return;
@@ -477,10 +482,9 @@ function renderTagsBar(allPosts) {
                 return;
             }
 
-            // Ưu tiên bản có title dài hơn (đầy đủ hơn)
             const existingLen = String(existing.title || '').trim().length;
             const newLen      = titleStr.length;
-            if (newLen > existingLen ||
+            if (newLen > existingLen || 
                 (newLen === existingLen && String(p.summary || '').trim().length > String(existing.summary || '').trim().length)) {
                 urlToBestItem.set(urlStr, p);
             }
@@ -495,14 +499,11 @@ function renderTagsBar(allPosts) {
 
         renderTagsBar(uniqueValidPosts);
 
-        // Lọc theo tag
         const filtered = activeTag
             ? uniqueValidPosts.filter(p => getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase()))
             : uniqueValidPosts;
 
-        const countText = filtered.length > 0
-            ? `${filtered.length} bài viết`
-            : 'Chưa có bài viết nào';
+        const countText = filtered.length > 0 ? `${filtered.length} bài viết` : 'Chưa có bài viết nào';
         document.getElementById('hero-count').innerHTML = `<i class="fa-regular fa-newspaper"></i> ${countText}`;
 
         if (filtered.length === 0) {
@@ -515,13 +516,7 @@ function renderTagsBar(allPosts) {
                     </div>
                 </div>`;
         } else {
-            let cardsHtml = '';
-            for (let i = 0; i < filtered.length; i++) {
-                const cardHtml = renderCard(filtered[i]);
-                if (cardHtml && cardHtml.trim() !== '') {
-                    cardsHtml += cardHtml;
-                }
-            }
+            let cardsHtml = filtered.map(item => renderCard(item)).join('');
             grid.innerHTML = cardsHtml || `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
         }
 
