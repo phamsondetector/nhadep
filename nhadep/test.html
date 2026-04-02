@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>test1 — NhàĐẹp.vn</title>
+<title>test — NhàĐẹp.vn</title>
 <meta name="description" content="">
 <meta name="robots" content="index, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,8 @@ gtag('config', 'G-B51EJTDD2L');
         nav a:hover{color:var(--gold);}
         .container{max-width:1200px;margin:0 auto;padding:48px 24px;}
         .meta{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
-        .tag{background:rgba(198,164,59,.2);color:var(--gold2);padding:6px 16px;border-radius:30px;font-size:.75rem;}
+        .tag{background:rgba(198,164,59,.2);color:var(--gold2);padding:6px 16px;border-radius:30px;font-size:.75rem;text-decoration:none;transition:background .2s,color .2s;}
+        .tag:hover{background:rgba(198,164,59,.4);color:#fff;}
         .date{color:var(--muted);font-size:.85rem;line-height:2;}
         .content{line-height:1.8;font-size:1.05rem;}
         .content h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin:40px 0 20px;color:var(--gold);}
@@ -46,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <body>
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
-  <div class="meta"><span class="tag">Hiện đại</span><span class="tag">Tân cổ điển</span><span class="tag">Biệt thự</span><span class="tag">Cảm hứng</span><span class="tag">Chia sẻ</span><span class="tag">Phong thủy</span><span class="date">2/4/2026</span></div>
+  <div class="meta"><a class="tag" href="../tag.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><a class="tag" href="../tag.html?tag=Xu%20h%C6%B0%E1%BB%9Bng">Xu hướng</a><span class="date">2/4/2026</span></div>
   <div class="content"></div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
@@ -146,7 +147,7 @@ gtag('config', 'G-B51EJTDD2L');
         
         async function loadRelatedPosts() {
             try {
-                var currentSlug = 'test1';
+                var currentSlug = 'test';
                 var currentType = 'nhadep';
                 var dataJsonPath = getDataJsonPath();
                 
