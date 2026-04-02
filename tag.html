@@ -118,7 +118,7 @@
             gap: 28px;
         }
 
-        /* CARD - CHỈ 1 THẺ <a> DUY NHẤT BAO BỌC TOÀN BỘ */
+        /* CARD - thẻ a bao bọc toàn bộ nội dung */
         .card {
             text-decoration: none;
             color: inherit;
@@ -395,7 +395,7 @@ function formatDate(dateStr) {
     }
 }
 
-// CHỈ 1 THẺ <a> DUY NHẤT, KHÔNG CÓ THẺ <a> NÀO KHÁC
+// QUAN TRỌNG: Thẻ <a> BAO BỌC toàn bộ nội dung, KHÔNG bị đóng sớm
 function renderCard(item) {
     if (!item || !item.title || !item.url || item.title.trim() === '') {
         return '';
@@ -418,26 +418,23 @@ function renderCard(item) {
         return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
-    // CHÚ Ý: CHỈ CÓ 1 THẺ <a class="card"> DUY NHẤT, BAO BỌC TOÀN BỘ NỘI DUNG
-    return `
-    <a class="card" href="${escapeHtml(url)}">
-        <div class="card-thumb-wrap">
-            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
-                 loading="lazy"
-                 onerror="this.style.opacity='0.6'">
-            <div class="card-overlay">
-                <div class="card-body">
-                    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
-                    <div class="card-title">${title}</div>
-                    ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
-                    <div class="card-footer">
-                        ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
-                        <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>`;
+    // CẤU TRÚC ĐÚNG: <a class="card"> MỞ, SAU ĐÓ TOÀN BỘ NỘI DUNG, SAU ĐÓ ĐÓNG </a>
+    return '<a class="card" href="' + escapeHtml(url) + '">' +
+        '<div class="card-thumb-wrap">' +
+            '<img class="card-thumb" src="' + escapeHtml(thumbUrl) + '" alt="' + title + '" loading="lazy" onerror="this.style.opacity=\'0.6\'">' +
+            '<div class="card-overlay">' +
+                '<div class="card-body">' +
+                    (tagsHtml ? '<div class="card-tags">' + tagsHtml + '</div>' : '') +
+                    '<div class="card-title">' + title + '</div>' +
+                    (displaySummary ? '<div class="card-summary">' + displaySummary + '</div>' : '') +
+                    '<div class="card-footer">' +
+                        (date ? '<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>' + date + '</span>' : '<span></span>') +
+                        '<span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '</a>';
 }
 
 function renderTagsBar(allPosts) {
@@ -508,11 +505,11 @@ function renderTagsBar(allPosts) {
                     </div>
                 </div>`;
         } else {
-            // Render cards, đảm bảo không có card rỗng
+            // Render tất cả card
             let cardsHtml = '';
             for (let i = 0; i < filtered.length; i++) {
                 const cardHtml = renderCard(filtered[i]);
-                if (cardHtml && cardHtml.trim() !== '' && !cardHtml.includes('</a></a>')) {
+                if (cardHtml && cardHtml.trim() !== '') {
                     cardsHtml += cardHtml;
                 }
             }
