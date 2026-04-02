@@ -708,12 +708,10 @@ async function loadArticlesFromJSON() {
 function articleMatchesFilter(article, filterValue) {
     if (filterValue === 'all') return true;
     
-    // Lấy tags từ article (ưu tiên trường tags, nếu không thì dùng tag)
+    // tag bây giờ có thể chứa nhiều tag cách nhau bằng dấu phẩy
     let articleTags = [];
-    if (article.tags) {
-        articleTags = article.tags.split(',').map(t => t.trim());
-    } else if (article.tag) {
-        articleTags = [article.tag];
+    if (article.tag) {
+        articleTags = article.tag.split(',').map(t => t.trim());
     }
     
     return articleTags.includes(filterValue);
@@ -762,11 +760,10 @@ function getThumbnailHtml(fileName, type, altText) {
 
 // Lấy tag hiển thị (lấy tag đầu tiên nếu có nhiều tag)
 function getDisplayTag(article) {
-    if (article.tags) {
-        const firstTag = article.tags.split(',')[0].trim();
-        return firstTag;
-    }
-    return article.tag || 'Mẫu nhà';
+    if (!article.tag) return 'Mẫu nhà';
+    // Lấy tag đầu tiên để hiển thị trên card
+    const firstTag = article.tag.split(',')[0].trim();
+    return firstTag;
 }
 
 function renderFeatured(articles) {
