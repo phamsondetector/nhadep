@@ -600,6 +600,8 @@
             <button class="filter-btn" data-filter="Tân cổ điển" data-section="nhadep">Tân cổ điển</button>
             <button class="filter-btn" data-filter="Biệt thự" data-section="nhadep">Biệt thự</button>
             <button class="filter-btn" data-filter="Nhà phố" data-section="nhadep">Nhà phố</button>
+            <button class="filter-btn" data-filter="Nội thất" data-section="nhadep">Nội thất</button>
+            <button class="filter-btn" data-filter="Xu hướng" data-section="nhadep">Xu hướng</button>
         </div>
     </div>
     <div class="featured-grid" id="nhadep-featured">
@@ -702,6 +704,21 @@ async function loadArticlesFromJSON() {
     }
 }
 
+// Hàm kiểm tra bài viết có chứa tag cần lọc không (hỗ trợ nhiều tag)
+function articleMatchesFilter(article, filterValue) {
+    if (filterValue === 'all') return true;
+    
+    // Lấy tags từ article (ưu tiên trường tags, nếu không thì dùng tag)
+    let articleTags = [];
+    if (article.tags) {
+        articleTags = article.tags.split(',').map(t => t.trim());
+    } else if (article.tag) {
+        articleTags = [article.tag];
+    }
+    
+    return articleTags.includes(filterValue);
+}
+
 function slugify(str) {
     if (!str) return 'bai-viet';
     return str.toLowerCase()
@@ -743,9 +760,18 @@ function getThumbnailHtml(fileName, type, altText) {
                  style="width:100%; height:100%; object-fit:cover;">`;
 }
 
+// Lấy tag hiển thị (lấy tag đầu tiên nếu có nhiều tag)
+function getDisplayTag(article) {
+    if (article.tags) {
+        const firstTag = article.tags.split(',')[0].trim();
+        return firstTag;
+    }
+    return article.tag || 'Mẫu nhà';
+}
+
 function renderFeatured(articles) {
     const container = document.getElementById('nhadep-featured');
-    const filtered = currentFilter === 'all' ? articles : articles.filter(a => a.tag === currentFilter);
+    const filtered = currentFilter === 'all' ? articles : articles.filter(a => articleMatchesFilter(a, currentFilter));
     
     if (filtered.length === 0) {
         container.innerHTML = `<div class="empty-state">
@@ -760,12 +786,13 @@ function renderFeatured(articles) {
     const desc = featured.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
     const articleUrl = featured.url || '#';
     const displayDate = featured.date || 'Cập nhật mới';
+    const displayTag = getDisplayTag(featured);
     
     container.innerHTML = `
         <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
             <div class="featured-img">
                 ${getThumbnailHtml(fileName, 'nhadep', featured.title)}
-                <span class="featured-cat">⭐ ${featured.tag || 'Nhà đẹp'}</span>
+                <span class="featured-cat">⭐ ${escapeHtml(displayTag)}</span>
             </div>
             <div class="featured-body">
                 <h3 class="featured-title">${escapeHtml(featured.title)}</h3>
@@ -797,11 +824,12 @@ function renderMauKhac(articles) {
         const desc = article.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
+        const displayTag = getDisplayTag(article);
         return `
             <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="card-img">
                     ${getThumbnailHtml(fileName, 'nhadep', article.title)}
-                    <span class="card-cat">${escapeHtml(article.tag || 'Mẫu nhà')}</span>
+                    <span class="card-cat">${escapeHtml(displayTag)}</span>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${escapeHtml(article.title)}</h3>
@@ -831,6 +859,7 @@ function renderBlogs(articles) {
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
         const summary = article.summary || '';
+        const displayTag = getDisplayTag(article);
         return `
             <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="card-img">
@@ -839,7 +868,7 @@ function renderBlogs(articles) {
                 <div class="card-body">
                     <div class="blog-meta">
                         <span class="blog-date">${displayDate}</span>
-                        <span class="blog-tag">${escapeHtml(article.tag || 'Bài viết')}</span>
+                        <span class="blog-tag">${escapeHtml(displayTag)}</span>
                     </div>
                     <h3 class="card-title">${escapeHtml(article.title)}</h3>
                     <p class="card-desc">${escapeHtml(summary)}</p>
@@ -860,7 +889,7 @@ function setupFilters() {
             currentFilter = btn.dataset.filter;
             
             const nhadepArticles = allArticles.filter(a => a.kind === 'nhadep' && a.Status === 'posted');
-            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => a.tag === currentFilter);
+            const filtered = currentFilter === 'all' ? nhadepArticles : nhadepArticles.filter(a => articleMatchesFilter(a, currentFilter));
             
             renderFeatured(filtered);
             renderMauKhac(filtered);
