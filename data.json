@@ -31,5 +31,16 @@
     "kind": "blogs",
     "Status": "posted",
     "relatedlink": "./Ý nghĩa của phong thủy trong xây dựng.html"
+  },
+  {
+    "id": "1775118195553",
+    "date": "02/04/2026",
+    "title": "test1",
+    "summary": "",
+    "url": "./nhadep/test1.html",
+    "tag": "Hiện đại, Tân cổ điển, Biệt thự, Cảm hứng, Chia sẻ, Phong thủy",
+    "kind": "nhadep",
+    "Status": "posted",
+    "relatedlink": "./test1.html"
   }
 ]
