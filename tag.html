@@ -350,7 +350,6 @@
     <span class="bar-label">Tất cả tag:</span>
 </div>
 
-<div class="container">
 <script>
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
@@ -390,7 +389,7 @@ function formatDate(dateStr) {
     }
 }
 
-// ====================== HÀM RENDER CARD SẠCH SẼ (CHỈ 1 THẺ <a>) ======================
+// ====================== RENDER CARD SẠCH (CHỈ 1 THẺ <a>) ======================
 function renderCard(item) {
     if (!item) return '';
 
@@ -417,11 +416,7 @@ function renderCard(item) {
     return `
         <a class="card" href="${escapeHtml(url)}">
             <div class="card-thumb-wrap">
-                <img class="card-thumb" 
-                     src="${escapeHtml(thumbUrl)}" 
-                     alt="${title}" 
-                     loading="lazy" 
-                     onerror="this.style.opacity='0.6'">
+                <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}" loading="lazy" onerror="this.style.opacity='0.6'">
                 <div class="card-overlay">
                     <div class="card-body">
                         ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
@@ -437,7 +432,7 @@ function renderCard(item) {
         </a>
     `.trim();
 }
-// ====================================================================================
+// =============================================================================
 
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
@@ -465,22 +460,19 @@ function renderTagsBar(allPosts) {
         const res = await fetch('./data.json');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
-        
-        const urlToBestItem = new Map();
-        posts.forEach(p => {
-            if (!p) return;
+
+        // Filter + loại bỏ trùng lặp theo URL
+        const seen = new Set();
+        const uniqueValidPosts = posts.filter(p => {
+            if (!p) return false;
             const titleStr = String(p.title || '').trim();
             const urlStr   = String(p.url || '').trim();
-            if (titleStr === '' || urlStr === '' || urlStr === '#') return;
-
-            const existing = urlToBestItem.get(urlStr);
-            if (!existing || 
-                String(p.title || '').trim().length > String(existing.title || '').trim().length) {
-                urlToBestItem.set(urlStr, p);
+            if (titleStr === '' || urlStr === '' || urlStr === '#' || seen.has(urlStr)) {
+                return false;
             }
+            seen.add(urlStr);
+            return true;
         });
-
-        const uniqueValidPosts = Array.from(urlToBestItem.values());
 
         if (uniqueValidPosts.length === 0) {
             grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào</div></div>`;
@@ -507,7 +499,7 @@ function renderTagsBar(allPosts) {
                 </div>`;
         } else {
             const cardsHtml = filtered.map(item => renderCard(item)).join('');
-            grid.innerHTML = cardsHtml || `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào để hiển thị</div></div>`;
+            grid.innerHTML = cardsHtml;
         }
 
     } catch (err) {
