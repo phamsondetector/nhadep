@@ -924,7 +924,7 @@ async function init() {
     
     const postedArticles = articles.filter(a => a.Status === 'posted');
     const nhadepArticles = postedArticles.filter(a => a.kind === 'nhadep');
-    const blogArticles = postedArticles.filter(a => a.kind === 'blog');
+    const blogArticles = postedArticles.filter(a => a.kind === 'blogs');
     
     console.log(`📊 Nhà đẹp: ${nhadepArticles.length} bài, Blogs: ${blogArticles.length} bài`);
     
