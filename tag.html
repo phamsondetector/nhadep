@@ -133,6 +133,7 @@
             display: block;
             transition: transform .25s, border-color .25s, box-shadow .25s;
             position: relative;
+            cursor: pointer;
         }
         .card:hover {
             transform: translateY(-4px);
@@ -168,7 +169,7 @@
             font-size: 2rem;
         }
         
-        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên */
+        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên, là một phần của card và click được */
         .card-overlay {
             position: absolute;
             bottom: 0;
@@ -181,12 +182,21 @@
                 transparent 100%);
             padding: 20px 20px 18px;
             transition: all .3s ease;
+            pointer-events: none; /* Cho phép click xuyên qua overlay đến card */
         }
         
         /* Nội dung bên trong overlay */
         .card-body {
             display: flex;
             flex-direction: column;
+            pointer-events: none; /* Cho phép click xuyên qua đến card */
+        }
+        
+        /* Nhưng vẫn cho phép click vào tag (vì tag là link riêng) */
+        .card-tag {
+            pointer-events: auto; /* Cho phép click vào tag */
+            position: relative;
+            z-index: 2;
         }
         
         .card-tags {
@@ -206,6 +216,7 @@
             font-weight: 500;
             letter-spacing: 0.3px;
             backdrop-filter: blur(4px);
+            display: inline-block;
         }
         .card-tag:hover { background: rgba(198,164,59,.4); color: #fff; }
         .card-tag.active-tag {
@@ -413,7 +424,7 @@ function formatDate(dateStr) {
     }
 }
 
-// ── Render card (tiêu đề + summary chồng lên thumbnail) ──
+// ── Render card (toàn bộ card là link, tiêu đề + summary chồng lên thumbnail) ──
 function renderCard(item) {
     const url      = buildArticleUrl(item);
     const thumbUrl = buildThumbUrl(item);
@@ -438,7 +449,7 @@ function renderCard(item) {
             <div class="card-thumb-placeholder" style="display:none">
                 <i class="fa-regular fa-image"></i>
             </div>
-            <!-- Overlay chứa tiêu đề và summary chồng lên ảnh -->
+            <!-- Overlay chứa tiêu đề và summary chồng lên ảnh, vẫn nằm trong thẻ a -->
             <div class="card-overlay">
                 <div class="card-body">
                     <div class="card-tags">${tagsHtml}</div>
