@@ -42,5 +42,16 @@
     "kind": "blog",
     "Status": "posted",
     "relatedlink": "./testblog.html"
+  },
+  {
+    "id": "1775105696006",
+    "date": "02/04/2026",
+    "title": "testblog22",
+    "summary": "tests",
+    "url": "./blog/testblog22.html",
+    "tag": "Hiện đại",
+    "kind": "blog",
+    "Status": "posted",
+    "relatedlink": "./testblog22.html"
   }
 ]
