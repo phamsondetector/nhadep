@@ -353,7 +353,6 @@
 <div class="container">
     <div class="grid" id="grid">
         <div class="loading"><div class="spinner"></div>Đang tải bài viết…</div>
-    </div>
 <script>
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
@@ -396,7 +395,6 @@ function formatDate(dateStr) {
 function renderCard(item) {
     if (!item) return '';
 
-    // KIỂM TRA SIÊU CHẶT – loại bỏ card trống
     const titleStr = String(item.title || '').trim();
     const urlStr   = String(item.url || '').trim();
     if (titleStr === '' || urlStr === '' || urlStr === '#') {
@@ -465,22 +463,30 @@ function renderTagsBar(allPosts) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // Filter siêu chặt + ép String() để tránh dữ liệu bẩn
-        let validPosts = posts.filter(p => {
-            if (!p) return false;
+        // === SỬA CHÍNH Ở ĐÂY: Xử lý duplicate URL + ưu tiên bản ghi đầy đủ nhất ===
+        const urlToBestItem = new Map();
+        posts.forEach(p => {
+            if (!p) return;
             const titleStr = String(p.title || '').trim();
             const urlStr   = String(p.url || '').trim();
-            return titleStr !== '' && urlStr !== '' && urlStr !== '#';
+            if (titleStr === '' || urlStr === '' || urlStr === '#') return;
+
+            const existing = urlToBestItem.get(urlStr);
+            if (!existing) {
+                urlToBestItem.set(urlStr, p);
+                return;
+            }
+
+            // Ưu tiên bản có title dài hơn (đầy đủ hơn)
+            const existingLen = String(existing.title || '').trim().length;
+            const newLen      = titleStr.length;
+            if (newLen > existingLen ||
+                (newLen === existingLen && String(p.summary || '').trim().length > String(existing.summary || '').trim().length)) {
+                urlToBestItem.set(urlStr, p);
+            }
         });
 
-        // Deduplicate theo URL
-        const seenUrls = new Set();
-        const uniqueValidPosts = validPosts.filter(p => {
-            const urlKey = String(p.url || '').trim();
-            if (seenUrls.has(urlKey)) return false;
-            seenUrls.add(urlKey);
-            return true;
-        });
+        const uniqueValidPosts = Array.from(urlToBestItem.values());
 
         if (uniqueValidPosts.length === 0) {
             grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có bài viết nào</div></div>`;
