@@ -46,8 +46,8 @@ gtag('config', 'G-B51EJTDD2L');
 <body>
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
-  <div class="meta"><span class="tag">Hiện đại</span><span class="date">1/4/2026</span></div>
-  <div class="content"></div>
+  <div class="meta"><span class="tag">Hiện đại</span><span class="date">2/4/2026</span></div>
+  <div class="content">test</div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
@@ -132,141 +132,141 @@ gtag('config', 'G-B51EJTDD2L');
         }
     </style>
     <script>
-        (function() {
-            var currentSlug = "test";
-            var currentType = "nhadep";
-            
-            function getDataJsonPath() {
-                var currentPath = window.location.pathname;
-                var pathParts = currentPath.split('/').filter(function(p) { 
-                    return p && p.indexOf('.html') === -1; 
-                });
-                var depth = pathParts.length;
-                var prefix = '';
-                for (var i = 0; i < depth; i++) {
-                    prefix += '../';
-                }
-                if (prefix === '') prefix = './';
-                return prefix + 'data.json';
+    (function() {
+        var currentSlug = "test";
+        var currentType = "nhadep";
+        
+        function getDataJsonPath() {
+            var currentPath = window.location.pathname;
+            var pathParts = currentPath.split("/").filter(function(p) {
+                return p && p.indexOf(".html") === -1;
+            });
+            var depth = pathParts.length;
+            var prefix = "";
+            for (var i = 0; i < depth; i++) {
+                prefix += "../";
             }
+            if (prefix === "") prefix = "./";
+            return prefix + "data.json";
+        }
+        
+        async function loadRelatedPosts() {
+            var grid = document.getElementById("related-posts-grid");
+            if (!grid) return;
             
-            async function loadRelatedPosts() {
-                var grid = document.getElementById('related-posts-grid');
-                if (!grid) return;
+            try {
+                var dataJsonPath = getDataJsonPath();
+                console.log("Loading data.json from:", dataJsonPath);
                 
-                try {
-                    var dataJsonPath = getDataJsonPath();
-                    console.log('Loading data.json from:', dataJsonPath);
-                    
-                    var response = await fetch(dataJsonPath + '?t=' + Date.now());
-                    if (!response.ok) {
-                        throw new Error('HTTP ' + response.status);
-                    }
-                    
-                    var articles = await response.json();
-                    console.log('Loaded', articles.length, 'articles');
-                    
-                    var postedArticles = articles.filter(function(a) {
-                        var status = (a.Status || a.status || '').toLowerCase();
-                        return status === 'posted';
-                    });
-                    
-                    var filtered = postedArticles.filter(function(a) {
-                        if (!a.url) return false;
-                        var urlSlug = a.url.split('/').pop().replace('.html', '');
-                        try {
-                            urlSlug = decodeURIComponent(urlSlug);
-                        } catch(e) {}
-                        return urlSlug !== currentSlug;
-                    });
-                    
-                    if (currentType && filtered.length > 0) {
-                        var sameKind = filtered.filter(function(a) {
-                            var articleKind = a.kind || '';
-                            return articleKind.toLowerCase() === currentType.toLowerCase();
-                        });
-                        if (sameKind.length > 0) {
-                            filtered = sameKind;
-                        }
-                    }
-                    
-                    for (var i = filtered.length - 1; i > 0; i--) {
-                        var j = Math.floor(Math.random() * (i + 1));
-                        var temp = filtered[i];
-                        filtered[i] = filtered[j];
-                        filtered[j] = temp;
-                    }
-                    var relatedArticles = filtered.slice(0, 5);
-                    
-                    if (relatedArticles.length === 0) {
-                        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">📭 Chưa có bài viết liên quan</div>';
-                        return;
-                    }
-                    
-                    var currentDepth = window.location.pathname.split('/').filter(function(p) { 
-                        return p && p.indexOf('.html') === -1; 
-                    }).length;
-                    var prefix = '';
-                    for (var d = 0; d < currentDepth; d++) {
-                        prefix += '../';
-                    }
-                    if (prefix === '') prefix = './';
-                    
-                    var html = '';
-                    for (var k = 0; k < relatedArticles.length; k++) {
-                        var article = relatedArticles[k];
-                        var articleTitle = article.title || '';
-                        var articleSummary = article.summary || '';
-                        var rawUrl = article.url || '#';
-                        var finalUrl = rawUrl.replace(/^\.\//, '');
-                        var articleTag = article.tag || 'Bài viết';
-                        var articleKind = article.kind || currentType;
-                        
-                        var articleSlug = rawUrl.split('/').pop().replace('.html', '');
-                        try {
-                            articleSlug = decodeURIComponent(articleSlug);
-                        } catch(e) {}
-                        
-                        var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
-                        var shortSummary = articleSummary.substring(0, 80);
-                        
-                        html += '<a href="' + finalUrl + '" class="related-card">';
-                        html += '<img src="' + thumbnailPath + '" alt="' + escapeHtml(articleTitle) + '" loading="lazy" onerror="this.style.display='none'">';
-                        html += '<div class="card-content">';
-                        html += '<span class="card-tag">' + escapeHtml(articleTag) + '</span>';
-                        html += '<h4 class="card-title">' + escapeHtml(articleTitle) + '</h4>';
-                        if (shortSummary) {
-                            html += '<p class="card-summary">' + escapeHtml(shortSummary) + (shortSummary.length >= 80 ? '...' : '') + '</p>';
-                        }
-                        html += '<div class="read-more">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></div>';
-                        html += '</div></a>';
-                    }
-                    
-                    grid.innerHTML = html;
-                    console.log('Displayed', relatedArticles.length, 'related articles');
-                    
-                } catch (error) {
-                    console.error('Error loading related posts:', error);
-                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--red); grid-column: 1 / -1;">⚠️ Không thể tải bài viết liên quan<br><small>' + error.message + '</small><br><button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--gold); color: #000; border: none; border-radius: 8px; cursor: pointer;">🔄 Thử lại</button></div>';
+                var response = await fetch(dataJsonPath + "?t=" + Date.now());
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
                 }
-            }
-            
-            function escapeHtml(str) {
-                if (!str) return '';
-                return str.replace(/[&<>]/g, function(m) {
-                    if (m === '&') return '&amp;';
-                    if (m === '<') return '&lt;';
-                    if (m === '>') return '&gt;';
-                    return m;
+                
+                var articles = await response.json();
+                console.log("Loaded", articles.length, "articles");
+                
+                var postedArticles = articles.filter(function(a) {
+                    var status = (a.Status || a.status || "").toLowerCase();
+                    return status === "posted";
                 });
+                
+                var filtered = postedArticles.filter(function(a) {
+                    if (!a.url) return false;
+                    var urlSlug = a.url.split("/").pop().replace(".html", "");
+                    try {
+                        urlSlug = decodeURIComponent(urlSlug);
+                    } catch(e) {}
+                    return urlSlug !== currentSlug;
+                });
+                
+                if (currentType && filtered.length > 0) {
+                    var sameKind = filtered.filter(function(a) {
+                        var articleKind = a.kind || "";
+                        return articleKind.toLowerCase() === currentType.toLowerCase();
+                    });
+                    if (sameKind.length > 0) {
+                        filtered = sameKind;
+                    }
+                }
+                
+                for (var i = filtered.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = filtered[i];
+                    filtered[i] = filtered[j];
+                    filtered[j] = temp;
+                }
+                var relatedArticles = filtered.slice(0, 5);
+                
+                if (relatedArticles.length === 0) {
+                    grid.innerHTML = "<div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">📭 Chưa có bài viết liên quan</div>";
+                    return;
+                }
+                
+                var currentDepth = window.location.pathname.split("/").filter(function(p) {
+                    return p && p.indexOf(".html") === -1;
+                }).length;
+                var prefix = "";
+                for (var d = 0; d < currentDepth; d++) {
+                    prefix += "../";
+                }
+                if (prefix === "") prefix = "./";
+                
+                var html = "";
+                for (var k = 0; k < relatedArticles.length; k++) {
+                    var article = relatedArticles[k];
+                    var articleTitle = article.title || "";
+                    var articleSummary = article.summary || "";
+                    var rawUrl = article.url || "#";
+                    var finalUrl = rawUrl.replace(/^\.\//, "");
+                    var articleTag = article.tag || "Bài viết";
+                    var articleKind = article.kind || currentType;
+                    
+                    var articleSlug = rawUrl.split("/").pop().replace(".html", "");
+                    try {
+                        articleSlug = decodeURIComponent(articleSlug);
+                    } catch(e) {}
+                    
+                    var thumbnailPath = prefix + "thumbnail/" + articleKind + "/" + encodeURIComponent(articleSlug) + ".webp";
+                    var shortSummary = articleSummary.substring(0, 80);
+                    
+                    html += "<a href="" + finalUrl + "" class="related-card">";
+                    html += "<img src="" + thumbnailPath + "" alt="" + escapeHtml(articleTitle) + "" loading="lazy" onerror="this.style.display='none'">";
+                    html += "<div class="card-content">";
+                    html += "<span class="card-tag">" + escapeHtml(articleTag) + "</span>";
+                    html += "<h4 class="card-title">" + escapeHtml(articleTitle) + "</h4>";
+                    if (shortSummary) {
+                        html += "<p class="card-summary">" + escapeHtml(shortSummary) + (shortSummary.length >= 80 ? "..." : "") + "</p>";
+                    }
+                    html += "<div class="read-more">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></div>";
+                    html += "</div></a>";
+                }
+                
+                grid.innerHTML = html;
+                console.log("Displayed", relatedArticles.length, "related articles");
+                
+            } catch (error) {
+                console.error("Error loading related posts:", error);
+                grid.innerHTML = "<div style="text-align: center; padding: 40px; color: var(--red); grid-column: 1 / -1;">⚠️ Không thể tải bài viết liên quan<br><small>" + error.message + "</small><br><button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--gold); color: #000; border: none; border-radius: 8px; cursor: pointer;">🔄 Thử lại</button></div>";
             }
-            
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', loadRelatedPosts);
-            } else {
-                loadRelatedPosts();
-            }
-        })();
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === "&") return "&amp;";
+                if (m === "<") return "&lt;";
+                if (m === ">") return "&gt;";
+                return m;
+            });
+        }
+        
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", loadRelatedPosts);
+        } else {
+            loadRelatedPosts();
+        }
+    })();
     </script>
     
   <div style="text-align: center; margin-top: 40px;">
