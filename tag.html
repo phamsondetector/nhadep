@@ -123,14 +123,17 @@
         }
 
         /* ── CARD - Overlay style (tiêu đề + summary chồng lên thumbnail) ── */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
         .card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 20px;
             overflow: hidden;
-            text-decoration: none;
-            color: var(--text);
-            display: block;
             transition: transform .25s, border-color .25s, box-shadow .25s;
             position: relative;
             cursor: pointer;
@@ -169,7 +172,7 @@
             font-size: 2rem;
         }
         
-        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên, là một phần của card và click được */
+        /* Overlay gradient - tạo hiệu ứng mờ từ dưới lên */
         .card-overlay {
             position: absolute;
             bottom: 0;
@@ -182,21 +185,12 @@
                 transparent 100%);
             padding: 20px 20px 18px;
             transition: all .3s ease;
-            pointer-events: none; /* Cho phép click xuyên qua overlay đến card */
         }
         
         /* Nội dung bên trong overlay */
         .card-body {
             display: flex;
             flex-direction: column;
-            pointer-events: none; /* Cho phép click xuyên qua đến card */
-        }
-        
-        /* Nhưng vẫn cho phép click vào tag (vì tag là link riêng) */
-        .card-tag {
-            pointer-events: auto; /* Cho phép click vào tag */
-            position: relative;
-            z-index: 2;
         }
         
         .card-tags {
@@ -217,6 +211,9 @@
             letter-spacing: 0.3px;
             backdrop-filter: blur(4px);
             display: inline-block;
+            pointer-events: auto;
+            position: relative;
+            z-index: 2;
         }
         .card-tag:hover { background: rgba(198,164,59,.4); color: #fff; }
         .card-tag.active-tag {
@@ -237,6 +234,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            pointer-events: none;
         }
         
         .card-summary {
@@ -249,6 +247,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
         
         .card-footer {
@@ -258,6 +257,7 @@
             margin-top: 4px;
             padding-top: 8px;
             border-top: 1px solid rgba(255,255,255,0.15);
+            pointer-events: none;
         }
         .card-date { 
             font-size: .7rem; 
@@ -424,7 +424,7 @@ function formatDate(dateStr) {
     }
 }
 
-// ── Render card (toàn bộ card là link, tiêu đề + summary chồng lên thumbnail) ──
+// ── Render card (THUMBNAIL, TITLE, SUMMARY đều trong 1 CARD duy nhất) ──
 function renderCard(item) {
     const url      = buildArticleUrl(item);
     const thumbUrl = buildThumbUrl(item);
@@ -437,27 +437,30 @@ function renderCard(item) {
 
     const tagsHtml = tags.map(t => {
         const isActive = t === activeTag ? ' active-tag' : '';
-        return `<a class="card-tag${isActive}" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
+        return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
+    // CẤU TRÚC QUAN TRỌNG: TOÀN BỘ NẰM TRONG 1 THẺ <a> DUY NHẤT
     return `
-    <a class="card" href="${escapeHtml(url)}">
-        <div class="card-thumb-wrap">
-            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
-                 loading="lazy"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="card-thumb-placeholder" style="display:none">
-                <i class="fa-regular fa-image"></i>
-            </div>
-            <!-- Overlay chứa tiêu đề và summary chồng lên ảnh, vẫn nằm trong thẻ a -->
-            <div class="card-overlay">
-                <div class="card-body">
-                    <div class="card-tags">${tagsHtml}</div>
-                    <div class="card-title">${title}</div>
-                    ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
-                    <div class="card-footer">
-                        ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
-                        <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+    <a href="${escapeHtml(url)}" class="card-link">
+        <div class="card">
+            <div class="card-thumb-wrap">
+                <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
+                     loading="lazy"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="card-thumb-placeholder" style="display:none">
+                    <i class="fa-regular fa-image"></i>
+                </div>
+                <!-- Overlay chứa tiêu đề và summary CHỒNG LÊN thumbnail -->
+                <div class="card-overlay">
+                    <div class="card-body">
+                        <div class="card-tags">${tagsHtml}</div>
+                        <div class="card-title">${title}</div>
+                        ${displaySummary ? `<div class="card-summary">${displaySummary}</div>` : ''}
+                        <div class="card-footer">
+                            ${date ? `<span class="card-date"><i class="fa-regular fa-calendar-alt" style="margin-right: 4px;"></i>${date}</span>` : '<span></span>'}
+                            <span class="card-arrow">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>
