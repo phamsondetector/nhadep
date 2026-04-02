@@ -131,8 +131,7 @@
             text-decoration: none;
             color: var(--text);
             display: flex;
-            flex-direction: row;
-            align-items: stretch;
+            flex-direction: column;           /* ← ĐÃ SỬA: dọc thay vì ngang */
             transition: transform .25s, border-color .25s, box-shadow .25s;
         }
         .card:hover {
@@ -140,21 +139,20 @@
             border-color: rgba(198,164,59,.5);
             box-shadow: 0 12px 40px rgba(0,0,0,.5);
         }
+
         .card-thumb-wrap {
             flex-shrink: 0;
-            width: 160px;
+            width: 100%;                      /* ← ĐÃ SỬA */
         }
         .card-thumb {
-            width: 160px;
-            height: 100%;
-            min-height: 140px;
+            width: 100%;                      /* ← ĐÃ SỬA */
+            height: 220px;                    /* ← Chiều cao thumbnail desktop */
             object-fit: cover;
             display: block;
         }
         .card-thumb-placeholder {
-            width: 160px;
-            height: 100%;
-            min-height: 140px;
+            width: 100%;
+            height: 220px;
             background: linear-gradient(135deg, var(--mid), #222);
             display: flex;
             align-items: center;
@@ -162,6 +160,7 @@
             color: var(--dim);
             font-size: 2rem;
         }
+
         .card-body {
             padding: 18px 20px;
             display: flex;
@@ -217,29 +216,21 @@
             color: var(--gold);
         }
 
-        /* ── EMPTY ── */
-        .empty {
+        /* ── EMPTY & LOADING ── */
+        .empty, .loading {
             grid-column: 1 / -1;
             text-align: center;
             padding: 80px 20px;
             color: var(--muted);
         }
-        .empty i { font-size: 3rem; color: var(--dim); margin-bottom: 20px; display: block; }
-
-        /* ── LOADING ── */
-        .loading {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--dim);
-        }
+        .empty i, .loading .spinner { margin-bottom: 20px; display: block; }
         .spinner {
             width: 36px; height: 36px;
             border: 3px solid var(--border);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin .8s linear infinite;
-            margin: 0 auto 16px;
+            margin: 0 auto;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -250,14 +241,17 @@
             .hero h2 { font-size: 1.7rem; }
             .all-tags-bar { padding: 16px 16px 0; }
             .container { padding: 24px 16px 60px; }
-            .grid { grid-template-columns: 1fr; gap: 16px; }
-            .card { flex-direction: column; }
-            .card-thumb-wrap { width: 100%; }
-            .card-thumb, .card-thumb-placeholder { width: 100%; height: 180px; min-height: unset; }
+            .grid { gap: 16px; }
+
+            .card-thumb, .card-thumb-placeholder {
+                height: 180px;               /* ← Chiều cao mobile */
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Phần còn lại giữ nguyên (nav, hero, all-tags-bar, container, script) -->
+    <!-- Chỉ thay phần <style> như trên là đủ -->
 
 <nav>
     <h1>
@@ -278,7 +272,6 @@
 
 <div class="all-tags-bar" id="all-tags-bar">
     <span class="bar-label">Tất cả tag:</span>
-    <!-- Sinh động bằng JS -->
 </div>
 
 <div class="container">
@@ -288,28 +281,23 @@
 </div>
 
 <script>
-// ── Đọc query param ?tag=... ──────────────────────────────────────────────────
+// Script giữ nguyên 100% như cũ
 const params   = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
 
-// Cập nhật <title> và hero ngay
 document.title = activeTag ? `Tag: ${activeTag} — NhàĐẹp.vn` : 'Tags — NhàĐẹp.vn';
 document.getElementById('hero-tag-name').textContent = activeTag || 'Tất cả';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
 function buildArticleUrl(item) {
-    // item.url đã là đường dẫn đầy đủ ví dụ: ./nhadep/ten-bai.html
     return item.url || '#';
 }
 
 function buildThumbUrl(item) {
-    // Suy ra thumbnail từ url bài viết
-    // ./nhadep/ten-bai.html  →  ./thumbnail/nhadep/ten-bai.webp
     const kind = item.kind || 'nhadep';
     const relLink = (item.relatedlink || '').replace('./', '').replace('.html', '');
     let slug = relLink;
@@ -321,7 +309,6 @@ function getTags(item) {
     return (item.tag || '').split(',').map(t => t.trim()).filter(Boolean);
 }
 
-// ── Render card ───────────────────────────────────────────────────────────────
 function renderCard(item) {
     const url      = buildArticleUrl(item);
     const thumbUrl = buildThumbUrl(item);
@@ -357,7 +344,6 @@ function renderCard(item) {
     </a>`;
 }
 
-// ── Render all-tags bar ───────────────────────────────────────────────────────
 function renderTagsBar(allPosts) {
     const tagSet = new Set();
     allPosts.forEach(p => getTags(p).forEach(t => tagSet.add(t)));
@@ -370,7 +356,6 @@ function renderTagsBar(allPosts) {
     bar.innerHTML = `<span class="bar-label"><i class="fa-solid fa-tags"></i> Tag:</span>${pills}`;
 }
 
-// ── Main: fetch data.json ─────────────────────────────────────────────────────
 (async function () {
     const grid = document.getElementById('grid');
     try {
@@ -378,23 +363,15 @@ function renderTagsBar(allPosts) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
 
-        // Render tag bar từ toàn bộ dữ liệu
         renderTagsBar(posts);
 
-        // Lọc theo tag
         const filtered = activeTag
-            ? posts.filter(p =>
-                getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase())
-              )
+            ? posts.filter(p => getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase()))
             : posts;
 
-        // Cập nhật đếm
         document.getElementById('hero-count').textContent =
-            filtered.length > 0
-                ? `${filtered.length} bài viết`
-                : 'Chưa có bài viết nào';
+            filtered.length > 0 ? `${filtered.length} bài viết` : 'Chưa có bài viết nào';
 
-        // Render grid
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty">
@@ -404,7 +381,6 @@ function renderTagsBar(allPosts) {
         } else {
             grid.innerHTML = filtered.map(renderCard).join('');
         }
-
     } catch (err) {
         grid.innerHTML = `
             <div class="empty">
