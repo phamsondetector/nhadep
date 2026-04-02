@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>testblog — NhàĐẹp.vn</title>
-<meta name="description" content="testblog">
+<title>test blog — NhàĐẹp.vn</title>
+<meta name="description" content="">
 <meta name="robots" content="index, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@ gtag('config', 'G-B51EJTDD2L');
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><span class="tag">Hiện đại</span><span class="date">2/4/2026</span></div>
-  <div class="content">tesb</div>
+  <div class="content"></div>
   
     <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold); text-align: left;">
@@ -146,7 +146,7 @@ gtag('config', 'G-B51EJTDD2L');
         
         async function loadRelatedPosts() {
             try {
-                var currentSlug = 'testblog';
+                var currentSlug = 'test blog';
                 var currentType = 'blogs';
                 var dataJsonPath = getDataJsonPath();
                 
@@ -165,29 +165,21 @@ gtag('config', 'G-B51EJTDD2L');
                     return status === 'posted';
                 });
                 
+                // Lọc bỏ bài viết hiện tại
                 var filtered = postedArticles.filter(function(a) {
-                    if (!a.relatedlink && !a.url) return false;
-                    var relatedSlug = a.relatedlink || a.url;
-                    if (relatedSlug) {
-                        var slugPart = relatedSlug.split('/').pop().replace('.html', '');
-                        try {
-                            slugPart = decodeURIComponent(slugPart);
-                        } catch(e) {}
-                        return slugPart !== currentSlug;
+                    if (!a.relatedlink) return false;
+                    var relatedSlug = a.relatedlink.replace('./', '').replace('.html', '');
+                    try {
+                        relatedSlug = decodeURIComponent(relatedSlug);
+                    } catch(e) {}
+                    var articleKind = a.kind || '';
+                    if (relatedSlug === currentSlug && articleKind === currentType) {
+                        return false;
                     }
-                    return false;
+                    return true;
                 });
                 
-                if (currentType && filtered.length > 0) {
-                    var sameKind = filtered.filter(function(a) {
-                        var articleKind = a.kind || '';
-                        return articleKind.toLowerCase() === currentType.toLowerCase();
-                    });
-                    if (sameKind.length > 0) {
-                        filtered = sameKind;
-                    }
-                }
-                
+                // Trộn ngẫu nhiên
                 for (var i = filtered.length - 1; i > 0; i--) {
                     var j = Math.floor(Math.random() * (i + 1));
                     var temp = filtered[i];
@@ -207,23 +199,28 @@ gtag('config', 'G-B51EJTDD2L');
                     var article = relatedArticles[k];
                     var articleTitle = article.title || '';
                     var articleSummary = article.summary || '';
-                    // SỬ DỤNG relatedlink THAY VÌ url
-                    var articleUrl = article.relatedlink || article.url || '#';
-                    var articleTag = article.tag || 'Bài viết';
-                    var articleKind = article.kind || currentType;
+                    var articleKind = article.kind || 'nhadep';
+                    var articleRelLink = article.relatedlink || ''; // dạng ./ten-bai.html
                     
-                    var articleSlug = articleUrl.split('/').pop().replace('.html', '');
+                    // KẾT HỢP kind + relatedlink để tạo đường dẫn đầy đủ
+                    // Bỏ qua thư mục hiện tại, chỉ dùng kind và slug từ relatedlink
+                    var articleUrl = './' + articleKind + '/' + articleRelLink.replace('./', '');
+                    var articleTag = article.tag || 'Bài viết';
+                    
+                    // Lấy slug để tạo thumbnail
+                    var articleSlug = articleRelLink.replace('./', '').replace('.html', '');
                     try {
                         articleSlug = decodeURIComponent(articleSlug);
                     } catch(e) {}
                     
+                    // Đường dẫn thumbnail
                     var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
                     var prefix = '';
                     for (var d = 0; d < depth; d++) {
                         prefix += '../';
                     }
                     var thumbnailPath = prefix + 'thumbnail/' + articleKind + '/' + encodeURIComponent(articleSlug) + '.webp';
-                    var shortSummary = articleSummary.substring(0, 80);
+                    var shortSummary = (articleSummary || '').substring(0, 80);
                     
                     html += `
                         <a href="${articleUrl}" class="related-card">
