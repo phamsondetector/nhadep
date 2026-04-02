@@ -131,7 +131,8 @@
             text-decoration: none;
             color: var(--text);
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: stretch;
             transition: transform .25s, border-color .25s, box-shadow .25s;
         }
         .card:hover {
@@ -139,16 +140,21 @@
             border-color: rgba(198,164,59,.5);
             box-shadow: 0 12px 40px rgba(0,0,0,.5);
         }
+        .card-thumb-wrap {
+            flex-shrink: 0;
+            width: 160px;
+        }
         .card-thumb {
-            width: 100%;
-            height: 200px;
+            width: 160px;
+            height: 100%;
+            min-height: 140px;
             object-fit: cover;
             display: block;
-            background: var(--mid);
         }
         .card-thumb-placeholder {
-            width: 100%;
-            height: 200px;
+            width: 160px;
+            height: 100%;
+            min-height: 140px;
             background: linear-gradient(135deg, var(--mid), #222);
             display: flex;
             align-items: center;
@@ -157,10 +163,11 @@
             font-size: 2rem;
         }
         .card-body {
-            padding: 20px;
+            padding: 18px 20px;
             display: flex;
             flex-direction: column;
             flex: 1;
+            min-width: 0;
         }
         .card-tags {
             display: flex;
@@ -243,10 +250,10 @@
             .hero h2 { font-size: 1.7rem; }
             .all-tags-bar { padding: 16px 16px 0; }
             .container { padding: 24px 16px 60px; }
-            .grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-        }
-        @media (max-width: 480px) {
-            .grid { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; gap: 16px; }
+            .card { flex-direction: column; }
+            .card-thumb-wrap { width: 100%; }
+            .card-thumb, .card-thumb-placeholder { width: 100%; height: 180px; min-height: unset; }
         }
     </style>
 </head>
@@ -330,11 +337,13 @@ function renderCard(item) {
 
     return `
     <a class="card" href="${escapeHtml(url)}">
-        <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
-             loading="lazy"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="card-thumb-placeholder" style="display:none">
-            <i class="fa-regular fa-image"></i>
+        <div class="card-thumb-wrap">
+            <img class="card-thumb" src="${escapeHtml(thumbUrl)}" alt="${title}"
+                 loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-thumb-placeholder" style="display:none">
+                <i class="fa-regular fa-image"></i>
+            </div>
         </div>
         <div class="card-body">
             <div class="card-tags">${tagsHtml}</div>
