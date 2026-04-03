@@ -20,7 +20,6 @@
             overflow: hidden;
         }
         
-        /* Khung iframe chứa nội dung - chiếm toàn màn hình */
         .iframe-container {
             position: fixed;
             top: 0;
@@ -39,7 +38,6 @@
             background: #0A0A0A;
         }
         
-        /* Nút VI/EN ở góc phải dưới - SÁT NHAU */
         .lang-buttons {
             position: fixed;
             bottom: 24px;
@@ -79,7 +77,6 @@
             color: #C6A43B;
         }
         
-        /* Ẩn hoàn toàn mọi thành phần của Google Translate */
         .goog-te-banner-frame,
         .goog-te-menu-frame,
         .goog-te-ftab-frame,
@@ -98,7 +95,6 @@
             position: relative !important;
         }
         
-        /* Loading overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -166,6 +162,52 @@
     let targetUrl = '';
     let isFirstLoad = true;
     
+    // Hàm sửa tất cả link về trang chủ trong iframe
+    function fixHomeLinksInIframe(iframeDoc) {
+        if (!iframeDoc) return;
+        
+        // Sửa tất cả link có href
+        const allLinks = iframeDoc.querySelectorAll('a[href]');
+        allLinks.forEach(link => {
+            const href = link.getAttribute('href') || '';
+            
+            // Nếu link trỏ về entrans.html, sửa thành /
+            if (href === './entrans.html' || 
+                href === '../entrans.html' || 
+                href === 'entrans.html' ||
+                href.includes('entrans.html')) {
+                link.setAttribute('href', '/');
+            }
+            
+            // Sửa link "Về trang chủ" hoặc "Back to home"
+            const linkText = link.textContent || '';
+            if (linkText.includes('Về trang chủ') || 
+                linkText.includes('Back to home') ||
+                linkText.includes('← Về trang chủ') ||
+                linkText.includes('← Quay lại trang chủ')) {
+                link.setAttribute('href', '/');
+            }
+            
+            // Sửa link có class back-btn
+            if (link.classList && link.classList.contains('back-btn')) {
+                link.setAttribute('href', '/');
+            }
+        });
+        
+        // Sửa tất cả các nút có onclick
+        const allElements = iframeDoc.querySelectorAll('[onclick]');
+        allElements.forEach(el => {
+            const onclick = el.getAttribute('onclick') || '';
+            if (onclick.includes('window.location') || onclick.includes('location.href')) {
+                let newOnclick = onclick
+                    .replace(/(\.\/|\.\.\/)?entrans\.html/g, '/')
+                    .replace(/['"]\.\/index\.html['"]/g, "'/'")
+                    .replace(/['"]\.\.\/index\.html['"]/g, "'/'");
+                el.setAttribute('onclick', newOnclick);
+            }
+        });
+    }
+    
     function removeAllLanguageButtons(doc) {
         if (!doc) return;
         const selectorsToRemove = [
@@ -201,7 +243,8 @@
                 setTimeout(() => {
                     hideGoogleTranslateElements(iframeDoc);
                     removeAllLanguageButtons(iframeDoc);
-                }, 200);
+                    fixHomeLinksInIframe(iframeDoc); // SỬA LINK VỀ TRANG CHỦ
+                }, 500);
             } else if (!select) {
                 setTimeout(triggerTranslateToEnglish, 300);
             }
@@ -351,6 +394,7 @@
                     select.dispatchEvent(new Event('change'));
                 }
                 removeAllLanguageButtons(iframeDoc);
+                fixHomeLinksInIframe(iframeDoc);
             } catch(e) {}
         }, 200);
     }
@@ -360,7 +404,7 @@
     }
     
     async function init() {
-        targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
+        targetUrl = localStorage.getItem('pendingTranslateUrl') || '/';
         const btnVi = document.getElementById('btnVi');
         const btnEn = document.getElementById('btnEn');
         btnVi.onclick = handleViClick;
