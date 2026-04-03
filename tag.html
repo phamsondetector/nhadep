@@ -582,11 +582,6 @@ function handleCardClick(event) {
         font-family: 'Open Sans', sans-serif;
     }
     
-    .lang-switch-bottom .lang-btn-bottom.active {
-        background: rgba(198,164,59,0.25);
-        color: #C6A43B;
-    }
-    
     .lang-switch-bottom .lang-btn-bottom:hover {
         background: rgba(198,164,59,0.15);
         color: #C6A43B;
@@ -607,63 +602,38 @@ function handleCardClick(event) {
 
 <div class="lang-switch-bottom">
     <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
-    <button class="lang-btn-bottom active" id="langEnBottom">🇬🇧 EN</button>
+    <button class="lang-btn-bottom" id="langEnBottom">🇬🇧 EN</button>
 </div>
 
 <script>
 (function() {
-    // Lấy nút
     const viBtn = document.getElementById('langViBottom');
     const enBtn = document.getElementById('langEnBottom');
     
-    // Xử lý nút EN
-    function switchToEnglish() {
-        // Lưu URL hiện tại
-        const currentUrl = window.location.href;
-        localStorage.setItem('pendingTranslateUrl', currentUrl);
-        // Chuyển sang trang entrans.html
-        window.location.href = './entrans.html';
-    }
+    const isEnPage = window.location.pathname.includes('entrans.html');
     
-    // Xử lý nút VI - refresh lại trang hiện tại
-    function switchToVietnamese() {
-        // Nếu đang ở trang EN, quay về URL đã lưu
-        const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-        if (pendingUrl && window.location.pathname.includes('entrans.html')) {
-            window.location.href = pendingUrl;
-        } else {
-            // Nếu đang ở trang VI, chỉ refresh
-            window.location.reload();
+    // Nút VI
+    viBtn.onclick = function(e) {
+        e.preventDefault();
+        if (isEnPage) {
+            // Đang ở EN, quay về VI
+            const pendingUrl = localStorage.getItem('pendingTranslateUrl');
+            window.location.href = pendingUrl || './index.html';
         }
-    }
+        // Nếu đang ở VI, không làm gì
+    };
     
-    // Gán sự kiện
-    if (viBtn && enBtn) {
-        viBtn.onclick = function(e) {
-            e.preventDefault();
-            // Nếu đang ở entrans.html thì quay về
-            if (window.location.pathname.includes('entrans.html')) {
-                const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-                if (pendingUrl) {
-                    window.location.href = pendingUrl;
-                }
-            } else {
-                // Ở trang VI, không làm gì hoặc refresh
-                window.location.reload();
-            }
-        };
-        
-        enBtn.onclick = function(e) {
-            e.preventDefault();
-            // Nếu đã ở entrans.html thì không làm gì
-            if (window.location.pathname.includes('entrans.html')) {
-                return;
-            }
+    // Nút EN
+    enBtn.onclick = function(e) {
+        e.preventDefault();
+        if (!isEnPage) {
+            // Đang ở VI, chuyển sang EN
             const currentUrl = window.location.href;
             localStorage.setItem('pendingTranslateUrl', currentUrl);
             window.location.href = './entrans.html';
-        };
-    }
+        }
+        // Nếu đang ở EN, không làm gì
+    };
 })();
 </script>
 </body>
