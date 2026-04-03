@@ -19,7 +19,7 @@
             color: #F5F5F5;
         }
         
-        /* Toolbar cố định ở trên cùng - rất nhỏ gọn */
+        /* Toolbar cố định ở trên cùng - chỉ có nút VI/EN */
         .translate-toolbar {
             position: fixed;
             top: 0;
@@ -35,33 +35,45 @@
             z-index: 10000;
         }
         
-        .back-btn {
-            background: linear-gradient(135deg, #C6A43B, #D4AF37);
-            color: #0A0A0A;
-            text-decoration: none;
-            padding: 6px 16px;
+        .lang-buttons {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
             border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: transform 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            padding: 4px;
         }
         
-        .back-btn:hover {
-            transform: translateY(-2px);
+        .lang-btn {
+            background: none;
+            border: none;
+            color: #9C9C9C;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 6px 20px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        
+        .lang-btn.active {
+            background: rgba(198,164,59,0.25);
+            color: #C6A43B;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(198,164,59,0.15);
+            color: #C6A43B;
         }
         
         /* Khung iframe chứa nội dung */
         .iframe-container {
             position: fixed;
-            top: 45px;
+            top: 55px;
             left: 0;
             right: 0;
             bottom: 0;
             width: 100%;
-            height: calc(100% - 45px);
+            height: calc(100% - 55px);
             background: #0A0A0A;
         }
         
@@ -130,13 +142,13 @@
             .translate-toolbar {
                 padding: 6px 16px;
             }
-            .back-btn {
-                padding: 4px 12px;
+            .lang-btn {
+                padding: 4px 16px;
                 font-size: 0.7rem;
             }
             .iframe-container {
-                top: 40px;
-                height: calc(100% - 40px);
+                top: 48px;
+                height: calc(100% - 48px);
             }
         }
     </style>
@@ -149,9 +161,10 @@
 </div>
 
 <div class="translate-toolbar">
-    <a href="#" class="back-btn" id="backToOriginal">
-        <i class="fa-solid fa-arrow-left"></i> Back to Vietnamese
-    </a>
+    <div class="lang-buttons">
+        <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
+        <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
+    </div>
 </div>
 
 <div class="iframe-container">
@@ -342,9 +355,31 @@
         // Lấy URL từ localStorage hoặc mặc định
         targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
         
-        // Cập nhật link back
-        const backBtn = document.getElementById('backToOriginal');
-        backBtn.href = targetUrl;
+        // Gắn sự kiện cho nút VI (quay về trang gốc)
+        const btnVi = document.getElementById('btnVi');
+        const btnEn = document.getElementById('btnEn');
+        
+        btnVi.onclick = function() {
+            window.location.href = targetUrl;
+        };
+        
+        btnEn.onclick = function() {
+            // Nếu đang ở EN và muốn dịch lại
+            btnEn.classList.add('active');
+            btnVi.classList.remove('active');
+            
+            // Kích hoạt lại dịch
+            setTimeout(() => {
+                try {
+                    const iframe = document.getElementById('contentFrame');
+                    const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
+                    if (select && select.value !== 'en') {
+                        select.value = 'en';
+                        select.dispatchEvent(new Event('change'));
+                    }
+                } catch(e) {}
+            }, 500);
+        };
         
         // Tải trang vào iframe
         await loadPageToIframe(targetUrl);
