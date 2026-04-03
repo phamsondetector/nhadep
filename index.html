@@ -1129,18 +1129,18 @@ if (document.readyState === 'loading') {
     init();
 }
 </script>
-<!-- Nút chuyển đổi ngôn ngữ góc phải dưới - đã thu gọn khoảng cách -->
+<!-- Nút chuyển đổi ngôn ngữ góc phải dưới - sát nhau -->
 <style>
     .lang-switch-bottom {
         position: fixed;
         bottom: 24px;
         right: 24px;
         display: flex;
-        gap: 4px;                    /* giảm khoảng cách giữa 2 nút */
-        background: rgba(10,10,10,0.9);
+        gap: 2px;                    /* rất sát */
+        background: rgba(10,10,10,0.95);
         backdrop-filter: blur(20px);
-        border-radius: 40px;
-        padding: 5px;                /* giảm padding ngoài */
+        border-radius: 50px;
+        padding: 4px;
         border: 1px solid rgba(198,164,59,0.3);
         z-index: 10000;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -1152,12 +1152,13 @@ if (document.readyState === 'loading') {
         color: #9C9C9C;
         cursor: pointer;
         font-size: 0.82rem;
-        padding: 8px 18px;           /* thu gọn padding trong nút */
-        border-radius: 30px;
+        padding: 8px 16px;           /* thu gọn hơn */
+        border-radius: 50px;
         transition: all 0.2s;
         font-weight: 600;
         font-family: 'Open Sans', sans-serif;
         white-space: nowrap;
+        min-width: 70px;             /* giữ chiều rộng tối thiểu để cân đối */
     }
     
     .lang-switch-bottom .lang-btn-bottom:hover {
@@ -1165,7 +1166,7 @@ if (document.readyState === 'loading') {
         color: #C6A43B;
     }
 
-    /* Active state (nếu bạn muốn) */
+    /* Active state */
     .lang-switch-bottom .lang-btn-bottom.active {
         background: rgba(198,164,59,0.25);
         color: #C6A43B;
@@ -1175,12 +1176,13 @@ if (document.readyState === 'loading') {
         .lang-switch-bottom {
             bottom: 16px;
             right: 16px;
-            padding: 4px;
-            gap: 3px;
+            padding: 3px;
+            gap: 1px;
         }
         .lang-switch-bottom .lang-btn-bottom {
-            padding: 6px 14px;
+            padding: 7px 13px;
             font-size: 0.73rem;
+            min-width: 65px;
         }
     }
 </style>
