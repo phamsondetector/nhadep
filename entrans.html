@@ -6,32 +6,6 @@
     <title>NhàĐẹp.vn - English Version</title>
     <meta name="robots" content="noindex, nofollow">
     
-    <!-- Google Translate API -->
-    <script type="text/javascript">
-    // Hàm này sẽ được gọi khi Google Translate API load xong
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'vi',
-            includedLanguages: 'en',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: true
-        }, 'google_translate_element');
-        
-        // Ẩn widget điều khiển (không cần hiển thị cho người dùng)
-        setTimeout(function() {
-            var frame = document.querySelector('.goog-te-banner-frame');
-            if (frame) frame.style.display = 'none';
-            var body = document.body;
-            if (body) body.style.top = '0px';
-            
-            // Ẩn thanh thông báo
-            var notices = document.querySelectorAll('.goog-te-spinner-pos, .goog-te-balloon-frame');
-            notices.forEach(function(el) { el.style.display = 'none'; });
-        }, 1000);
-    }
-    </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
-    
     <style>
         * {
             margin: 0;
@@ -43,15 +17,117 @@
             font-family: 'Open Sans', system-ui, sans-serif;
             background: #0A0A0A;
             color: #F5F5F5;
-            opacity: 0;
-            animation: fadeIn 0.3s ease forwards;
         }
         
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        /* Toolbar cố định ở trên cùng */
+        .translate-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(198,164,59,0.3);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         
-        /* Ẩn Google Translate banner */
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: #C6A43B;
+        }
+        
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .lang-buttons {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 40px;
+            padding: 4px;
+        }
+        
+        .lang-btn {
+            background: none;
+            border: none;
+            color: #9C9C9C;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 6px 16px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        
+        .lang-btn.active {
+            background: rgba(198,164,59,0.25);
+            color: #C6A43B;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(198,164,59,0.15);
+            color: #C6A43B;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #C6A43B, #D4AF37);
+            color: #0A0A0A;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Khung iframe chứa nội dung */
+        .iframe-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(100% - 70px);
+            background: #0A0A0A;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #0A0A0A;
+        }
+        
+        /* Ẩn widget translate mặc định */
         .goog-te-banner-frame {
             display: none !important;
         }
@@ -61,11 +137,11 @@
             position: relative !important;
         }
         
-        .skiptranslate iframe {
+        .skiptranslate {
             display: none !important;
         }
         
-        /* Custom loading */
+        /* Loading overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -78,7 +154,6 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            transition: opacity 0.5s;
         }
         
         .loading-spinner {
@@ -98,100 +173,27 @@
         .loading-text {
             color: #C6A43B;
             font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-        
-        /* Nút quay lại */
-        .back-to-vn {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: linear-gradient(135deg, #C6A43B, #D4AF37);
-            color: #0A0A0A;
-            padding: 12px 24px;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            z-index: 10000;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-to-vn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(198,164,59,0.3);
-        }
-        
-        /* Nút chuyển đổi ngôn ngữ trong EN mode */
-        .lang-en-switch {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            background: rgba(22,20,14,0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(198,164,59,0.3);
-            border-radius: 40px;
-            padding: 8px 20px;
-            z-index: 10000;
-            display: flex;
-            gap: 12px;
-        }
-        
-        .lang-en-switch button {
-            background: none;
-            border: none;
-            color: #9C9C9C;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 4px 12px;
-            border-radius: 30px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        
-        .lang-en-switch button.active {
-            background: rgba(198,164,59,0.2);
-            color: #C6A43B;
-        }
-        
-        .lang-en-switch button:hover {
-            background: rgba(198,164,59,0.15);
-            color: #C6A43B;
-        }
-        
-        /* Ẩn widget translate mặc định */
-        #google_translate_element {
-            position: absolute;
-            visibility: hidden;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
         }
         
         @media (max-width: 768px) {
-            .back-to-vn, .lang-en-switch {
-                padding: 8px 16px;
+            .translate-toolbar {
+                padding: 10px 16px;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .lang-btn {
+                padding: 4px 12px;
                 font-size: 0.7rem;
             }
-            .back-to-vn {
-                bottom: 16px;
-                right: 16px;
+            .back-btn {
+                padding: 6px 14px;
+                font-size: 0.7rem;
             }
-            .lang-en-switch {
-                bottom: 16px;
-                left: 16px;
+            .iframe-container {
+                top: 60px;
+                height: calc(100% - 60px);
             }
-        }
-        
-        /* Container để chứa nội dung gốc */
-        .content-container {
-            width: 100%;
-            min-height: 100vh;
         }
     </style>
 </head>
@@ -199,231 +201,207 @@
 
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Translating to English...</div>
+    <div class="loading-text">Loading English version...</div>
 </div>
 
-<div id="google_translate_element"></div>
-
-<div class="content-container" id="mainContent">
-    <!-- Nội dung gốc sẽ được fetch và chèn vào đây -->
-    <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #9C9C9C;">
-        <div>Loading content...</div>
+<div class="translate-toolbar">
+    <div class="toolbar-left">
+        <div class="logo">
+            Nhà<span>Đẹp</span>
+        </div>
+        <div class="lang-buttons">
+            <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
+            <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
+        </div>
+    </div>
+    <div class="toolbar-right">
+        <a href="#" class="back-btn" id="backToOriginal">
+            <i class="fa-solid fa-arrow-left"></i> Back to Vietnamese
+        </a>
     </div>
 </div>
 
-<a href="#" class="back-to-vn" id="backToVnBtn">
-    <i class="fa-solid fa-arrow-left"></i> Back to Vietnamese
-</a>
-
-<div class="lang-en-switch">
-    <button class="lang-en-option" data-lang="vi" id="switchToViBtn">🇻🇳 VI</button>
-    <button class="lang-en-option active" data-lang="en" id="switchToEnBtn">🇬🇧 EN</button>
+<div class="iframe-container">
+    <iframe id="contentFrame" src="about:blank"></iframe>
 </div>
 
-<script>
-// Lấy URL cần dịch từ localStorage
-let targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
-let originalContent = '';
-let isTranslated = false;
-
-// Hàm chuyển đổi ngôn ngữ (đã sửa lỗi)
-function switchLanguage(lang) {
-    if (lang === 'vi') {
-        // Chuyển về trang tiếng Việt gốc
-        window.location.href = targetUrl;
-    } else {
-        // Ở chế độ EN, kích hoạt lại dịch
-        const select = document.querySelector('.goog-te-combo');
-        if (select && select.value !== 'en') {
-            select.value = 'en';
-            select.dispatchEvent(new Event('change'));
-        }
-        // Cập nhật active state cho nút
-        const viBtn = document.getElementById('switchToViBtn');
-        const enBtn = document.getElementById('switchToEnBtn');
-        if (viBtn && enBtn) {
-            viBtn.classList.remove('active');
-            enBtn.classList.add('active');
-        }
-    }
-}
-
-// Hàm fetch nội dung HTML gốc
-async function fetchOriginalContent(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Không thể tải trang');
-        const html = await response.text();
-        return html;
-    } catch (error) {
-        console.error('Error fetching content:', error);
-        return null;
-    }
-}
-
-// Hàm trích xuất phần body và style từ HTML
-function extractContent(html) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
+<!-- Google Translate API -->
+<script type="text/javascript">
+    let targetUrl = '';
+    let isTranslating = false;
+    let translateInterval = null;
     
-    // Lấy style từ head
-    const styles = doc.querySelectorAll('style');
-    let stylesHtml = '';
-    styles.forEach(style => {
-        stylesHtml += style.outerHTML;
-    });
-    
-    // Lấy nội dung body (loại bỏ script không cần thiết)
-    const body = doc.body.cloneNode(true);
-    // Loại bỏ các script có thể gây conflict
-    const scripts = body.querySelectorAll('script');
-    scripts.forEach(script => {
-        if (!script.src || !script.src.includes('translate')) {
-            script.remove();
-        }
-    });
-    
-    // Loại bỏ các nút chuyển ngôn ngữ cũ để tránh trùng lặp
-    const oldLangSwitches = body.querySelectorAll('.lang-switch, .lang-en-switch');
-    oldLangSwitches.forEach(el => el.remove());
-    
-    return {
-        styles: stylesHtml,
-        body: body.innerHTML
-    };
-}
-
-// Hàm kích hoạt dịch lại toàn bộ nội dung
-function retranslateContent() {
-    if (!isTranslated) return;
-    
-    // Kích hoạt lại Google Translate trên toàn bộ nội dung mới
-    if (window.google && window.google.translate) {
-        // Lấy phần tử cần dịch
-        const contentDiv = document.getElementById('mainContent');
-        if (contentDiv) {
-            // Thêm class để Google Translate nhận diện
-            contentDiv.setAttribute('data-gt-allow', 'true');
-        }
-        
-        // Force re-trigger translate
-        const select = document.querySelector('.goog-te-combo');
-        if (select) {
-            select.value = 'en';
-            select.dispatchEvent(new Event('change'));
-        }
-    }
-}
-
-// Hàm hiển thị nội dung
-async function loadAndDisplayContent() {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'flex';
-    
-    const html = await fetchOriginalContent(targetUrl);
-    if (!html) {
-        document.getElementById('mainContent').innerHTML = '<div style="text-align: center; padding: 100px; color: #C44536;">Error loading content. <a href="./index.html" style="color: #C6A43B;">Go back to homepage</a></div>';
-        loadingOverlay.style.display = 'none';
-        return;
-    }
-    
-    const { styles, body } = extractContent(html);
-    originalContent = body;
-    
-    // Tạo container hiển thị
-    const mainContent = document.getElementById('mainContent');
-    mainContent.innerHTML = `
-        <style>
-            ${styles}
-            /* Override một số style để đảm bảo hiển thị tốt */
-            body { background: #0A0A0A; margin: 0; padding: 0; }
-            .goog-te-banner-frame { display: none !important; }
-            body { top: 0px !important; }
-            .skiptranslate iframe { display: none !important; }
-        </style>
-        ${body}
-    `;
-    
-    // Cập nhật title
-    const titleElem = mainContent.querySelector('title');
-    if (titleElem) {
-        document.title = titleElem.textContent + ' - English';
-    }
-    
-    // Cập nhật link back về VN với đúng URL gốc
-    const backBtn = document.getElementById('backToVnBtn');
-    backBtn.href = targetUrl;
-    
-    // Đợi một chút cho DOM ổn định rồi kích hoạt dịch
-    setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-        isTranslated = true;
-        
-        // Kích hoạt dịch
-        if (window.google && window.google.translate) {
-            const select = document.querySelector('.goog-te-combo');
+    // Hàm kích hoạt Google Translate trên iframe
+    function triggerTranslate() {
+        try {
+            const iframe = document.getElementById('contentFrame');
+            if (!iframe || !iframe.contentWindow) return;
+            
+            // Tìm và chọn ngôn ngữ EN trong iframe
+            const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
             if (select) {
                 select.value = 'en';
                 select.dispatchEvent(new Event('change'));
+                console.log('Translation triggered');
+            } else {
+                // Nếu chưa có, thử lại sau
+                setTimeout(triggerTranslate, 500);
             }
+        } catch(e) {
+            console.log('Waiting for iframe to load...');
+            setTimeout(triggerTranslate, 500);
         }
-        
-        // Thêm observer để theo dõi và dịch nội dung động
-        observeAndTranslate();
-    }, 500);
-}
-
-// Observer để dịch nội dung được thêm vào sau
-function observeAndTranslate() {
-    const observer = new MutationObserver(function(mutations) {
-        if (!isTranslated) return;
-        // Khi có nội dung mới được thêm vào, kích hoạt dịch lại
-        setTimeout(() => {
-            const select = document.querySelector('.goog-te-combo');
-            if (select && select.value !== 'en') {
-                select.value = 'en';
-                select.dispatchEvent(new Event('change'));
+    }
+    
+    // Hàm thêm Google Translate vào iframe
+    function injectTranslateToIframe() {
+        try {
+            const iframe = document.getElementById('contentFrame');
+            if (!iframe || !iframe.contentWindow || !iframe.contentDocument) {
+                setTimeout(injectTranslateToIframe, 500);
+                return;
             }
-        }, 200);
-    });
-    
-    observer.observe(document.getElementById('mainContent'), {
-        childList: true,
-        subtree: true
-    });
-}
-
-// Xử lý chuyển đổi ngôn ngữ trong trang EN
-function setupLanguageSwitch() {
-    const viBtn = document.getElementById('switchToViBtn');
-    const enBtn = document.getElementById('switchToEnBtn');
-    
-    if (viBtn) {
-        viBtn.addEventListener('click', function() {
-            switchLanguage('vi');
-        });
+            
+            const iframeDoc = iframe.contentDocument;
+            
+            // Kiểm tra nếu đã có translate script thì bỏ qua
+            if (iframeDoc.querySelector('#google-translate-script')) {
+                triggerTranslate();
+                return;
+            }
+            
+            // Thêm meta viewport
+            if (!iframeDoc.querySelector('meta[name="viewport"]')) {
+                const meta = iframeDoc.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1.0';
+                iframeDoc.head.appendChild(meta);
+            }
+            
+            // Thêm script Google Translate
+            const script = iframeDoc.createElement('script');
+            script.id = 'google-translate-script';
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=setupGoogleTranslate';
+            script.async = true;
+            
+            // Định nghĩa hàm callback trong iframe
+            iframeDoc.defaultView.setupGoogleTranslate = function() {
+                new iframeDoc.defaultView.google.translate.TranslateElement({
+                    pageLanguage: 'vi',
+                    includedLanguages: 'en',
+                    layout: iframeDoc.defaultView.google.translate.TranslateElement.InlineLayout.SIMPLE
+                }, 'google_translate_element');
+                
+                // Ẩn widget
+                setTimeout(() => {
+                    const banner = iframeDoc.querySelector('.goog-te-banner-frame');
+                    if (banner) banner.style.display = 'none';
+                    if (iframeDoc.body) iframeDoc.body.style.top = '0px';
+                }, 500);
+                
+                // Kích hoạt dịch
+                setTimeout(triggerTranslate, 1000);
+            };
+            
+            iframeDoc.head.appendChild(script);
+            
+            // Tạo phần tử chứa translate
+            const translateDiv = iframeDoc.createElement('div');
+            translateDiv.id = 'google_translate_element';
+            translateDiv.style.position = 'absolute';
+            translateDiv.style.visibility = 'hidden';
+            translateDiv.style.width = '0';
+            translateDiv.style.height = '0';
+            iframeDoc.body.appendChild(translateDiv);
+            
+        } catch(e) {
+            console.error('Inject error:', e);
+            setTimeout(injectTranslateToIframe, 1000);
+        }
     }
     
-    if (enBtn) {
-        enBtn.addEventListener('click', function() {
-            switchLanguage('en');
-        });
+    // Hàm tải trang vào iframe
+    async function loadPageToIframe(url) {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'flex';
+        
+        const iframe = document.getElementById('contentFrame');
+        
+        // Load trực tiếp URL vào iframe
+        iframe.src = url;
+        
+        // Đợi iframe load xong
+        iframe.onload = function() {
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+                // Chèn Google Translate vào iframe
+                setTimeout(injectTranslateToIframe, 500);
+            }, 800);
+        };
+        
+        iframe.onerror = function() {
+            loadingOverlay.style.display = 'none';
+            alert('Cannot load the page. Please check your connection.');
+        };
     }
-}
-
-// Khởi tạo
-(async function() {
-    await loadAndDisplayContent();
-    setupLanguageSwitch();
     
-    // Xóa localStorage sau khi đã dùng
-    setTimeout(() => {
-        localStorage.removeItem('pendingTranslateUrl');
-    }, 1000);
-})();
+    // Hàm chuyển đổi ngôn ngữ
+    function switchToEnglish() {
+        const btnEn = document.getElementById('btnEn');
+        const btnVi = document.getElementById('btnVi');
+        
+        btnEn.classList.add('active');
+        btnVi.classList.remove('active');
+        
+        // Kích hoạt lại dịch
+        setTimeout(() => {
+            try {
+                const iframe = document.getElementById('contentFrame');
+                const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
+                if (select && select.value !== 'en') {
+                    select.value = 'en';
+                    select.dispatchEvent(new Event('change'));
+                }
+            } catch(e) {}
+        }, 500);
+    }
+    
+    function switchToVietnamese() {
+        // Chuyển về trang gốc
+        window.location.href = targetUrl;
+    }
+    
+    // Khởi tạo
+    async function init() {
+        // Lấy URL từ localStorage hoặc mặc định
+        targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
+        
+        // Cập nhật link back
+        const backBtn = document.getElementById('backToOriginal');
+        backBtn.href = targetUrl;
+        
+        // Gắn sự kiện cho nút
+        document.getElementById('btnVi').onclick = switchToVietnamese;
+        document.getElementById('btnEn').onclick = switchToEnglish;
+        
+        // Tải trang vào iframe
+        await loadPageToIframe(targetUrl);
+        
+        // Xóa localStorage
+        setTimeout(() => {
+            localStorage.removeItem('pendingTranslateUrl');
+        }, 1000);
+    }
+    
+    // Bắt đầu khi DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 </script>
 
-<!-- Font Awesome cho icons -->
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </body>
 </html>
