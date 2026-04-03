@@ -144,7 +144,7 @@
         .lang-en-switch button {
             background: none;
             border: none;
-            color: var(--muted, #9C9C9C);
+            color: #9C9C9C;
             cursor: pointer;
             font-size: 0.8rem;
             padding: 4px 12px;
@@ -216,8 +216,8 @@
 </a>
 
 <div class="lang-en-switch">
-    <button class="lang-en-option active" data-lang="vi">🇻🇳 VI</button>
-    <button class="lang-en-option" data-lang="en">🇬🇧 EN</button>
+    <button class="lang-en-option" data-lang="vi" id="switchToViBtn">🇻🇳 VI</button>
+    <button class="lang-en-option active" data-lang="en" id="switchToEnBtn">🇬🇧 EN</button>
 </div>
 
 <script>
@@ -225,6 +225,28 @@
 let targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
 let originalContent = '';
 let isTranslated = false;
+
+// Hàm chuyển đổi ngôn ngữ (đã sửa lỗi)
+function switchLanguage(lang) {
+    if (lang === 'vi') {
+        // Chuyển về trang tiếng Việt gốc
+        window.location.href = targetUrl;
+    } else {
+        // Ở chế độ EN, kích hoạt lại dịch
+        const select = document.querySelector('.goog-te-combo');
+        if (select && select.value !== 'en') {
+            select.value = 'en';
+            select.dispatchEvent(new Event('change'));
+        }
+        // Cập nhật active state cho nút
+        const viBtn = document.getElementById('switchToViBtn');
+        const enBtn = document.getElementById('switchToEnBtn');
+        if (viBtn && enBtn) {
+            viBtn.classList.remove('active');
+            enBtn.classList.add('active');
+        }
+    }
+}
 
 // Hàm fetch nội dung HTML gốc
 async function fetchOriginalContent(url) {
@@ -261,7 +283,10 @@ function extractContent(html) {
         }
     });
     
-    // Tạo container
+    // Loại bỏ các nút chuyển ngôn ngữ cũ để tránh trùng lặp
+    const oldLangSwitches = body.querySelectorAll('.lang-switch, .lang-en-switch');
+    oldLangSwitches.forEach(el => el.remove());
+    
     return {
         styles: stylesHtml,
         body: body.innerHTML
@@ -370,27 +395,18 @@ function observeAndTranslate() {
 
 // Xử lý chuyển đổi ngôn ngữ trong trang EN
 function setupLanguageSwitch() {
-    const viOption = document.querySelector('.lang-en-option[data-lang="vi"]');
-    const enOption = document.querySelector('.lang-en-option[data-lang="en"]');
+    const viBtn = document.getElementById('switchToViBtn');
+    const enBtn = document.getElementById('switchToEnBtn');
     
-    if (viOption) {
-        viOption.addEventListener('click', function() {
-            // Chuyển về trang tiếng Việt gốc
-            window.location.href = targetUrl;
+    if (viBtn) {
+        viBtn.addEventListener('click', function() {
+            switchLanguage('vi');
         });
     }
     
-    if (enOption) {
-        enOption.addEventListener('click', function() {
-            // Đã ở chế độ EN, kích hoạt lại dịch nếu cần
-            this.classList.add('active');
-            if (viOption) viOption.classList.remove('active');
-            
-            const select = document.querySelector('.goog-te-combo');
-            if (select && select.value !== 'en') {
-                select.value = 'en';
-                select.dispatchEvent(new Event('change'));
-            }
+    if (enBtn) {
+        enBtn.addEventListener('click', function() {
+            switchLanguage('en');
         });
     }
 }
