@@ -334,61 +334,6 @@
         Nhà<span>Đẹp</span>
     </h1>
     <a href="./index.html">← Về trang chủ</a>
-
-<div class="lang-switch" style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
-    <button class="lang-tag-btn active" data-lang="vi" onclick="switchLanguage('vi')" style="background: none; border: none; color: var(--text); cursor: pointer; font-size: 0.8rem; padding: 6px 12px; border-radius: 30px; transition: all 0.2s; font-weight: 500;">🇻🇳 VI</button>
-    <span style="color: var(--dim);">|</span>
-    <button class="lang-tag-btn" data-lang="en" onclick="switchLanguage('en')" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; padding: 6px 12px; border-radius: 30px; transition: all 0.2s; font-weight: 500;">🇬🇧 EN</button>
-</div>
-
-<script>
-function switchLanguage(lang) {
-    if (lang === 'en') {
-        const currentUrl = window.location.href;
-        localStorage.setItem('pendingTranslateUrl', currentUrl);
-        window.location.href = './entrans.html';
-    } else {
-        document.querySelectorAll('.lang-tag-btn').forEach(btn => {
-            btn.classList.remove('active');
-            btn.style.color = 'var(--muted)';
-        });
-        const viBtn = document.querySelector('.lang-tag-btn[data-lang="vi"]');
-        if (viBtn) {
-            viBtn.classList.add('active');
-            viBtn.style.color = 'var(--gold)';
-        }
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const viBtn = document.querySelector('.lang-tag-btn[data-lang="vi"]');
-    if (viBtn) {
-        viBtn.classList.add('active');
-        viBtn.style.color = 'var(--gold)';
-    }
-});
-</script>
-
-<style>
-.lang-tag-btn:hover {
-    background: rgba(198,164,59,0.15) !important;
-    color: var(--gold) !important;
-}
-.lang-tag-btn.active {
-    background: rgba(198,164,59,0.2) !important;
-    color: var(--gold) !important;
-}
-@media (max-width: 768px) {
-    .lang-switch {
-        margin-left: auto !important;
-    }
-    .lang-tag-btn {
-        padding: 4px 8px !important;
-        font-size: 0.7rem !important;
-    }
-}
-</style>
-
 </nav>
 
 <div class="hero">
@@ -604,6 +549,120 @@ function handleCardClick(event) {
                 <div>Không thể tải dữ liệu.<br><small style="color:var(--dim)">${escapeHtml(err.message)}</small></div>
             </div>`;
         console.error('tag.html error:', err);
+    }
+})();
+</script>
+<!-- Nút chuyển đổi ngôn ngữ góc phải dưới -->
+<style>
+    .lang-switch-bottom {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: flex;
+        gap: 8px;
+        background: rgba(10,10,10,0.9);
+        backdrop-filter: blur(20px);
+        border-radius: 40px;
+        padding: 6px;
+        border: 1px solid rgba(198,164,59,0.3);
+        z-index: 10000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .lang-switch-bottom .lang-btn-bottom {
+        background: none;
+        border: none;
+        color: #9C9C9C;
+        cursor: pointer;
+        font-size: 0.8rem;
+        padding: 8px 20px;
+        border-radius: 30px;
+        transition: all 0.2s;
+        font-weight: 600;
+        font-family: 'Open Sans', sans-serif;
+    }
+    
+    .lang-switch-bottom .lang-btn-bottom.active {
+        background: rgba(198,164,59,0.25);
+        color: #C6A43B;
+    }
+    
+    .lang-switch-bottom .lang-btn-bottom:hover {
+        background: rgba(198,164,59,0.15);
+        color: #C6A43B;
+    }
+    
+    @media (max-width: 768px) {
+        .lang-switch-bottom {
+            bottom: 16px;
+            right: 16px;
+            padding: 4px;
+        }
+        .lang-switch-bottom .lang-btn-bottom {
+            padding: 6px 14px;
+            font-size: 0.7rem;
+        }
+    }
+</style>
+
+<div class="lang-switch-bottom">
+    <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
+    <button class="lang-btn-bottom active" id="langEnBottom">🇬🇧 EN</button>
+</div>
+
+<script>
+(function() {
+    // Lấy nút
+    const viBtn = document.getElementById('langViBottom');
+    const enBtn = document.getElementById('langEnBottom');
+    
+    // Xử lý nút EN
+    function switchToEnglish() {
+        // Lưu URL hiện tại
+        const currentUrl = window.location.href;
+        localStorage.setItem('pendingTranslateUrl', currentUrl);
+        // Chuyển sang trang entrans.html
+        window.location.href = './entrans.html';
+    }
+    
+    // Xử lý nút VI - refresh lại trang hiện tại
+    function switchToVietnamese() {
+        // Nếu đang ở trang EN, quay về URL đã lưu
+        const pendingUrl = localStorage.getItem('pendingTranslateUrl');
+        if (pendingUrl && window.location.pathname.includes('entrans.html')) {
+            window.location.href = pendingUrl;
+        } else {
+            // Nếu đang ở trang VI, chỉ refresh
+            window.location.reload();
+        }
+    }
+    
+    // Gán sự kiện
+    if (viBtn && enBtn) {
+        viBtn.onclick = function(e) {
+            e.preventDefault();
+            // Nếu đang ở entrans.html thì quay về
+            if (window.location.pathname.includes('entrans.html')) {
+                const pendingUrl = localStorage.getItem('pendingTranslateUrl');
+                if (pendingUrl) {
+                    window.location.href = pendingUrl;
+                }
+            } else {
+                // Ở trang VI, không làm gì hoặc refresh
+                window.location.reload();
+            }
+        };
+        
+        enBtn.onclick = function(e) {
+            e.preventDefault();
+            // Nếu đã ở entrans.html thì không làm gì
+            if (window.location.pathname.includes('entrans.html')) {
+                return;
+            }
+            const currentUrl = window.location.href;
+            localStorage.setItem('pendingTranslateUrl', currentUrl);
+            window.location.href = './entrans.html';
+        };
     }
 })();
 </script>
