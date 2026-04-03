@@ -20,27 +20,39 @@
             overflow: hidden;
         }
         
-        .translate-toolbar {
+        /* Khung iframe chứa nội dung - chiếm toàn màn hình */
+        .iframe-container {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(10,10,10,0.98);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(198,164,59,0.2);
-            padding: 8px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            z-index: 10000;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: #0A0A0A;
         }
         
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #0A0A0A;
+        }
+        
+        /* Nút VI/EN ở góc phải dưới */
         .lang-buttons {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
             display: flex;
             gap: 8px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(10,10,10,0.9);
+            backdrop-filter: blur(20px);
             border-radius: 40px;
-            padding: 4px;
+            padding: 6px;
+            border: 1px solid rgba(198,164,59,0.3);
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
         .lang-btn {
@@ -49,7 +61,7 @@
             color: #9C9C9C;
             cursor: pointer;
             font-size: 0.8rem;
-            padding: 6px 20px;
+            padding: 8px 20px;
             border-radius: 30px;
             transition: all 0.2s;
             font-weight: 600;
@@ -66,24 +78,7 @@
             color: #C6A43B;
         }
         
-        .iframe-container {
-            position: fixed;
-            top: 55px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: calc(100% - 55px);
-            background: #0A0A0A;
-        }
-        
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #0A0A0A;
-        }
-        
+        /* Ẩn hoàn toàn mọi thành phần của Google Translate */
         .goog-te-banner-frame,
         .goog-te-menu-frame,
         .goog-te-ftab-frame,
@@ -102,6 +97,7 @@
             position: relative !important;
         }
         
+        /* Loading overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -137,16 +133,14 @@
         }
         
         @media (max-width: 768px) {
-            .translate-toolbar {
-                padding: 6px 16px;
+            .lang-buttons {
+                bottom: 16px;
+                right: 16px;
+                padding: 4px;
             }
             .lang-btn {
-                padding: 4px 16px;
+                padding: 6px 14px;
                 font-size: 0.7rem;
-            }
-            .iframe-container {
-                top: 48px;
-                height: calc(100% - 48px);
             }
         }
     </style>
@@ -158,15 +152,13 @@
     <div class="loading-text">Loading English version...</div>
 </div>
 
-<div class="translate-toolbar">
-    <div class="lang-buttons">
-        <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
-        <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
-    </div>
-</div>
-
 <div class="iframe-container">
     <iframe id="contentFrame" src="about:blank"></iframe>
+</div>
+
+<div class="lang-buttons">
+    <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
+    <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
 </div>
 
 <script>
@@ -177,7 +169,6 @@
     function removeAllLanguageButtons(doc) {
         if (!doc) return;
         
-        // Xóa các nút chuyển ngôn ngữ trong iframe (từ trang gốc)
         const selectorsToRemove = [
             '.lang-switch',
             '.lang-nav-btn',
@@ -186,9 +177,7 @@
             '.lang-buttons',
             '.translate-toolbar',
             '[onclick*="switchLanguage"]',
-            '[onclick*="switchLanguage"]',
-            '.lang-en-switch',
-            '#google_translate_element'
+            '.lang-en-switch'
         ];
         
         selectorsToRemove.forEach(selector => {
@@ -198,7 +187,6 @@
             });
         });
         
-        // Tìm và xóa bất kỳ nút nào có chứa VI hoặc EN
         const allElements = doc.querySelectorAll('button, a, div');
         allElements.forEach(el => {
             const text = el.textContent || '';
@@ -274,7 +262,6 @@
             const response = await fetch(url);
             let html = await response.text();
             
-            // Loại bỏ các nút chuyển ngôn ngữ khỏi HTML
             html = html.replace(/<div[^>]*class="[^"]*lang-switch[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<div[^>]*class="[^"]*lang-buttons[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<button[^>]*class="[^"]*lang-btn[^"]*"[^>]*>[\s\S]*?<\/button>/gi, '');
@@ -282,7 +269,6 @@
             html = html.replace(/<div[^>]*class="[^"]*translate-toolbar[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<div[^>]*class="[^"]*lang-en-switch[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             
-            // Loại bỏ function switchLanguage
             html = html.replace(/function switchLanguage[^{]*\{[\s\S]*?\}/gi, '');
             html = html.replace(/switchLanguage\s*\([^)]*\)/gi, '');
             
@@ -301,7 +287,6 @@
         const cleanedHtml = await fetchAndCleanContent(targetUrl);
         
         if (!cleanedHtml) {
-            // Fallback: load trực tiếp
             const iframe = document.getElementById('contentFrame');
             iframe.src = targetUrl;
             iframe.onload = function() {
@@ -322,7 +307,6 @@
             return;
         }
         
-        // Ghi nội dung đã làm sạch vào iframe
         const iframe = document.getElementById('contentFrame');
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
         iframeDoc.open();
