@@ -333,27 +333,33 @@ gtag('config', 'G-B51EJTDD2L');
     
     const isEnPage = window.location.pathname.includes('entrans.html');
     
+    // LUÔN dùng đường dẫn tuyệt đối đến entrans.html
+    const ENTRANS_PATH = '/entrans.html';
+    
     // Nút VI
     viBtn.onclick = function(e) {
         e.preventDefault();
         if (isEnPage) {
-            // Đang ở EN, quay về VI
+            // Đang ở EN, quay về VI (lấy từ localStorage hoặc về trang chủ)
             const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-            window.location.href = pendingUrl || './index.html';
+            if (pendingUrl) {
+                window.location.href = pendingUrl;
+            } else {
+                window.location.href = '/';
+            }
         }
-        // Nếu đang ở VI, không làm gì
     };
     
     // Nút EN
     enBtn.onclick = function(e) {
         e.preventDefault();
         if (!isEnPage) {
-            // Đang ở VI, chuyển sang EN
+            // Lưu URL hiện tại (đường dẫn tuyệt đối)
             const currentUrl = window.location.href;
             localStorage.setItem('pendingTranslateUrl', currentUrl);
-            window.location.href = './entrans.html';
+            // Chuyển đến entrans.html bằng đường dẫn tuyệt đối
+            window.location.href = ENTRANS_PATH;
         }
-        // Nếu đang ở EN, không làm gì
     };
 })();
 </script>
