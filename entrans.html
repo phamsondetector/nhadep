@@ -19,89 +19,34 @@
             color: #F5F5F5;
         }
         
-        /* Toolbar cố định ở trên cùng */
+        /* Toolbar cố định ở trên cùng - rất nhỏ gọn */
         .translate-toolbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(10,10,10,0.95);
+            background: rgba(10,10,10,0.98);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(198,164,59,0.3);
-            padding: 12px 24px;
+            border-bottom: 1px solid rgba(198,164,59,0.2);
+            padding: 8px 24px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
+            justify-content: flex-end;
             z-index: 10000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .toolbar-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .logo span {
-            color: #C6A43B;
-        }
-        
-        .toolbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .lang-buttons {
-            display: flex;
-            gap: 8px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 40px;
-            padding: 4px;
-        }
-        
-        .lang-btn {
-            background: none;
-            border: none;
-            color: #9C9C9C;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 6px 16px;
-            border-radius: 30px;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-        
-        .lang-btn.active {
-            background: rgba(198,164,59,0.25);
-            color: #C6A43B;
-        }
-        
-        .lang-btn:hover {
-            background: rgba(198,164,59,0.15);
-            color: #C6A43B;
         }
         
         .back-btn {
             background: linear-gradient(135deg, #C6A43B, #D4AF37);
             color: #0A0A0A;
             text-decoration: none;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 40px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             transition: transform 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .back-btn:hover {
@@ -111,12 +56,12 @@
         /* Khung iframe chứa nội dung */
         .iframe-container {
             position: fixed;
-            top: 70px;
+            top: 45px;
             left: 0;
             right: 0;
             bottom: 0;
             width: 100%;
-            height: calc(100% - 70px);
+            height: calc(100% - 45px);
             background: #0A0A0A;
         }
         
@@ -127,18 +72,23 @@
             background: #0A0A0A;
         }
         
-        /* Ẩn widget translate mặc định */
-        .goog-te-banner-frame {
+        /* Ẩn hoàn toàn mọi thành phần của Google Translate */
+        .goog-te-banner-frame,
+        .goog-te-menu-frame,
+        .goog-te-ftab-frame,
+        .goog-te-gadget-simple,
+        .goog-te-spinner-pos,
+        .goog-te-balloon-frame,
+        .skiptranslate,
+        .goog-te-gadget,
+        #google_translate_element,
+        .goog-te-banner {
             display: none !important;
         }
         
         body {
             top: 0px !important;
             position: relative !important;
-        }
-        
-        .skiptranslate {
-            display: none !important;
         }
         
         /* Loading overlay */
@@ -173,26 +123,20 @@
         .loading-text {
             color: #C6A43B;
             font-size: 0.9rem;
+            letter-spacing: 1px;
         }
         
         @media (max-width: 768px) {
             .translate-toolbar {
-                padding: 10px 16px;
+                padding: 6px 16px;
             }
-            .logo {
-                font-size: 1rem;
-            }
-            .lang-btn {
+            .back-btn {
                 padding: 4px 12px;
                 font-size: 0.7rem;
             }
-            .back-btn {
-                padding: 6px 14px;
-                font-size: 0.7rem;
-            }
             .iframe-container {
-                top: 60px;
-                height: calc(100% - 60px);
+                top: 40px;
+                height: calc(100% - 40px);
             }
         }
     </style>
@@ -205,55 +149,91 @@
 </div>
 
 <div class="translate-toolbar">
-    <div class="toolbar-left">
-        <div class="logo">
-            Nhà<span>Đẹp</span>
-        </div>
-        <div class="lang-buttons">
-            <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
-            <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
-        </div>
-    </div>
-    <div class="toolbar-right">
-        <a href="#" class="back-btn" id="backToOriginal">
-            <i class="fa-solid fa-arrow-left"></i> Back to Vietnamese
-        </a>
-    </div>
+    <a href="#" class="back-btn" id="backToOriginal">
+        <i class="fa-solid fa-arrow-left"></i> Back to Vietnamese
+    </a>
 </div>
 
 <div class="iframe-container">
     <iframe id="contentFrame" src="about:blank"></iframe>
 </div>
 
-<!-- Google Translate API -->
-<script type="text/javascript">
+<script>
     let targetUrl = '';
-    let isTranslating = false;
-    let translateInterval = null;
+    let translateAttempts = 0;
+    const MAX_ATTEMPTS = 20;
     
-    // Hàm kích hoạt Google Translate trên iframe
-    function triggerTranslate() {
+    // Hàm kích hoạt Google Translate sang tiếng Anh
+    function triggerTranslateToEnglish() {
         try {
             const iframe = document.getElementById('contentFrame');
-            if (!iframe || !iframe.contentWindow) return;
+            if (!iframe || !iframe.contentWindow || !iframe.contentDocument) {
+                if (translateAttempts < MAX_ATTEMPTS) {
+                    translateAttempts++;
+                    setTimeout(triggerTranslateToEnglish, 500);
+                }
+                return;
+            }
             
-            // Tìm và chọn ngôn ngữ EN trong iframe
-            const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
+            const iframeDoc = iframe.contentDocument;
+            const select = iframeDoc.querySelector('.goog-te-combo');
+            
             if (select) {
+                // Chọn tiếng Anh và kích hoạt sự kiện change
                 select.value = 'en';
                 select.dispatchEvent(new Event('change'));
-                console.log('Translation triggered');
+                console.log('Auto-translated to English');
+                
+                // Ẩn tất cả các thành phần Google Translate trong iframe
+                setTimeout(() => {
+                    hideGoogleTranslateElements(iframeDoc);
+                }, 200);
             } else {
-                // Nếu chưa có, thử lại sau
-                setTimeout(triggerTranslate, 500);
+                if (translateAttempts < MAX_ATTEMPTS) {
+                    translateAttempts++;
+                    setTimeout(triggerTranslateToEnglish, 500);
+                }
             }
         } catch(e) {
-            console.log('Waiting for iframe to load...');
-            setTimeout(triggerTranslate, 500);
+            if (translateAttempts < MAX_ATTEMPTS) {
+                translateAttempts++;
+                setTimeout(triggerTranslateToEnglish, 500);
+            }
         }
     }
     
-    // Hàm thêm Google Translate vào iframe
+    // Hàm ẩn tất cả các thành phần Google Translate
+    function hideGoogleTranslateElements(doc) {
+        if (!doc) return;
+        
+        const hideSelectors = [
+            '.goog-te-banner-frame',
+            '.goog-te-menu-frame',
+            '.goog-te-ftab-frame',
+            '.goog-te-gadget-simple',
+            '.goog-te-spinner-pos',
+            '.goog-te-balloon-frame',
+            '.skiptranslate',
+            '.goog-te-gadget',
+            '#google_translate_element',
+            '.goog-te-banner'
+        ];
+        
+        hideSelectors.forEach(selector => {
+            const elements = doc.querySelectorAll(selector);
+            elements.forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+        });
+        
+        // Ẩn banner và điều chỉnh body
+        if (doc.body) {
+            doc.body.style.top = '0px';
+            doc.body.style.position = 'relative';
+        }
+    }
+    
+    // Hàm thêm Google Translate vào iframe và tự động dịch
     function injectTranslateToIframe() {
         try {
             const iframe = document.getElementById('contentFrame');
@@ -263,14 +243,15 @@
             }
             
             const iframeDoc = iframe.contentDocument;
+            const iframeWin = iframe.contentWindow;
             
-            // Kiểm tra nếu đã có translate script thì bỏ qua
+            // Kiểm tra nếu đã có translate script thì chỉ cần kích hoạt dịch
             if (iframeDoc.querySelector('#google-translate-script')) {
-                triggerTranslate();
+                triggerTranslateToEnglish();
                 return;
             }
             
-            // Thêm meta viewport
+            // Thêm meta viewport nếu chưa có
             if (!iframeDoc.querySelector('meta[name="viewport"]')) {
                 const meta = iframeDoc.createElement('meta');
                 meta.name = 'viewport';
@@ -278,41 +259,52 @@
                 iframeDoc.head.appendChild(meta);
             }
             
+            // Định nghĩa hàm callback cho Google Translate
+            iframeWin.setupGoogleTranslate = function() {
+                if (iframeWin.google && iframeWin.google.translate) {
+                    new iframeWin.google.translate.TranslateElement({
+                        pageLanguage: 'vi',
+                        includedLanguages: 'en',
+                        layout: iframeWin.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: true
+                    }, 'google_translate_element');
+                    
+                    // Ẩn widget ngay sau khi tạo
+                    setTimeout(() => {
+                        hideGoogleTranslateElements(iframeDoc);
+                        // Tự động kích hoạt dịch sang tiếng Anh
+                        triggerTranslateToEnglish();
+                    }, 300);
+                }
+            };
+            
             // Thêm script Google Translate
             const script = iframeDoc.createElement('script');
             script.id = 'google-translate-script';
             script.src = 'https://translate.google.com/translate_a/element.js?cb=setupGoogleTranslate';
             script.async = true;
-            
-            // Định nghĩa hàm callback trong iframe
-            iframeDoc.defaultView.setupGoogleTranslate = function() {
-                new iframeDoc.defaultView.google.translate.TranslateElement({
-                    pageLanguage: 'vi',
-                    includedLanguages: 'en',
-                    layout: iframeDoc.defaultView.google.translate.TranslateElement.InlineLayout.SIMPLE
-                }, 'google_translate_element');
-                
-                // Ẩn widget
-                setTimeout(() => {
-                    const banner = iframeDoc.querySelector('.goog-te-banner-frame');
-                    if (banner) banner.style.display = 'none';
-                    if (iframeDoc.body) iframeDoc.body.style.top = '0px';
-                }, 500);
-                
-                // Kích hoạt dịch
-                setTimeout(triggerTranslate, 1000);
-            };
-            
             iframeDoc.head.appendChild(script);
             
-            // Tạo phần tử chứa translate
+            // Tạo phần tử chứa translate (ẩn)
             const translateDiv = iframeDoc.createElement('div');
             translateDiv.id = 'google_translate_element';
             translateDiv.style.position = 'absolute';
             translateDiv.style.visibility = 'hidden';
             translateDiv.style.width = '0';
             translateDiv.style.height = '0';
+            translateDiv.style.pointerEvents = 'none';
             iframeDoc.body.appendChild(translateDiv);
+            
+            // Thêm style ẩn vào iframe
+            const style = iframeDoc.createElement('style');
+            style.textContent = `
+                .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
+                .goog-te-gadget-simple, .goog-te-spinner-pos, .goog-te-balloon-frame,
+                .skiptranslate, .goog-te-gadget, #google_translate_element,
+                .goog-te-banner { display: none !important; }
+                body { top: 0px !important; position: relative !important; }
+            `;
+            iframeDoc.head.appendChild(style);
             
         } catch(e) {
             console.error('Inject error:', e);
@@ -334,8 +326,8 @@
         iframe.onload = function() {
             setTimeout(() => {
                 loadingOverlay.style.display = 'none';
-                // Chèn Google Translate vào iframe
-                setTimeout(injectTranslateToIframe, 500);
+                // Chèn Google Translate vào iframe và tự động dịch
+                injectTranslateToIframe();
             }, 800);
         };
         
@@ -343,32 +335,6 @@
             loadingOverlay.style.display = 'none';
             alert('Cannot load the page. Please check your connection.');
         };
-    }
-    
-    // Hàm chuyển đổi ngôn ngữ
-    function switchToEnglish() {
-        const btnEn = document.getElementById('btnEn');
-        const btnVi = document.getElementById('btnVi');
-        
-        btnEn.classList.add('active');
-        btnVi.classList.remove('active');
-        
-        // Kích hoạt lại dịch
-        setTimeout(() => {
-            try {
-                const iframe = document.getElementById('contentFrame');
-                const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
-                if (select && select.value !== 'en') {
-                    select.value = 'en';
-                    select.dispatchEvent(new Event('change'));
-                }
-            } catch(e) {}
-        }, 500);
-    }
-    
-    function switchToVietnamese() {
-        // Chuyển về trang gốc
-        window.location.href = targetUrl;
     }
     
     // Khởi tạo
@@ -380,14 +346,10 @@
         const backBtn = document.getElementById('backToOriginal');
         backBtn.href = targetUrl;
         
-        // Gắn sự kiện cho nút
-        document.getElementById('btnVi').onclick = switchToVietnamese;
-        document.getElementById('btnEn').onclick = switchToEnglish;
-        
         // Tải trang vào iframe
         await loadPageToIframe(targetUrl);
         
-        // Xóa localStorage
+        // Xóa localStorage sau khi đã dùng
         setTimeout(() => {
             localStorage.removeItem('pendingTranslateUrl');
         }, 1000);
