@@ -279,11 +279,11 @@ gtag('config', 'G-B51EJTDD2L');
         bottom: 24px;
         right: 24px;
         display: flex;
-        gap: 8px;
+        gap: 0px;
         background: rgba(10,10,10,0.9);
         backdrop-filter: blur(20px);
         border-radius: 40px;
-        padding: 6px;
+        padding: 4px;
         border: 1px solid rgba(198,164,59,0.3);
         z-index: 10000;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -295,16 +295,12 @@ gtag('config', 'G-B51EJTDD2L');
         color: #9C9C9C;
         cursor: pointer;
         font-size: 0.8rem;
-        padding: 8px 20px;
+        padding: 8px 18px;
         border-radius: 30px;
         transition: all 0.2s;
         font-weight: 600;
         font-family: 'Open Sans', sans-serif;
-    }
-    
-    .lang-switch-bottom .lang-btn-bottom.active {
-        background: rgba(198,164,59,0.25);
-        color: #C6A43B;
+        margin: 0;
     }
     
     .lang-switch-bottom .lang-btn-bottom:hover {
@@ -316,10 +312,10 @@ gtag('config', 'G-B51EJTDD2L');
         .lang-switch-bottom {
             bottom: 16px;
             right: 16px;
-            padding: 4px;
+            padding: 3px;
         }
         .lang-switch-bottom .lang-btn-bottom {
-            padding: 6px 14px;
+            padding: 5px 12px;
             font-size: 0.7rem;
         }
     }
@@ -327,63 +323,47 @@ gtag('config', 'G-B51EJTDD2L');
 
 <div class="lang-switch-bottom">
     <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
-    <button class="lang-btn-bottom active" id="langEnBottom">🇬🇧 EN</button>
+    <button class="lang-btn-bottom" id="langEnBottom">🇬🇧 EN</button>
 </div>
 
 <script>
 (function() {
-    // Lấy nút
     const viBtn = document.getElementById('langViBottom');
     const enBtn = document.getElementById('langEnBottom');
     
-    // Xử lý nút EN
-    function switchToEnglish() {
-        // Lưu URL hiện tại
-        const currentUrl = window.location.href;
-        localStorage.setItem('pendingTranslateUrl', currentUrl);
-        // Chuyển sang trang entrans.html
-        window.location.href = './entrans.html';
-    }
+    const isEnPage = window.location.pathname.includes('entrans.html');
     
-    // Xử lý nút VI - refresh lại trang hiện tại
-    function switchToVietnamese() {
-        // Nếu đang ở trang EN, quay về URL đã lưu
-        const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-        if (pendingUrl && window.location.pathname.includes('entrans.html')) {
-            window.location.href = pendingUrl;
-        } else {
-            // Nếu đang ở trang VI, chỉ refresh
-            window.location.reload();
+    // Tự động tính đường dẫn đúng đến entrans.html
+    function getEntransPath() {
+        const currentPath = window.location.pathname;
+        // Nếu đang ở thư mục con (nhadep/xxx.html hoặc blogs/xxx.html)
+        if (currentPath.includes('/nhadep/') || currentPath.includes('/blogs/')) {
+            return '../entrans.html';
         }
+        // Nếu đang ở thư mục gốc
+        return './entrans.html';
     }
     
-    // Gán sự kiện
-    if (viBtn && enBtn) {
-        viBtn.onclick = function(e) {
-            e.preventDefault();
-            // Nếu đang ở entrans.html thì quay về
-            if (window.location.pathname.includes('entrans.html')) {
-                const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-                if (pendingUrl) {
-                    window.location.href = pendingUrl;
-                }
-            } else {
-                // Ở trang VI, không làm gì hoặc refresh
-                window.location.reload();
-            }
-        };
-        
-        enBtn.onclick = function(e) {
-            e.preventDefault();
-            // Nếu đã ở entrans.html thì không làm gì
-            if (window.location.pathname.includes('entrans.html')) {
-                return;
-            }
+    // Nút VI
+    viBtn.onclick = function(e) {
+        e.preventDefault();
+        if (isEnPage) {
+            // Đang ở EN, quay về VI
+            const pendingUrl = localStorage.getItem('pendingTranslateUrl');
+            window.location.href = pendingUrl || './index.html';
+        }
+    };
+    
+    // Nút EN
+    enBtn.onclick = function(e) {
+        e.preventDefault();
+        if (!isEnPage) {
+            // Đang ở VI, chuyển sang EN
             const currentUrl = window.location.href;
             localStorage.setItem('pendingTranslateUrl', currentUrl);
-            window.location.href = './entrans.html';
-        };
-    }
+            window.location.href = getEntransPath();
+        }
+    };
 })();
 </script>
 </body>
