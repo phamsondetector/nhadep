@@ -272,18 +272,18 @@ gtag('config', 'G-B51EJTDD2L');
     <a href="../index.html" class="back-btn">← Quay lại trang chủ</a>
   </div>
 </div>
-<!-- Nút chuyển đổi ngôn ngữ góc phải dưới -->
+<!-- Nút chuyển đổi ngôn ngữ góc phải dưới - sát nhau nhất -->
 <style>
     .lang-switch-bottom {
         position: fixed;
         bottom: 24px;
         right: 24px;
         display: flex;
-        gap: 0px;
-        background: rgba(10,10,10,0.9);
+        gap: 1px;                    /* sát gần như chạm */
+        background: rgba(10,10,10,0.95);
         backdrop-filter: blur(20px);
-        border-radius: 40px;
-        padding: 4px;
+        border-radius: 50px;
+        padding: 3px;
         border: 1px solid rgba(198,164,59,0.3);
         z-index: 10000;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -294,17 +294,23 @@ gtag('config', 'G-B51EJTDD2L');
         border: none;
         color: #9C9C9C;
         cursor: pointer;
-        font-size: 0.8rem;
-        padding: 8px 18px;
-        border-radius: 30px;
+        font-size: 0.82rem;
+        padding: 8px 15px;           /* gọn hơn */
+        border-radius: 50px;
         transition: all 0.2s;
         font-weight: 600;
         font-family: 'Open Sans', sans-serif;
-        margin: 0;
+        white-space: nowrap;
+        min-width: 68px;
     }
     
     .lang-switch-bottom .lang-btn-bottom:hover {
-        background: rgba(198,164,59,0.15);
+        background: rgba(198,164,59,0.18);
+        color: #C6A43B;
+    }
+
+    .lang-switch-bottom .lang-btn-bottom.active {
+        background: rgba(198,164,59,0.28);
         color: #C6A43B;
     }
     
@@ -313,10 +319,12 @@ gtag('config', 'G-B51EJTDD2L');
             bottom: 16px;
             right: 16px;
             padding: 3px;
+            gap: 0px;
         }
         .lang-switch-bottom .lang-btn-bottom {
-            padding: 5px 12px;
-            font-size: 0.7rem;
+            padding: 7px 13px;
+            font-size: 0.73rem;
+            min-width: 64px;
         }
     }
 </style>
@@ -331,34 +339,30 @@ gtag('config', 'G-B51EJTDD2L');
     const viBtn = document.getElementById('langViBottom');
     const enBtn = document.getElementById('langEnBottom');
     
-    const isEnPage = window.location.pathname.includes('entrans.html');
-    
-    // LUÔN dùng đường dẫn tuyệt đối đến entrans.html
-    const ENTRANS_PATH = '/entrans.html';
-    
-    // Nút VI
+    // Kiểm tra đang ở trang EN hay không
+    const isEnPage = window.location.pathname.includes('entrans.html') || 
+                     window.location.href.includes('entrans.html');
+
+    // Nút VI → về trang gốc (index.html)
     viBtn.onclick = function(e) {
         e.preventDefault();
         if (isEnPage) {
-            // Đang ở EN, quay về VI (lấy từ localStorage hoặc về trang chủ)
             const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-            if (pendingUrl) {
-                window.location.href = pendingUrl;
-            } else {
-                window.location.href = '/';
-            }
+            // Ưu tiên pendingUrl, fallback về /index.html (đường dẫn tuyệt đối từ gốc)
+            window.location.href = pendingUrl || '/index.html';
         }
     };
-    
-    // Nút EN
+
+    // Nút EN → chuyển sang entrans.html
     enBtn.onclick = function(e) {
         e.preventDefault();
         if (!isEnPage) {
-            // Lưu URL hiện tại (đường dẫn tuyệt đối)
+            // Lưu URL hiện tại một cách an toàn
             const currentUrl = window.location.href;
             localStorage.setItem('pendingTranslateUrl', currentUrl);
-            // Chuyển đến entrans.html bằng đường dẫn tuyệt đối
-            window.location.href = ENTRANS_PATH;
+            
+            // Dùng đường dẫn tuyệt đối để tránh lỗi resolve
+            window.location.href = '/entrans.html';
         }
     };
 })();
