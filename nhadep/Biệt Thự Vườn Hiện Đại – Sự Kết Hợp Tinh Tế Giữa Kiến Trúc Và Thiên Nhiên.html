@@ -333,24 +333,20 @@ gtag('config', 'G-B51EJTDD2L');
     
     const isEnPage = window.location.pathname.includes('entrans.html');
     
-    // Tự động tính đường dẫn đúng đến entrans.html
-    function getEntransPath() {
-        const currentPath = window.location.pathname;
-        // Nếu đang ở thư mục con (nhadep/xxx.html hoặc blogs/xxx.html)
-        if (currentPath.includes('/nhadep/') || currentPath.includes('/blogs/')) {
-            return '../entrans.html';
-        }
-        // Nếu đang ở thư mục gốc
-        return './entrans.html';
-    }
+    // LUÔN dùng đường dẫn tuyệt đối đến entrans.html
+    const ENTRANS_PATH = '/entrans.html';
     
     // Nút VI
     viBtn.onclick = function(e) {
         e.preventDefault();
         if (isEnPage) {
-            // Đang ở EN, quay về VI
+            // Đang ở EN, quay về VI (lấy từ localStorage hoặc về trang chủ)
             const pendingUrl = localStorage.getItem('pendingTranslateUrl');
-            window.location.href = pendingUrl || './index.html';
+            if (pendingUrl) {
+                window.location.href = pendingUrl;
+            } else {
+                window.location.href = '/';
+            }
         }
     };
     
@@ -358,10 +354,11 @@ gtag('config', 'G-B51EJTDD2L');
     enBtn.onclick = function(e) {
         e.preventDefault();
         if (!isEnPage) {
-            // Đang ở VI, chuyển sang EN
+            // Lưu URL hiện tại (đường dẫn tuyệt đối)
             const currentUrl = window.location.href;
             localStorage.setItem('pendingTranslateUrl', currentUrl);
-            window.location.href = getEntransPath();
+            // Chuyển đến entrans.html bằng đường dẫn tuyệt đối
+            window.location.href = ENTRANS_PATH;
         }
     };
 })();
