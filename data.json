@@ -42,16 +42,5 @@
     "kind": "blogs",
     "Status": "posted",
     "relatedlink": "./Lỗ Ban - Thần Xây Dựng Và Thầy Tổ Nghề Mộc.html"
-  },
-  {
-    "id": "1775224329671",
-    "date": "03/04/2026",
-    "title": "test",
-    "summary": "test",
-    "url": "./nhadep/test.html",
-    "tag": "Hiện đại",
-    "kind": "nhadep",
-    "Status": "posted",
-    "relatedlink": "./test.html"
   }
 ]
