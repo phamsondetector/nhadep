@@ -55,6 +55,7 @@
             transition: all 0.2s;
             font-weight: 600;
             font-family: 'Open Sans', sans-serif;
+            type: button; /* ngăn chặn bất kỳ hành vi submit nào */
         }
         
         .lang-btn.active {
@@ -164,8 +165,8 @@
 
 <div class="translate-toolbar">
     <div class="lang-buttons">
-        <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
-        <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
+        <button class="lang-btn" id="btnVi" type="button">🇻🇳 VI</button>
+        <button class="lang-btn active" id="btnEn" type="button">🇬🇧 EN</button>
     </div>
 </div>
 
@@ -177,33 +178,36 @@
     let targetUrl = '';
     let isFirstLoad = true;
     
-    // Hàm kích hoạt Google Translate sang tiếng Anh
-    function triggerTranslateToEnglish() {
+    // Hàm trigger translate chung (không reload, không fetch lại trang)
+    function triggerTranslateTo(lang) {
         try {
             const iframe = document.getElementById('contentFrame');
             if (!iframe || !iframe.contentWindow || !iframe.contentDocument) {
-                setTimeout(triggerTranslateToEnglish, 300);
+                setTimeout(() => triggerTranslateTo(lang), 300);
                 return;
             }
             
             const iframeDoc = iframe.contentDocument;
             const select = iframeDoc.querySelector('.goog-te-combo');
             
-            if (select && select.value !== 'en') {
-                select.value = 'en';
+            // 'en' = tiếng Anh, '' = tiếng Việt gốc (original)
+            const targetValue = lang === 'en' ? 'en' : '';
+            
+            if (select && select.value !== targetValue) {
+                select.value = targetValue;
                 select.dispatchEvent(new Event('change'));
-                console.log('Auto-translated to English');
+                console.log(`Auto-translated to ${lang === 'en' ? 'English' : 'Vietnamese'}`);
                 
                 // Ẩn các thành phần Google Translate
                 setTimeout(() => {
                     hideGoogleTranslateElements(iframeDoc);
                 }, 200);
             } else if (!select) {
-                setTimeout(triggerTranslateToEnglish, 300);
+                setTimeout(() => triggerTranslateTo(lang), 300);
             }
         } catch(e) {
             console.log('Waiting for iframe...');
-            setTimeout(triggerTranslateToEnglish, 300);
+            setTimeout(() => triggerTranslateTo(lang), 300);
         }
     }
     
@@ -252,7 +256,7 @@
             // Kiểm tra nếu đã inject rồi thì không inject lại
             if (iframeDoc.querySelector('#google-translate-script')) {
                 console.log('Translate already injected');
-                triggerTranslateToEnglish();
+                triggerTranslateTo('en'); // mặc định EN khi load lần đầu
                 return;
             }
             
@@ -268,7 +272,7 @@
                     
                     setTimeout(() => {
                         hideGoogleTranslateElements(iframeDoc);
-                        triggerTranslateToEnglish();
+                        triggerTranslateTo('en'); // chuyển sang EN ngay khi inject xong
                     }, 300);
                 }
             };
@@ -333,7 +337,7 @@
         };
     }
     
-    // Xử lý nút EN - KHÔNG fetch lại, chỉ kích hoạt translate
+    // Xử lý nút EN - chuyển sang tiếng Anh (không reload)
     function handleEnClick() {
         const btnVi = document.getElementById('btnVi');
         const btnEn = document.getElementById('btnEn');
@@ -341,33 +345,18 @@
         btnEn.classList.add('active');
         btnVi.classList.remove('active');
         
-        // Chỉ kích hoạt translate, không reload iframe
-        setTimeout(() => {
-            try {
-                const iframe = document.getElementById('contentFrame');
-                const select = iframe.contentWindow.document.querySelector('.goog-te-combo');
-                if (select && select.value !== 'en') {
-                    select.value = 'en';
-                    select.dispatchEvent(new Event('change'));
-                } else if (!select) {
-                    // Nếu chưa có select, thử lại
-                    setTimeout(() => {
-                        const select2 = iframe.contentWindow.document.querySelector('.goog-te-combo');
-                        if (select2 && select2.value !== 'en') {
-                            select2.value = 'en';
-                            select2.dispatchEvent(new Event('change'));
-                        }
-                    }, 500);
-                }
-            } catch(e) {
-                console.log('Cannot trigger translate');
-            }
-        }, 200);
+        triggerTranslateTo('en');
     }
     
-    // Xử lý nút VI - quay về trang gốc
+    // Xử lý nút VI - chuyển về tiếng Việt gốc (KHÔNG reload, KHÔNG fetch lại trang)
     function handleViClick() {
-        window.location.href = targetUrl;
+        const btnVi = document.getElementById('btnVi');
+        const btnEn = document.getElementById('btnEn');
+        
+        btnVi.classList.add('active');
+        btnEn.classList.remove('active');
+        
+        triggerTranslateTo('vi'); // '' = original Vietnamese
     }
     
     // Khởi tạo
@@ -377,7 +366,7 @@
         const btnVi = document.getElementById('btnVi');
         const btnEn = document.getElementById('btnEn');
         
-        // Gán sự kiện trực tiếp, không dùng clone để tránh mất sự kiện
+        // Gán sự kiện trực tiếp
         btnVi.onclick = handleViClick;
         btnEn.onclick = handleEnClick;
         
