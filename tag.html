@@ -334,6 +334,61 @@
         Nhà<span>Đẹp</span>
     </h1>
     <a href="./index.html">← Về trang chủ</a>
+
+<div class="lang-switch" style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+    <button class="lang-tag-btn active" data-lang="vi" onclick="switchLanguage('vi')" style="background: none; border: none; color: var(--text); cursor: pointer; font-size: 0.8rem; padding: 6px 12px; border-radius: 30px; transition: all 0.2s; font-weight: 500;">🇻🇳 VI</button>
+    <span style="color: var(--dim);">|</span>
+    <button class="lang-tag-btn" data-lang="en" onclick="switchLanguage('en')" style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; padding: 6px 12px; border-radius: 30px; transition: all 0.2s; font-weight: 500;">🇬🇧 EN</button>
+</div>
+
+<script>
+function switchLanguage(lang) {
+    if (lang === 'en') {
+        const currentUrl = window.location.href;
+        localStorage.setItem('pendingTranslateUrl', currentUrl);
+        window.location.href = './entrans.html';
+    } else {
+        document.querySelectorAll('.lang-tag-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.color = 'var(--muted)';
+        });
+        const viBtn = document.querySelector('.lang-tag-btn[data-lang="vi"]');
+        if (viBtn) {
+            viBtn.classList.add('active');
+            viBtn.style.color = 'var(--gold)';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const viBtn = document.querySelector('.lang-tag-btn[data-lang="vi"]');
+    if (viBtn) {
+        viBtn.classList.add('active');
+        viBtn.style.color = 'var(--gold)';
+    }
+});
+</script>
+
+<style>
+.lang-tag-btn:hover {
+    background: rgba(198,164,59,0.15) !important;
+    color: var(--gold) !important;
+}
+.lang-tag-btn.active {
+    background: rgba(198,164,59,0.2) !important;
+    color: var(--gold) !important;
+}
+@media (max-width: 768px) {
+    .lang-switch {
+        margin-left: auto !important;
+    }
+    .lang-tag-btn {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+    }
+}
+</style>
+
 </nav>
 
 <div class="hero">
