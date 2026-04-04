@@ -914,25 +914,45 @@
         const viBtn = document.getElementById('langViBottom');
         const enBtn = document.getElementById('langEnBottom');
         const currentUrl = window.location.href;
-        const isEnPage = currentUrl.includes('_en.html');
 
-        // Nút VI: chỉ hoạt động khi đang ở trang _en.html → chuyển về .html
+        // Kiểm tra xem đang ở trang tiếng Anh hay không
+        const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
+
+        // === NÚT VI ===
         viBtn.onclick = (e) => {
             e.preventDefault();
             if (isEnPage) {
-                let viUrl = currentUrl.replace('_en.html', '.html');
+                // Đang ở trang _en → chuyển về trang tiếng Việt
+                let viUrl = currentUrl.replace('_en.html', '.html')
+                                     .replace('_en', '');   // phòng trường hợp không có .html
                 window.location.href = viUrl;
             }
+            // Nếu đang ở trang tiếng Việt thì không làm gì
         };
 
-        // Nút EN: chỉ hoạt động khi đang ở trang .html → chuyển sang _en.html
+        // === NÚT EN ===
         enBtn.onclick = (e) => {
             e.preventDefault();
             if (!isEnPage) {
+                // Đang ở trang tiếng Việt → chuyển sang trang tiếng Anh
                 let enUrl = currentUrl.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
+            // Nếu đang ở trang tiếng Anh thì không làm gì
         };
+
+        // Cập nhật giao diện nút (thêm class active cho nút đang được chọn)
+        if (isEnPage) {
+            enBtn.style.background = 'rgba(198,164,59,0.2)';
+            enBtn.style.color = '#C6A43B';
+            viBtn.style.background = 'none';
+            viBtn.style.color = '#9C9C9C';
+        } else {
+            viBtn.style.background = 'rgba(198,164,59,0.2)';
+            viBtn.style.color = '#C6A43B';
+            enBtn.style.background = 'none';
+            enBtn.style.color = '#9C9C9C';
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -941,6 +961,8 @@
         setupLanguageSwitch();
         setTimeout(() => initLazyLoading(), 100);
     });
+
+    // Export các hàm cần thiết
     window.initLazyLoading = initLazyLoading;
     window.toggleFilterDropdown = toggleFilterDropdown;
 </script>
