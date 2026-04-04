@@ -28,42 +28,63 @@
             border: none;
             background: #0A0A0A;
         }
-        
-        .lang-buttons {
+
+        /* ==================== NÚT VI/EN MỚI (bắt chước đúng code bạn đưa) ==================== */
+        .lang-switch-bottom {
             position: fixed;
-            bottom: 24px; right: 24px;
-            display: flex; 
-            gap: 4px;                    /* ← ĐÃ CHỈNH GẦN HƠN */
-            background: rgba(10,10,10,0.9);
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            gap: 1px;                    /* sát gần như chạm */
+            background: rgba(10,10,10,0.95);
             backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 6px;
+            border-radius: 50px;
+            padding: 3px;
             border: 1px solid rgba(198,164,59,0.3);
             z-index: 10000;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
-        .lang-btn {
-            background: none; border: none;
+        .lang-switch-bottom .lang-btn-bottom {
+            background: none;
+            border: none;
             color: #9C9C9C;
             cursor: pointer;
-            font-size: 0.8rem;
-            padding: 8px 20px;
-            border-radius: 30px;
+            font-size: 0.82rem;
+            padding: 8px 15px;           /* gọn hơn */
+            border-radius: 50px;
             transition: all 0.2s;
             font-weight: 600;
+            font-family: 'Open Sans', sans-serif;
+            white-space: nowrap;
+            min-width: 68px;
         }
         
-        .lang-btn.active {
-            background: rgba(198,164,59,0.25);
+        .lang-switch-bottom .lang-btn-bottom:hover {
+            background: rgba(198,164,59,0.18);
+            color: #C6A43B;
+        }
+
+        .lang-switch-bottom .lang-btn-bottom.active {
+            background: rgba(198,164,59,0.28);
             color: #C6A43B;
         }
         
-        .lang-btn:hover {
-            background: rgba(198,164,59,0.15);
-            color: #C6A43B;
+        @media (max-width: 768px) {
+            .lang-switch-bottom {
+                bottom: 16px;
+                right: 16px;
+                padding: 3px;
+                gap: 0px;
+            }
+            .lang-switch-bottom .lang-btn-bottom {
+                padding: 7px 13px;
+                font-size: 0.73rem;
+                min-width: 64px;
+            }
         }
-        
+        /* ==================== KẾT THÚC PHẦN NÚT MỚI ==================== */
+
         .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
         .goog-te-gadget-simple, .goog-te-spinner-pos, .goog-te-balloon-frame,
         .skiptranslate, .goog-te-gadget, #google_translate_element, .goog-te-banner {
@@ -97,19 +118,6 @@
             font-size: 0.9rem;
             letter-spacing: 1px;
         }
-        
-        @media (max-width: 768px) {
-            .lang-buttons { 
-                bottom: 16px; 
-                right: 16px; 
-                padding: 4px; 
-                gap: 4px;        /* ← Mobile cũng gần hơn */
-            }
-            .lang-btn { 
-                padding: 6px 14px; 
-                font-size: 0.7rem; 
-            }
-        }
     </style>
 </head>
 <body>
@@ -123,9 +131,10 @@
     <iframe id="contentFrame" src="about:blank"></iframe>
 </div>
 
-<div class="lang-buttons">
-    <button class="lang-btn" id="btnVi">🇻🇳 VI</button>
-    <button class="lang-btn active" id="btnEn">🇬🇧 EN</button>
+<!-- Nút chuyển đổi ngôn ngữ (đã thay class theo đúng code bạn đưa) -->
+<div class="lang-switch-bottom">
+    <button class="lang-btn-bottom" id="btnVi">🇻🇳 VI</button>
+    <button class="lang-btn-bottom active" id="btnEn">🇬🇧 EN</button>
 </div>
 
 <script>
