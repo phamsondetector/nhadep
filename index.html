@@ -915,40 +915,57 @@
         const enBtn = document.getElementById('langEnBottom');
         const currentUrl = window.location.href;
 
-        // Kiểm tra xem đang ở trang tiếng Anh hay không
+        // Kiểm tra các loại trang
         const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
+        const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
 
         // === NÚT VI ===
         viBtn.onclick = (e) => {
             e.preventDefault();
+            
             if (isEnPage) {
-                // Đang ở trang _en → chuyển về trang tiếng Việt
-                let viUrl = currentUrl.replace('_en.html', '.html')
-                                     .replace('_en', '');   // phòng trường hợp không có .html
+                // Đang ở trang _en → quay về trang tiếng Việt
+                let viUrl = currentUrl
+                    .replace('_en.html', '.html')
+                    .replace('_en', '');
                 window.location.href = viUrl;
             }
-            // Nếu đang ở trang tiếng Việt thì không làm gì
+            // Nếu đang ở .org hoặc .html bình thường → không làm gì
         };
 
         // === NÚT EN ===
         enBtn.onclick = (e) => {
             e.preventDefault();
-            if (!isEnPage) {
-                // Đang ở trang tiếng Việt → chuyển sang trang tiếng Anh
+            
+            if (isOrgPage) {
+                // Đang ở domain .org → chuyển đến index_en.html
+                window.location.href = 'https://nhadepviet.org/index_en.html';
+            } 
+            else if (!isEnPage) {
+                // Đang ở trang .html bình thường → chuyển sang _en.html
                 let enUrl = currentUrl.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
-            // Nếu đang ở trang tiếng Anh thì không làm gì
+            // Nếu đang ở trang _en → không làm gì
         };
 
-        // Cập nhật giao diện nút (thêm class active cho nút đang được chọn)
+        // === Hiệu ứng nút active ===
         if (isEnPage) {
-            enBtn.style.background = 'rgba(198,164,59,0.2)';
+            enBtn.style.background = 'rgba(198,164,59,0.25)';
             enBtn.style.color = '#C6A43B';
             viBtn.style.background = 'none';
             viBtn.style.color = '#9C9C9C';
-        } else {
-            viBtn.style.background = 'rgba(198,164,59,0.2)';
+        } 
+        else if (isOrgPage) {
+            // Trên .org mặc định coi là tiếng Việt
+            viBtn.style.background = 'rgba(198,164,59,0.25)';
+            viBtn.style.color = '#C6A43B';
+            enBtn.style.background = 'none';
+            enBtn.style.color = '#9C9C9C';
+        } 
+        else {
+            // Trang .html tiếng Việt bình thường
+            viBtn.style.background = 'rgba(198,164,59,0.25)';
             viBtn.style.color = '#C6A43B';
             enBtn.style.background = 'none';
             enBtn.style.color = '#9C9C9C';
@@ -962,7 +979,7 @@
         setTimeout(() => initLazyLoading(), 100);
     });
 
-    // Export các hàm cần thiết
+    // Export hàm cần thiết
     window.initLazyLoading = initLazyLoading;
     window.toggleFilterDropdown = toggleFilterDropdown;
 </script>
