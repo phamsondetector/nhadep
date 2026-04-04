@@ -63,5 +63,18 @@
     "relatedlink": "./test1.html",
     "title_en": "english",
     "summary_en": "english"
+  },
+  {
+    "id": "1775313045322",
+    "date": "04/04/2026",
+    "title": "tieng viet 2",
+    "summary": "tieng viet 2",
+    "url": "./nhadep/test2.html",
+    "tag": "Hiện đại",
+    "kind": "nhadep",
+    "Status": "posted",
+    "relatedlink": "./test2.html",
+    "title_en": "english 2",
+    "summary_en": "english 2"
   }
 ]
