@@ -680,7 +680,7 @@
 </div>
 
 <script>
-    // ==================== EN VERSION - FIXED PATHS & BILINGUAL FIELDS ====================
+    // ==================== EN VERSION - FIXED URLS (NO DOUBLE /en/) ====================
     const DATA_JSON_PATH = '../data.json';
     let allArticles = [];
     let currentTagFilter = 'all';
@@ -705,20 +705,19 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
     }
 
-    // Extract filename from URL (e.g., "./nhadep/biet-thu.html" -> "biet-thu")
     function getFileNameFromUrl(url) {
         if (!url) return null;
         const match = url.match(/\/([^\/]+)\.html$/);
         return match ? match[1] : null;
     }
 
-    // Build correct English article URL: add 'en/' prefix to the original URL path
-    // Example: "./nhadep/biet-thu.html" -> "./en/nhadep/biet-thu.html"
-    function getEnglishArticleUrl(originalUrl, slugName) {
+    // CORRECTED: Build English URL without double /en/
+    // Input url from data.json is like: "./nhadep/biet-thu.html" or "./blogs/bai-viet.html"
+    // We need: "./en/nhadep/biet-thu.html" (not "./en/en/nhadep/...")
+    function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
-        // If originalUrl starts with './' or '../' we need to inject 'en/'
         let url = originalUrl;
-        // Remove leading './' or '../' for easier manipulation
+        // Remove leading './' or '../'
         let prefix = '';
         if (url.startsWith('./')) {
             prefix = './';
@@ -727,7 +726,7 @@
             prefix = '../';
             url = url.substring(3);
         }
-        // Now url is like "nhadep/biet-thu.html" or "blogs/bai-viet.html"
+        // Now url is like "nhadep/biet-thu.html"
         // Prepend 'en/'
         return prefix + 'en/' + url;
     }
@@ -781,7 +780,7 @@
         // Use English fields, fallback to original
         const displayTitle = featured.title_en || featured.title;
         const displaySummary = featured.summary_en || featured.summary || 'Discover sophisticated living spaces with modern design.';
-        const articleUrl = getEnglishArticleUrl(featured.url, fileName);
+        const articleUrl = getEnglishArticleUrl(featured.url);
         
         container.innerHTML = `
             <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
@@ -807,7 +806,7 @@
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
-            const articleUrl = getEnglishArticleUrl(article.url, fileName);
+            const articleUrl = getEnglishArticleUrl(article.url);
             return `
                 <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">
@@ -832,7 +831,7 @@
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
-            const articleUrl = getEnglishArticleUrl(article.url, fileName);
+            const articleUrl = getEnglishArticleUrl(article.url);
             let firstTag = 'Blog';
             if (article.tag) firstTag = article.tag.split(',')[0].trim();
             return `
