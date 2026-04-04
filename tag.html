@@ -608,61 +608,70 @@ function handleCardClick(event) {
 
 <script>
 function setupLanguageSwitch() {
-        const viBtn = document.getElementById('langViBottom');
-        const enBtn = document.getElementById('langEnBottom');
-        const currentUrl = window.location.href;
+    const viBtn = document.getElementById('langViBottom');
+    const enBtn = document.getElementById('langEnBottom');
+    const currentUrl = window.location.href;
+    const currentPath = window.location.pathname;
 
-        const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
-        const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
-
-        viBtn.onclick = (e) => {
-            e.preventDefault();
-            if (isEnPage) {
-                let viUrl = currentUrl
-                    .replace('_en.html', '.html')
-                    .replace('_en', '');
-                window.location.href = viUrl;
-            }
-        };
-
-        enBtn.onclick = (e) => {
-            e.preventDefault();
-            if (isOrgPage) {
-                window.location.href = 'https://nhadepviet.org/index_en.html';
-            } 
-            else if (!isEnPage) {
-                let enUrl = currentUrl.replace('.html', '_en.html');
-                window.location.href = enUrl;
-            }
-        };
-
-        if (isEnPage) {
-            enBtn.style.background = 'rgba(198,164,59,0.25)';
-            enBtn.style.color = '#C6A43B';
-            viBtn.style.background = 'none';
-            viBtn.style.color = '#9C9C9C';
-        } else if (isOrgPage) {
-            viBtn.style.background = 'rgba(198,164,59,0.25)';
-            viBtn.style.color = '#C6A43B';
-            enBtn.style.background = 'none';
-            enBtn.style.color = '#9C9C9C';
-        } else {
-            viBtn.style.background = 'rgba(198,164,59,0.25)';
-            viBtn.style.color = '#C6A43B';
-            enBtn.style.background = 'none';
-            enBtn.style.color = '#9C9C9C';
+    // Hàm chuyển đổi giữa .html và _en.html
+    function switchToVi() {
+        if (currentPath.includes('_en.html')) {
+            let viUrl = currentUrl.replace('_en.html', '.html');
+            window.location.href = viUrl;
         }
+        // Nếu đã là tiếng Việt thì không làm gì
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadData();
-        initMobileMenu();
-        setupLanguageSwitch();
-        setTimeout(() => initLazyLoading(), 100);
-    });
+    function switchToEn() {
+        if (!currentPath.includes('_en.html')) {
+            let enUrl = currentUrl.replace('.html', '_en.html');
+            window.location.href = enUrl;
+        }
+        // Nếu đã là tiếng Anh thì không làm gì
+    }
 
-    window.initLazyLoading = initLazyLoading;
-    window.toggleFilterDropdown = toggleFilterDropdown;
+    // Gán sự kiện
+    viBtn.onclick = (e) => {
+        e.preventDefault();
+        switchToVi();
+    };
+
+    enBtn.onclick = (e) => {
+        e.preventDefault();
+        switchToEn();
+    };
+
+    // Cập nhật giao diện nút
+    if (currentPath.includes('_en.html')) {
+        // Đang ở trang EN
+        enBtn.style.background = 'rgba(198,164,59,0.25)';
+        enBtn.style.color = '#C6A43B';
+        viBtn.style.background = 'none';
+        viBtn.style.color = '#9C9C9C';
+    } else {
+        // Đang ở trang VI
+        viBtn.style.background = 'rgba(198,164,59,0.25)';
+        viBtn.style.color = '#C6A43B';
+        enBtn.style.background = 'none';
+        enBtn.style.color = '#9C9C9C';
+    }
+}
+
+// Hàm loadData và initMobileMenu cần được định nghĩa trước nếu chưa có
+// Giả sử bạn đã có sẵn các hàm này ở nơi khác, nếu chưa thì thêm định nghĩa rỗng tạm thời
+window.loadData = window.loadData || function() {};
+window.initMobileMenu = window.initMobileMenu || function() {};
+window.initLazyLoading = window.initLazyLoading || function() {};
+window.toggleFilterDropdown = window.toggleFilterDropdown || function() {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof loadData === 'function') loadData();
+    if (typeof initMobileMenu === 'function') initMobileMenu();
+    setupLanguageSwitch();
+    setTimeout(() => {
+        if (typeof initLazyLoading === 'function') initLazyLoading();
+    }, 100);
+});
 </script>
 </body>
 </html>
