@@ -607,71 +607,78 @@ function handleCardClick(event) {
 </div>
 
 <script>
-(function() {
-    const viBtn = document.getElementById('langViBottom');
-    const enBtn = document.getElementById('langEnBottom');
-    
-    const currentUrl = window.location.href;
-    const isEnPage = currentUrl.includes('_en.html');
-    const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
-    
-    // Nút VI
-    if (viBtn) {
-        viBtn.onclick = function(e) {
+function setupLanguageSwitch() {
+        const viBtn = document.getElementById('langViBottom');
+        const enBtn = document.getElementById('langEnBottom');
+        const currentUrl = window.location.href;
+
+        // Kiểm tra các loại trang
+        const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
+        const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
+
+        // === NÚT VI ===
+        viBtn.onclick = (e) => {
             e.preventDefault();
+            
             if (isEnPage) {
-                let viUrl = currentUrl.replace('_en.html', '.html');
+                // Đang ở trang _en → quay về trang tiếng Việt
+                let viUrl = currentUrl
+                    .replace('_en.html', '.html')
+                    .replace('_en', '');
                 window.location.href = viUrl;
             }
+            // Nếu đang ở .org hoặc .html bình thường → không làm gì
         };
-    }
-    
-    // Nút EN
-    if (enBtn) {
-        enBtn.onclick = function(e) {
+
+        // === NÚT EN ===
+        enBtn.onclick = (e) => {
             e.preventDefault();
+            
             if (isOrgPage) {
+                // Đang ở domain .org → chuyển đến index_en.html
                 window.location.href = 'https://nhadepviet.org/index_en.html';
             } 
             else if (!isEnPage) {
+                // Đang ở trang .html bình thường → chuyển sang _en.html
                 let enUrl = currentUrl.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
+            // Nếu đang ở trang _en → không làm gì
         };
-    }
-    
-    // Highlight nút active
-    if (isEnPage) {
-        if (enBtn) {
+
+        // === Hiệu ứng nút active ===
+        if (isEnPage) {
             enBtn.style.background = 'rgba(198,164,59,0.25)';
             enBtn.style.color = '#C6A43B';
-        }
-        if (viBtn) {
             viBtn.style.background = 'none';
             viBtn.style.color = '#9C9C9C';
-        }
-    } 
-    else if (isOrgPage) {
-        if (viBtn) {
+        } 
+        else if (isOrgPage) {
+            // Trên .org mặc định coi là tiếng Việt
             viBtn.style.background = 'rgba(198,164,59,0.25)';
             viBtn.style.color = '#C6A43B';
-        }
-        if (enBtn) {
             enBtn.style.background = 'none';
             enBtn.style.color = '#9C9C9C';
-        }
-    } 
-    else {
-        if (viBtn) {
+        } 
+        else {
+            // Trang .html tiếng Việt bình thường
             viBtn.style.background = 'rgba(198,164,59,0.25)';
             viBtn.style.color = '#C6A43B';
-        }
-        if (enBtn) {
             enBtn.style.background = 'none';
             enBtn.style.color = '#9C9C9C';
         }
     }
-})();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        initMobileMenu();
+        setupLanguageSwitch();
+        setTimeout(() => initLazyLoading(), 100);
+    });
+
+    // Export hàm cần thiết
+    window.initLazyLoading = initLazyLoading;
+    window.toggleFilterDropdown = toggleFilterDropdown;
 </script>
 </body>
 </html>
