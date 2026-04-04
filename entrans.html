@@ -32,7 +32,8 @@
         .lang-buttons {
             position: fixed;
             bottom: 24px; right: 24px;
-            display: flex; gap: 8px;
+            display: flex; 
+            gap: 4px;                    /* ← ĐÃ CHỈNH GẦN HƠN */
             background: rgba(10,10,10,0.9);
             backdrop-filter: blur(20px);
             border-radius: 40px;
@@ -98,8 +99,16 @@
         }
         
         @media (max-width: 768px) {
-            .lang-buttons { bottom: 16px; right: 16px; padding: 4px; }
-            .lang-btn { padding: 6px 14px; font-size: 0.7rem; }
+            .lang-buttons { 
+                bottom: 16px; 
+                right: 16px; 
+                padding: 4px; 
+                gap: 4px;        /* ← Mobile cũng gần hơn */
+            }
+            .lang-btn { 
+                padding: 6px 14px; 
+                font-size: 0.7rem; 
+            }
         }
     </style>
 </head>
@@ -121,9 +130,8 @@
 
 <script>
     let targetUrl = '';
-    let currentVietnameseUrl = '';   // ← Biến mới: luôn giữ URL Việt của trang đang xem
+    let currentVietnameseUrl = '';   
     
-    // ==================== IFRAME LOAD (mọi lần) ====================
     function handleIframeLoad() {
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.style.display = 'none';
@@ -138,7 +146,6 @@
             hideGoogleTranslateElements(iframeDoc);
             injectTranslateToIframe();
             
-            // Cập nhật URL Việt hiện tại (rất quan trọng)
             const loc = iframe.contentWindow.location.href;
             if (loc && loc !== 'about:blank' && !loc.includes('entrans.html')) {
                 currentVietnameseUrl = loc;
@@ -194,7 +201,6 @@
         try {
             const response = await fetch(url);
             let html = await response.text();
-            // Xóa các phần ngôn ngữ (giữ nguyên như cũ)
             html = html.replace(/<div[^>]*class="[^"]*lang-switch[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<div[^>]*class="[^"]*lang-buttons[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<button[^>]*class="[^"]*lang-btn[^"]*"[^>]*>[\s\S]*?<\/button>/gi, '');
@@ -302,7 +308,6 @@
         }, 200);
     }
     
-    // ====================== NÚT VI – ĐÃ SỬA HOÀN TOÀN ======================
     function handleViClick() {
         const urlToGo = currentVietnameseUrl || targetUrl || './index.html';
         console.log('🔄 Chuyển sang tiếng Việt trang:', urlToGo);
@@ -311,7 +316,7 @@
     
     async function init() {
         targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
-        currentVietnameseUrl = targetUrl;                    // ← Khởi tạo ban đầu
+        currentVietnameseUrl = targetUrl;                    
         
         document.getElementById('btnVi').onclick = handleViClick;
         document.getElementById('btnEn').onclick = handleEnClick;
