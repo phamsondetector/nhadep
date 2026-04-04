@@ -138,28 +138,54 @@
     let targetUrl = '';
     let currentVietnameseUrl = '';   
 
-    // ==================== HÀM MỚI: Force translate (rất mạnh cho mobile) ====================
-    function forceTranslateToEnglish(retries = 12) {
+    // ==================== Mobile detection + Force translate mạnh hơn cho Safari/Chrome mobile ====================
+    const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    function forceTranslateToEnglish(retries = 25) {
+        const delay = isMobile ? 650 : 350;   // Mobile chờ lâu hơn
+        
         const attempt = (count) => {
             try {
                 const iframe = document.getElementById('contentFrame');
                 if (!iframe || !iframe.contentDocument) {
-                    if (count > 0) setTimeout(() => attempt(count - 1), 350);
+                    if (count > 0) setTimeout(() => attempt(count - 1), delay);
                     return;
                 }
 
-                const select = iframe.contentDocument.querySelector('.goog-te-combo');
-                if (select && select.value !== 'en') {
-                    select.value = 'en';
-                    select.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log('✅ Force translated to English (mobile ok)');
-                    return;
+                const doc = iframe.contentDocument;
+                const select = doc.querySelector('.goog-te-combo');
+                
+                if (select) {
+                    if (select.value !== 'en') {
+                        select.value = 'en';
+                        // Dispatch 2 lần (fix Safari/Chrome mobile không trigger change)
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                        setTimeout(() => {
+                            select.dispatchEvent(new Event('change', { bubbles: true }));
+                        }, 80);
+                        
+                        console.log('✅ Force translated to English (mobile fixed)');
+                        return;
+                    }
                 }
-                if (count > 0) setTimeout(() => attempt(count - 1), 350);
+                
+                if (count > 0) {
+                    setTimeout(() => attempt(count - 1), delay);
+                } else {
+                    // Fallback cuối cùng sau khi retry hết
+                    console.log('⚠️ Max retries reached, trying one last time...');
+                    setTimeout(() => {
+                        if (select) {
+                            select.value = 'en';
+                            select.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }, 1200);
+                }
             } catch (e) {
-                if (count > 0) setTimeout(() => attempt(count - 1), 350);
+                if (count > 0) setTimeout(() => attempt(count - 1), delay);
             }
         };
+        
         attempt(retries);
     }
 
@@ -201,7 +227,7 @@
     }
     
     function triggerTranslateToEnglish() {
-        forceTranslateToEnglish(6);   // dùng chung hàm mới
+        forceTranslateToEnglish(isMobile ? 25 : 12);
     }
     
     function hideGoogleTranslateElements(doc) {
@@ -264,55 +290,63 @@
                 return;
             }
             
-            iframeWin.setupGoogleTranslate = function() {
-                if (iframeWin.google?.translate) {
-                    new iframeWin.google.translate.TranslateElement({
-                        pageLanguage: 'vi',
-                        includedLanguages: 'en',
-                        layout: iframeWin.google.translate.TranslateElement.InlineLayout.SIMPLE,
-                        autoDisplay: true
-                    }, 'google_translate_element');
-                    
-                    setTimeout(() => {
-                        hideGoogleTranslateElements(iframeDoc);
-                        removeAllLanguageButtons(iframeDoc);
-                        triggerTranslateToEnglish();
-                    }, 400);
-                }
-            };
+            // Mobile chờ lâu hơn trước khi inject script
+            const injectDelay = isMobile ? 1200 : 600;
             
-            const script = iframeDoc.createElement('script');
-            script.id = 'google-translate-script';
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=setupGoogleTranslate';
-            script.async = true;
-            iframeDoc.head.appendChild(script);
+            setTimeout(() => {
+                iframeWin.setupGoogleTranslate = function() {
+                    if (iframeWin.google?.translate) {
+                        new iframeWin.google.translate.TranslateElement({
+                            pageLanguage: 'vi',
+                            includedLanguages: 'en',
+                            layout: iframeWin.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                            autoDisplay: true
+                        }, 'google_translate_element');
+                        
+                        setTimeout(() => {
+                            hideGoogleTranslateElements(iframeDoc);
+                            removeAllLanguageButtons(iframeDoc);
+                            triggerTranslateToEnglish();
+                        }, isMobile ? 800 : 400);
+                    }
+                };
+                
+                const script = iframeDoc.createElement('script');
+                script.id = 'google-translate-script';
+                script.src = 'https://translate.google.com/translate_a/element.js?cb=setupGoogleTranslate';
+                script.async = true;
+                iframeDoc.head.appendChild(script);
+                
+                const translateDiv = iframeDoc.createElement('div');
+                translateDiv.id = 'google_translate_element';
+                translateDiv.style.position = 'absolute';
+                translateDiv.style.visibility = 'hidden';
+                translateDiv.style.width = '0';
+                translateDiv.style.height = '0';
+                iframeDoc.body.appendChild(translateDiv);
+                
+                const style = iframeDoc.createElement('style');
+                style.textContent = `
+                    .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
+                    .goog-te-gadget-simple, .goog-te-spinner-pos, .goog-te-balloon-frame,
+                    .skiptranslate, .goog-te-gadget, #google_translate_element,
+                    .goog-te-banner { display: none !important; }
+                    body { top: 0px !important; position: relative !important; }
+                `;
+                iframeDoc.head.appendChild(style);
+            }, injectDelay);
             
-            const translateDiv = iframeDoc.createElement('div');
-            translateDiv.id = 'google_translate_element';
-            translateDiv.style.position = 'absolute';
-            translateDiv.style.visibility = 'hidden';
-            translateDiv.style.width = '0';
-            translateDiv.style.height = '0';
-            iframeDoc.body.appendChild(translateDiv);
-            
-            const style = iframeDoc.createElement('style');
-            style.textContent = `
-                .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
-                .goog-te-gadget-simple, .goog-te-spinner-pos, .goog-te-balloon-frame,
-                .skiptranslate, .goog-te-gadget, #google_translate_element,
-                .goog-te-banner { display: none !important; }
-                body { top: 0px !important; position: relative !important; }
-            `;
-            iframeDoc.head.appendChild(style);
         } catch(e) {
-            setTimeout(injectTranslateToIframe, 500);
+            setTimeout(injectTranslateToIframe, 800);
         }
     }
     
     function handleEnClick() {
         document.getElementById('btnEn').classList.add('active');
         document.getElementById('btnVi').classList.remove('active');
-        forceTranslateToEnglish(15);   // retry nhiều hơn cho mobile
+        
+        // Bấm EN trên mobile → retry cực mạnh
+        forceTranslateToEnglish(isMobile ? 30 : 15);
     }
     
     function handleViClick() {
