@@ -709,24 +709,28 @@
         return match ? match[1] : null;
     }
 
-    // ==================== HÀM ĐÃ SỬA ====================
-    // Tất cả link bài viết sẽ thêm _en trước .html
+    // ==================== QUAN TRỌNG: TẤT CẢ LINK BÀI VIẾT ĐỀU CÓ DẠNG xxx_en.html ====================
     function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
-
+        
         let url = originalUrl.trim();
-
-        // Loại bỏ ./ hoặc ../ ở đầu nếu có
+        
+        // Xóa các ký tự ./ hoặc ../ ở đầu nếu có
         if (url.startsWith('./')) url = url.substring(2);
         else if (url.startsWith('../')) url = url.substring(3);
-
+        
+        // Xóa phần đuôi _en nếu có (để tránh double _en)
+        if (url.includes('_en.html')) {
+            url = url.replace(/_en\.html$/, '.html');
+        }
+        
         // Thêm _en trước .html
         if (url.endsWith('.html')) {
             url = url.replace(/\.html$/, '_en.html');
         } else {
             url += '_en.html';
         }
-
+        
         return './' + url;
     }
 
