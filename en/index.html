@@ -28,7 +28,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Critical CSS */
+        /* Critical CSS - same as Vietnamese version */
         :root {
             --bg: #0A0A0A;
             --bg2: #111111;
@@ -680,8 +680,7 @@
 </div>
 
 <script>
-    // ==================== EN VERSION - DATA LOADER ====================
-    // Path to data.json from /en/ directory (go up one level)
+    // ==================== EN VERSION - FIXED PATHS & BILINGUAL FIELDS ====================
     const DATA_JSON_PATH = '../data.json';
     let allArticles = [];
     let currentTagFilter = 'all';
@@ -706,13 +705,34 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
     }
 
+    // Extract filename from URL (e.g., "./nhadep/biet-thu.html" -> "biet-thu")
     function getFileNameFromUrl(url) {
         if (!url) return null;
         const match = url.match(/\/([^\/]+)\.html$/);
         return match ? match[1] : null;
     }
 
-    // For EN version, thumbnail paths need to go up one level (from /en/ to root)
+    // Build correct English article URL: add 'en/' prefix to the original URL path
+    // Example: "./nhadep/biet-thu.html" -> "./en/nhadep/biet-thu.html"
+    function getEnglishArticleUrl(originalUrl, slugName) {
+        if (!originalUrl) return '#';
+        // If originalUrl starts with './' or '../' we need to inject 'en/'
+        let url = originalUrl;
+        // Remove leading './' or '../' for easier manipulation
+        let prefix = '';
+        if (url.startsWith('./')) {
+            prefix = './';
+            url = url.substring(2);
+        } else if (url.startsWith('../')) {
+            prefix = '../';
+            url = url.substring(3);
+        }
+        // Now url is like "nhadep/biet-thu.html" or "blogs/bai-viet.html"
+        // Prepend 'en/'
+        return prefix + 'en/' + url;
+    }
+
+    // For EN version, thumbnail paths go up one level (from /en/ to root)
     function getThumbnailHtml(fileName, type, altText) {
         const basePath = `../thumbnail/${type}/${fileName}`;
         return `<img data-src="${basePath}.webp" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${escapeHtml(altText)}" loading="lazy" onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${basePath}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();" style="width:100%; height:100%; object-fit:cover;">`;
@@ -758,11 +778,13 @@
         const featured = getRandomArticleOfDay(articles);
         if (!featured) return;
         const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title);
-        // For EN, use title_en if available, fallback to title
+        // Use English fields, fallback to original
         const displayTitle = featured.title_en || featured.title;
         const displaySummary = featured.summary_en || featured.summary || 'Discover sophisticated living spaces with modern design.';
+        const articleUrl = getEnglishArticleUrl(featured.url, fileName);
+        
         container.innerHTML = `
-            <div class="featured-card" onclick="window.open('${featured.url || '#'}', '_blank')">
+            <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="featured-img">
                     ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
                     ${getFeaturedTagsHtml(featured)}
@@ -785,8 +807,9 @@
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
+            const articleUrl = getEnglishArticleUrl(article.url, fileName);
             return `
-                <div class="base-card" onclick="window.open('${article.url || '#'}', '_blank')">
+                <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">
                         ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
                         ${getCardTagsHtml(article)}
@@ -809,10 +832,11 @@
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
+            const articleUrl = getEnglishArticleUrl(article.url, fileName);
             let firstTag = 'Blog';
             if (article.tag) firstTag = article.tag.split(',')[0].trim();
             return `
-                <div class="base-card" onclick="window.open('${article.url || '#'}', '_blank')">
+                <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
                     <div class="card-body">
                         <div class="blog-meta"><span class="blog-date">${article.date || ''}</span><span class="blog-tag">${escapeHtml(firstTag)}</span></div>
@@ -911,12 +935,11 @@
         }
     }
 
-    // ==================== LANGUAGE SWITCH: VI <-> EN (using /en/ structure) ====================
+    // Language switch: VI <-> EN using /en/ path structure
     function setupLanguageSwitch() {
         const viBtn = document.getElementById('langViBottom');
         const enBtn = document.getElementById('langEnBottom');
-        const currentPath = window.location.pathname;
-        const isEnPage = currentPath.includes('/en/');
+        const isEnPage = window.location.pathname.includes('/en/');
         
         viBtn.onclick = (e) => {
             e.preventDefault();
