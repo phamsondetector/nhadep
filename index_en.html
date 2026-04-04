@@ -28,7 +28,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Critical CSS - same as Vietnamese version */
         :root {
             --bg: #0A0A0A;
             --bg2: #111111;
@@ -710,23 +709,27 @@
         return match ? match[1] : null;
     }
 
-    // File này nằm tại /en/index.html
-    // data.json lưu url dạng "./nhadep/biet-thu.html" (tính từ root)
-    // Bài viết EN nằm tại /en/nhadep/biet-thu.html
-    // Từ /en/index.html, path tương đối tới bài viết là "./nhadep/biet-thu.html"
-    // => Chỉ cần strip prefix rồi dùng "./" + path, KHÔNG thêm "en/"
+    // ==================== HÀM ĐÃ SỬA ====================
+    // Tất cả link bài viết sẽ thêm _en trước .html
     function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
-        let url = originalUrl;
-        if (url.startsWith('./')) {
-            url = url.substring(2);
-        } else if (url.startsWith('../')) {
-            url = url.substring(3);
+
+        let url = originalUrl.trim();
+
+        // Loại bỏ ./ hoặc ../ ở đầu nếu có
+        if (url.startsWith('./')) url = url.substring(2);
+        else if (url.startsWith('../')) url = url.substring(3);
+
+        // Thêm _en trước .html
+        if (url.endsWith('.html')) {
+            url = url.replace(/\.html$/, '_en.html');
+        } else {
+            url += '_en.html';
         }
+
         return './' + url;
     }
 
-    // Thumbnail: đang ở /en/ nên cần đi lên một cấp để lấy /thumbnail/
     function getThumbnailHtml(fileName, type, altText) {
         const basePath = `../thumbnail/${type}/${fileName}`;
         return `<img data-src="${basePath}.webp" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${escapeHtml(altText)}" loading="lazy" onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${basePath}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();" style="width:100%; height:100%; object-fit:cover;">`;
@@ -762,7 +765,10 @@
         if (!articles.length) return null;
         const today = new Date().toISOString().slice(0,10);
         let hash = 0;
-        for(let i = 0; i < today.length; i++) { hash = ((hash << 5) - hash) + today.charCodeAt(i); hash |= 0; }
+        for(let i = 0; i < today.length; i++) { 
+            hash = ((hash << 5) - hash) + today.charCodeAt(i); 
+            hash |= 0; 
+        }
         return articles[Math.abs(hash) % articles.length];
     }
 
@@ -774,6 +780,7 @@
         }
         const featured = getRandomArticleOfDay(articles);
         if (!featured) return;
+
         const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title_en || featured.title);
         const displayTitle = featured.title_en || featured.title;
         const displaySummary = featured.summary_en || featured.summary || 'Discover sophisticated living spaces with modern design.';
@@ -801,15 +808,18 @@
         const container = document.getElementById('maukhac-grid');
         let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
         filtered = filtered.filter(a => a.id !== featuredId);
+
         if (!filtered.length) {
             container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;
             return;
         }
+
         container.innerHTML = filtered.slice(0, 6).map(article => {
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
             const articleUrl = getEnglishArticleUrl(article.url);
+
             return `
                 <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">
@@ -829,10 +839,12 @@
     function renderBlogsWithFilter(blogs) {
         const container = document.getElementById('blogs-grid');
         let filtered = currentTagFilter === 'all' ? blogs : blogs.filter(a => articleMatchesFilter(a, currentTagFilter));
+
         if (!filtered.length) {
             container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;
             return;
         }
+
         container.innerHTML = filtered.slice(0, 6).map(article => {
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
@@ -840,6 +852,7 @@
             const articleUrl = getEnglishArticleUrl(article.url);
             let firstTag = 'Blog';
             if (article.tag) firstTag = article.tag.split(',')[0].trim();
+
             return `
                 <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
@@ -882,23 +895,30 @@
             </div>`;
         }
         bar.innerHTML = html;
-        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => btn.addEventListener('click', () => {
-            currentTagFilter = btn.dataset.filter;
-            renderFilterBar();
-            updateAllContent();
-        }));
-        document.querySelectorAll('.filter-dropdown-item').forEach(item => item.addEventListener('click', () => {
-            currentTagFilter = item.dataset.filter;
-            renderFilterBar();
-            updateAllContent();
-            document.getElementById('filter-dropdown-content')?.classList.remove('show');
-        }));
+
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentTagFilter = btn.dataset.filter;
+                renderFilterBar();
+                updateAllContent();
+            });
+        });
+
+        document.querySelectorAll('.filter-dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                currentTagFilter = item.dataset.filter;
+                renderFilterBar();
+                updateAllContent();
+                document.getElementById('filter-dropdown-content')?.classList.remove('show');
+            });
+        });
     }
 
     function updateAllContent() {
         const posted = allArticles.filter(a => a.Status === 'posted');
         const nhadep = posted.filter(a => a.kind === 'nhadep');
         const blogs = posted.filter(a => a.kind === 'blogs');
+
         if (nhadep.length) {
             const featured = getRandomArticleOfDay(nhadep);
             renderFeaturedOfTheDay(nhadep);
@@ -913,7 +933,10 @@
         event.stopPropagation();
         document.getElementById('filter-dropdown-content')?.classList.toggle('show');
     }
-    document.addEventListener('click', () => document.getElementById('filter-dropdown-content')?.classList.remove('show'));
+
+    document.addEventListener('click', () => {
+        document.getElementById('filter-dropdown-content')?.classList.remove('show');
+    });
 
     function initLazyLoading() {
         const images = document.querySelectorAll('img[data-src]');
@@ -922,7 +945,10 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
-                        if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                        }
                         observer.unobserve(img);
                     }
                 });
@@ -957,14 +983,21 @@
             hamburger.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
                 const icon = hamburger.querySelector('i');
-                if (icon) icon.classList.toggle('fa-bars', !navLinks.classList.contains('active'));
-                if (icon) icon.classList.toggle('fa-xmark', navLinks.classList.contains('active'));
+                if (icon) {
+                    icon.classList.toggle('fa-bars', !navLinks.classList.contains('active'));
+                    icon.classList.toggle('fa-xmark', navLinks.classList.contains('active'));
+                }
             });
-            navLinks.querySelectorAll('a, button').forEach(link => link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                const icon = hamburger.querySelector('i');
-                if (icon) { icon.classList.add('fa-bars'); icon.classList.remove('fa-xmark'); }
-            }));
+            navLinks.querySelectorAll('a, button').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    const icon = hamburger.querySelector('i');
+                    if (icon) {
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-xmark');
+                    }
+                });
+            });
         }
     }
 
@@ -973,56 +1006,41 @@
         const enBtn = document.getElementById('langEnBottom');
         const currentUrl = window.location.href;
 
-        // Kiểm tra các loại trang
         const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
         const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
 
-        // === NÚT VI ===
         viBtn.onclick = (e) => {
             e.preventDefault();
-            
             if (isEnPage) {
-                // Đang ở trang _en → quay về trang tiếng Việt
                 let viUrl = currentUrl
                     .replace('_en.html', '.html')
                     .replace('_en', '');
                 window.location.href = viUrl;
             }
-            // Nếu đang ở .org hoặc .html bình thường → không làm gì
         };
 
-        // === NÚT EN ===
         enBtn.onclick = (e) => {
             e.preventDefault();
-            
             if (isOrgPage) {
-                // Đang ở domain .org → chuyển đến index_en.html
                 window.location.href = 'https://nhadepviet.org/index_en.html';
             } 
             else if (!isEnPage) {
-                // Đang ở trang .html bình thường → chuyển sang _en.html
                 let enUrl = currentUrl.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
-            // Nếu đang ở trang _en → không làm gì
         };
 
-        // === Hiệu ứng nút active ===
         if (isEnPage) {
             enBtn.style.background = 'rgba(198,164,59,0.25)';
             enBtn.style.color = '#C6A43B';
             viBtn.style.background = 'none';
             viBtn.style.color = '#9C9C9C';
-        } 
-        else if (isOrgPage) {
-            // Trên .org mặc định coi là tiếng Việt
+        } else if (isOrgPage) {
             viBtn.style.background = 'rgba(198,164,59,0.25)';
             viBtn.style.color = '#C6A43B';
             enBtn.style.background = 'none';
             enBtn.style.color = '#9C9C9C';
-        } 
-        else {
-            // Trang .html tiếng Việt bình thường
+        } else {
             viBtn.style.background = 'rgba(198,164,59,0.25)';
             viBtn.style.color = '#C6A43B';
             enBtn.style.background = 'none';
@@ -1037,7 +1055,6 @@
         setTimeout(() => initLazyLoading(), 100);
     });
 
-    // Export hàm cần thiết
     window.initLazyLoading = initLazyLoading;
     window.toggleFilterDropdown = toggleFilterDropdown;
 </script>
