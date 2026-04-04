@@ -29,13 +29,12 @@
             background: #0A0A0A;
         }
 
-        /* ==================== NÚT VI/EN MỚI (bắt chước đúng code bạn đưa) ==================== */
         .lang-switch-bottom {
             position: fixed;
             bottom: 24px;
             right: 24px;
             display: flex;
-            gap: 1px;                    /* sát gần như chạm */
+            gap: 1px;
             background: rgba(10,10,10,0.95);
             backdrop-filter: blur(20px);
             border-radius: 50px;
@@ -51,7 +50,7 @@
             color: #9C9C9C;
             cursor: pointer;
             font-size: 0.82rem;
-            padding: 8px 15px;           /* gọn hơn */
+            padding: 8px 15px;
             border-radius: 50px;
             transition: all 0.2s;
             font-weight: 600;
@@ -83,7 +82,6 @@
                 min-width: 64px;
             }
         }
-        /* ==================== KẾT THÚC PHẦN NÚT MỚI ==================== */
 
         .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
         .goog-te-gadget-simple, .goog-te-spinner-pos, .goog-te-balloon-frame,
@@ -131,7 +129,6 @@
     <iframe id="contentFrame" src="about:blank"></iframe>
 </div>
 
-<!-- Nút chuyển đổi ngôn ngữ (đã thay class theo đúng code bạn đưa) -->
 <div class="lang-switch-bottom">
     <button class="lang-btn-bottom" id="btnVi">🇻🇳 VI</button>
     <button class="lang-btn-bottom active" id="btnEn">🇬🇧 EN</button>
@@ -140,7 +137,32 @@
 <script>
     let targetUrl = '';
     let currentVietnameseUrl = '';   
-    
+
+    // ==================== HÀM MỚI: Force translate (rất mạnh cho mobile) ====================
+    function forceTranslateToEnglish(retries = 12) {
+        const attempt = (count) => {
+            try {
+                const iframe = document.getElementById('contentFrame');
+                if (!iframe || !iframe.contentDocument) {
+                    if (count > 0) setTimeout(() => attempt(count - 1), 350);
+                    return;
+                }
+
+                const select = iframe.contentDocument.querySelector('.goog-te-combo');
+                if (select && select.value !== 'en') {
+                    select.value = 'en';
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log('✅ Force translated to English (mobile ok)');
+                    return;
+                }
+                if (count > 0) setTimeout(() => attempt(count - 1), 350);
+            } catch (e) {
+                if (count > 0) setTimeout(() => attempt(count - 1), 350);
+            }
+        };
+        attempt(retries);
+    }
+
     function handleIframeLoad() {
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.style.display = 'none';
@@ -158,10 +180,8 @@
             const loc = iframe.contentWindow.location.href;
             if (loc && loc !== 'about:blank' && !loc.includes('entrans.html')) {
                 currentVietnameseUrl = loc;
-                console.log('📍 Current Vietnamese URL updated:', currentVietnameseUrl);
             }
         } catch (e) {
-            console.error('Handle iframe load error:', e);
             setTimeout(handleIframeLoad, 400);
         }
     }
@@ -174,26 +194,14 @@
         doc.querySelectorAll('button, a, div').forEach(el => {
             const text = el.textContent || '';
             if ((text.includes('VI') || text.includes('EN') || text.includes('🇻🇳') || text.includes('🇬🇧')) &&
-                (el.tagName === 'BUTTON' || el.classList.contains('lang-btn') || el.classList.contains('lang-nav-btn'))) {
+                (el.tagName === 'BUTTON' || el.classList.contains('lang-btn-bottom'))) {
                 el.remove();
             }
         });
     }
     
     function triggerTranslateToEnglish() {
-        try {
-            const iframe = document.getElementById('contentFrame');
-            if (!iframe?.contentDocument) return;
-            const select = iframe.contentDocument.querySelector('.goog-te-combo');
-            if (select && select.value !== 'en') {
-                select.value = 'en';
-                select.dispatchEvent(new Event('change'));
-                setTimeout(() => {
-                    hideGoogleTranslateElements(iframe.contentDocument);
-                    removeAllLanguageButtons(iframe.contentDocument);
-                }, 200);
-            }
-        } catch(e) {}
+        forceTranslateToEnglish(6);   // dùng chung hàm mới
     }
     
     function hideGoogleTranslateElements(doc) {
@@ -269,7 +277,7 @@
                         hideGoogleTranslateElements(iframeDoc);
                         removeAllLanguageButtons(iframeDoc);
                         triggerTranslateToEnglish();
-                    }, 300);
+                    }, 400);
                 }
             };
             
@@ -297,7 +305,6 @@
             `;
             iframeDoc.head.appendChild(style);
         } catch(e) {
-            console.error('Inject error:', e);
             setTimeout(injectTranslateToIframe, 500);
         }
     }
@@ -305,21 +312,11 @@
     function handleEnClick() {
         document.getElementById('btnEn').classList.add('active');
         document.getElementById('btnVi').classList.remove('active');
-        
-        setTimeout(() => {
-            try {
-                const select = document.getElementById('contentFrame').contentDocument.querySelector('.goog-te-combo');
-                if (select && select.value !== 'en') {
-                    select.value = 'en';
-                    select.dispatchEvent(new Event('change'));
-                }
-            } catch(e) {}
-        }, 200);
+        forceTranslateToEnglish(15);   // retry nhiều hơn cho mobile
     }
     
     function handleViClick() {
         const urlToGo = currentVietnameseUrl || targetUrl || './index.html';
-        console.log('🔄 Chuyển sang tiếng Việt trang:', urlToGo);
         window.top.location.href = urlToGo;
     }
     
