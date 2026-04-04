@@ -914,28 +914,20 @@
         const viBtn = document.getElementById('langViBottom');
         const enBtn = document.getElementById('langEnBottom');
         const currentPath = window.location.pathname;
-        const isEnPage = currentPath.includes('/en/') || currentPath.endsWith('entrans.html');
-        
+        const isEnPage = currentPath.includes('_en.html');
+
         viBtn.onclick = (e) => {
             e.preventDefault();
             if (isEnPage) {
-                let viUrl = window.location.href.replace('/en/', '/').replace('/en/index.html', '/index.html').replace('entrans.html', 'index.html');
-                if (viUrl === window.location.href) viUrl = '/';
+                let viUrl = window.location.href.replace('_en.html', '.html');
                 window.location.href = viUrl;
             }
         };
-        
+
         enBtn.onclick = (e) => {
             e.preventDefault();
             if (!isEnPage) {
-                let enUrl = window.location.href.replace(/\/$/, '');
-                if (enUrl.endsWith('index.html') || enUrl.endsWith('/')) {
-                    enUrl = enUrl.replace('index.html', '').replace(/\/$/, '');
-                    enUrl = enUrl + '/en/index.html';
-                } else {
-                    enUrl = enUrl.replace(window.location.origin, '');
-                    enUrl = window.location.origin + '/en' + (enUrl.startsWith('/') ? enUrl : '/' + enUrl);
-                }
+                let enUrl = window.location.href.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
         };
