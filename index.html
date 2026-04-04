@@ -913,21 +913,23 @@
     function setupLanguageSwitch() {
         const viBtn = document.getElementById('langViBottom');
         const enBtn = document.getElementById('langEnBottom');
-        const currentPath = window.location.pathname;
-        const isEnPage = currentPath.includes('_en.html');
+        const currentUrl = window.location.href;
+        const isEnPage = currentUrl.includes('_en.html');
 
+        // Nút VI: chỉ hoạt động khi đang ở trang _en.html → chuyển về .html
         viBtn.onclick = (e) => {
             e.preventDefault();
             if (isEnPage) {
-                let viUrl = window.location.href.replace('_en.html', '.html');
+                let viUrl = currentUrl.replace('_en.html', '.html');
                 window.location.href = viUrl;
             }
         };
 
+        // Nút EN: chỉ hoạt động khi đang ở trang .html → chuyển sang _en.html
         enBtn.onclick = (e) => {
             e.preventDefault();
             if (!isEnPage) {
-                let enUrl = window.location.href.replace('.html', '_en.html');
+                let enUrl = currentUrl.replace('.html', '_en.html');
                 window.location.href = enUrl;
             }
         };
