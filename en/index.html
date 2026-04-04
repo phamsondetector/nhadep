@@ -680,7 +680,6 @@
 </div>
 
 <script>
-    // ==================== EN VERSION - FIXED URLS (NO DOUBLE /en/) ====================
     const DATA_JSON_PATH = '../data.json';
     let allArticles = [];
     let currentTagFilter = 'all';
@@ -711,27 +710,23 @@
         return match ? match[1] : null;
     }
 
-    // CORRECTED: Build English URL without double /en/
-    // Input url from data.json is like: "./nhadep/biet-thu.html" or "./blogs/bai-viet.html"
-    // We need: "./en/nhadep/biet-thu.html" (not "./en/en/nhadep/...")
+    // File này nằm tại /en/index.html
+    // data.json lưu url dạng "./nhadep/biet-thu.html" (tính từ root)
+    // Bài viết EN nằm tại /en/nhadep/biet-thu.html
+    // Từ /en/index.html, path tương đối tới bài viết là "./nhadep/biet-thu.html"
+    // => Chỉ cần strip prefix rồi dùng "./" + path, KHÔNG thêm "en/"
     function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
         let url = originalUrl;
-        // Remove leading './' or '../'
-        let prefix = '';
         if (url.startsWith('./')) {
-            prefix = './';
             url = url.substring(2);
         } else if (url.startsWith('../')) {
-            prefix = '../';
             url = url.substring(3);
         }
-        // Now url is like "nhadep/biet-thu.html"
-        // Prepend 'en/'
-        return prefix + 'en/' + url;
+        return './' + url;
     }
 
-    // For EN version, thumbnail paths go up one level (from /en/ to root)
+    // Thumbnail: đang ở /en/ nên cần đi lên một cấp để lấy /thumbnail/
     function getThumbnailHtml(fileName, type, altText) {
         const basePath = `../thumbnail/${type}/${fileName}`;
         return `<img data-src="${basePath}.webp" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${escapeHtml(altText)}" loading="lazy" onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${basePath}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();" style="width:100%; height:100%; object-fit:cover;">`;
@@ -773,15 +768,17 @@
 
     function renderFeaturedOfTheDay(articles) {
         const container = document.getElementById('nhadep-featured');
-        if (!articles.length) { container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>No articles available.</p></div>`; return; }
+        if (!articles.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>No articles available.</p></div>`;
+            return;
+        }
         const featured = getRandomArticleOfDay(articles);
         if (!featured) return;
-        const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title);
-        // Use English fields, fallback to original
+        const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title_en || featured.title);
         const displayTitle = featured.title_en || featured.title;
         const displaySummary = featured.summary_en || featured.summary || 'Discover sophisticated living spaces with modern design.';
         const articleUrl = getEnglishArticleUrl(featured.url);
-        
+
         container.innerHTML = `
             <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
                 <div class="featured-img">
@@ -791,7 +788,10 @@
                 <div class="featured-body">
                     <h3 class="featured-title">${escapeHtml(displayTitle)}</h3>
                     <p class="featured-desc">${escapeHtml(displaySummary)}</p>
-                    <div class="featured-meta"><span><i class="fa-regular fa-calendar"></i> ${featured.date || ''}</span><span><i class="fa-regular fa-star"></i> Featured of the day</span></div>
+                    <div class="featured-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${featured.date || ''}</span>
+                        <span><i class="fa-regular fa-star"></i> Featured of the day</span>
+                    </div>
                 </div>
             </div>`;
         initLazyLoading();
@@ -801,9 +801,12 @@
         const container = document.getElementById('maukhac-grid');
         let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
         filtered = filtered.filter(a => a.id !== featuredId);
-        if (!filtered.length) { container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`; return; }
+        if (!filtered.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;
+            return;
+        }
         container.innerHTML = filtered.slice(0, 6).map(article => {
-            const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
+            const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
             const articleUrl = getEnglishArticleUrl(article.url);
@@ -826,9 +829,12 @@
     function renderBlogsWithFilter(blogs) {
         const container = document.getElementById('blogs-grid');
         let filtered = currentTagFilter === 'all' ? blogs : blogs.filter(a => articleMatchesFilter(a, currentTagFilter));
-        if (!filtered.length) { container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`; return; }
+        if (!filtered.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;
+            return;
+        }
         container.innerHTML = filtered.slice(0, 6).map(article => {
-            const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
+            const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
             const articleUrl = getEnglishArticleUrl(article.url);
@@ -838,7 +844,10 @@
                 <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
                     <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
                     <div class="card-body">
-                        <div class="blog-meta"><span class="blog-date">${article.date || ''}</span><span class="blog-tag">${escapeHtml(firstTag)}</span></div>
+                        <div class="blog-meta">
+                            <span class="blog-date">${article.date || ''}</span>
+                            <span class="blog-tag">${escapeHtml(firstTag)}</span>
+                        </div>
                         <h3 class="card-title">${escapeHtml(displayTitle)}</h3>
                         <p class="card-desc">${escapeHtml(displaySummary)}</p>
                     </div>
@@ -861,13 +870,29 @@
         const visible = allUniqueTags.slice(0, maxShow);
         const hidden = allUniqueTags.slice(maxShow);
         let html = `<button class="filter-btn ${currentTagFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>`;
-        visible.forEach(tag => { html += `<button class="filter-btn ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`; });
+        visible.forEach(tag => {
+            html += `<button class="filter-btn ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`;
+        });
         if (hidden.length) {
-            html += `<div class="filter-dropdown"><button class="filter-dropdown-btn" onclick="toggleFilterDropdown(event)">... <i class="fa-solid fa-chevron-down"></i></button><div class="filter-dropdown-content" id="filter-dropdown-content">${hidden.map(tag => `<button class="filter-dropdown-item ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join('')}</div></div>`;
+            html += `<div class="filter-dropdown">
+                <button class="filter-dropdown-btn" onclick="toggleFilterDropdown(event)">... <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="filter-dropdown-content" id="filter-dropdown-content">
+                    ${hidden.map(tag => `<button class="filter-dropdown-item ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join('')}
+                </div>
+            </div>`;
         }
         bar.innerHTML = html;
-        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => btn.addEventListener('click', () => { currentTagFilter = btn.dataset.filter; renderFilterBar(); updateAllContent(); }));
-        document.querySelectorAll('.filter-dropdown-item').forEach(item => item.addEventListener('click', () => { currentTagFilter = item.dataset.filter; renderFilterBar(); updateAllContent(); document.getElementById('filter-dropdown-content')?.classList.remove('show'); }));
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => btn.addEventListener('click', () => {
+            currentTagFilter = btn.dataset.filter;
+            renderFilterBar();
+            updateAllContent();
+        }));
+        document.querySelectorAll('.filter-dropdown-item').forEach(item => item.addEventListener('click', () => {
+            currentTagFilter = item.dataset.filter;
+            renderFilterBar();
+            updateAllContent();
+            document.getElementById('filter-dropdown-content')?.classList.remove('show');
+        }));
     }
 
     function updateAllContent() {
@@ -878,11 +903,16 @@
             const featured = getRandomArticleOfDay(nhadep);
             renderFeaturedOfTheDay(nhadep);
             renderMauKhacWithFilter(nhadep, featured?.id);
-        } else { document.getElementById('maukhac-grid').innerHTML = `<div class="empty-state"><p>No designs available.</p></div>`; }
+        } else {
+            document.getElementById('maukhac-grid').innerHTML = `<div class="empty-state"><p>No designs available.</p></div>`;
+        }
         renderBlogsWithFilter(blogs);
     }
 
-    function toggleFilterDropdown(event) { event.stopPropagation(); document.getElementById('filter-dropdown-content')?.classList.toggle('show'); }
+    function toggleFilterDropdown(event) {
+        event.stopPropagation();
+        document.getElementById('filter-dropdown-content')?.classList.toggle('show');
+    }
     document.addEventListener('click', () => document.getElementById('filter-dropdown-content')?.classList.remove('show'));
 
     function initLazyLoading() {
@@ -930,16 +960,19 @@
                 if (icon) icon.classList.toggle('fa-bars', !navLinks.classList.contains('active'));
                 if (icon) icon.classList.toggle('fa-xmark', navLinks.classList.contains('active'));
             });
-            navLinks.querySelectorAll('a, button').forEach(link => link.addEventListener('click', () => { navLinks.classList.remove('active'); const icon = hamburger.querySelector('i'); if (icon) { icon.classList.add('fa-bars'); icon.classList.remove('fa-xmark'); } }));
+            navLinks.querySelectorAll('a, button').forEach(link => link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = hamburger.querySelector('i');
+                if (icon) { icon.classList.add('fa-bars'); icon.classList.remove('fa-xmark'); }
+            }));
         }
     }
 
-    // Language switch: VI <-> EN using /en/ path structure
     function setupLanguageSwitch() {
         const viBtn = document.getElementById('langViBottom');
         const enBtn = document.getElementById('langEnBottom');
         const isEnPage = window.location.pathname.includes('/en/');
-        
+
         viBtn.onclick = (e) => {
             e.preventDefault();
             if (isEnPage) {
@@ -948,7 +981,7 @@
                 window.location.href = viUrl;
             }
         };
-        
+
         enBtn.onclick = (e) => {
             e.preventDefault();
             if (!isEnPage) {
