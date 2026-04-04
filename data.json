@@ -8,7 +8,9 @@
     "tag": "Tân cổ điển, Biệt thự",
     "kind": "nhadep",
     "Status": "posted",
-    "relatedlink": "./Biệt Thự Vườn Nhiệt Đới Phong Cách Modern Tropical Colonial.html"
+    "relatedlink": "./Biệt Thự Vườn Nhiệt Đới Phong Cách Modern Tropical Colonial.html",
+    "title_en": "Tropical Garden Villa in Modern Tropical Colonial Style",
+    "summary_en": "This villa is a typical example of the delicate blend between modern architecture and traditional elements."
   },
   {
     "id": "1775114307356",
@@ -19,7 +21,9 @@
     "tag": "Tân cổ điển, Biệt thự",
     "kind": "nhadep",
     "Status": "posted",
-    "relatedlink": "./Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên.html"
+    "relatedlink": "./Biệt Thự Vườn Hiện Đại – Sự Kết Hợp Tinh Tế Giữa Kiến Trúc Và Thiên Nhiên.html",
+    "title_en": "Modern Garden Villa – The Perfect Harmony Between Architecture and Nature",
+    "summary_en": "This garden villa stands out as a typical example of contemporary design. With a minimalist architectural language that is still full of emotion"
   },
   {
     "id": "1775114618286",
@@ -30,7 +34,9 @@
     "tag": "Chia sẻ",
     "kind": "blogs",
     "Status": "posted",
-    "relatedlink": "./Ý nghĩa của phong thủy trong xây dựng.html"
+    "relatedlink": "./Ý nghĩa của phong thủy trong xây dựng.html",
+    "title_en": "The Meaning of This Style in Construction",
+    "summary_en": "Feng Shui is an important part of East Asian culture, especially for Vietnamese people when building a house."
   },
   {
     "id": "1775195249543",
@@ -41,7 +47,9 @@
     "tag": "Chia sẻ",
     "kind": "blogs",
     "Status": "posted",
-    "relatedlink": "./Lỗ Ban - Thần Xây Dựng Và Thầy Tổ Nghề Mộc.html"
+    "relatedlink": "./Lỗ Ban - Thần Xây Dựng Và Thầy Tổ Nghề Mộc.html",
+    "title_en": "Entrance – Construction Body and Master Carpenter",
+    "summary_en": "Lỗ Ban is a legendary figure closely associated with the construction industry and carpentry in East Asia, especially in Vietnam and China"
   },
   {
     "id": "1775292391329",
@@ -52,6 +60,8 @@
     "tag": "Hiện đại",
     "kind": "nhadep",
     "Status": "posted",
-    "relatedlink": "./bai-test-dau-tien.html"
+    "relatedlink": "./bai-test-dau-tien.html",
+    "title_en": "the first test",
+    "summary_en": "the first test"
   }
 ]
