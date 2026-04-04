@@ -42,5 +42,16 @@
     "kind": "blogs",
     "Status": "posted",
     "relatedlink": "./Lỗ Ban - Thần Xây Dựng Và Thầy Tổ Nghề Mộc.html"
+  },
+  {
+    "id": "1775292391329",
+    "date": "04/04/2026",
+    "title": "bài test đầu tiên",
+    "summary": "bài test đầu tiên",
+    "url": "./nhadep/bai-test-dau-tien.html",
+    "tag": "Hiện đại",
+    "kind": "nhadep",
+    "Status": "posted",
+    "relatedlink": "./bai-test-dau-tien.html"
   }
 ]
