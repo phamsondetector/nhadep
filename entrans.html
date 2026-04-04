@@ -6,6 +6,15 @@
     <title>NhàĐẹp.vn - English Version</title>
     <meta name="robots" content="noindex, nofollow">
     
+    <!-- Google tag (gtag.js) - Async loading -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B51EJTDD2L"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-B51EJTDD2L');
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -20,7 +29,6 @@
             overflow: hidden;
         }
         
-        /* Khung iframe chứa nội dung - chiếm toàn màn hình */
         .iframe-container {
             position: fixed;
             top: 0;
@@ -39,7 +47,6 @@
             background: #0A0A0A;
         }
         
-        /* Nút VI/EN ở góc phải dưới - SÁT NHAU */
         .lang-buttons {
             position: fixed;
             bottom: 24px;
@@ -79,7 +86,6 @@
             color: #C6A43B;
         }
         
-        /* Ẩn hoàn toàn mọi thành phần của Google Translate */
         .goog-te-banner-frame,
         .goog-te-menu-frame,
         .goog-te-ftab-frame,
@@ -98,7 +104,6 @@
             position: relative !important;
         }
         
-        /* Loading overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -165,35 +170,55 @@
 <script>
     let targetUrl = '';
     let isFirstLoad = true;
+    let currentBaseUrl = '';
     
-    // Hàm chuyển hướng qua entrans.html để tự động dịch
-    function redirectToTranslatedPage(url) {
-        if (!url || url === 'about:blank' || url.includes('entrans.html')) return;
+    // Hàm chuyển đổi đường dẫn tương đối thành tuyệt đối
+    function resolveRelativePath(href, baseUrl) {
+        if (!href) return null;
         
-        // Lưu URL cần dịch
-        localStorage.setItem('pendingTranslateUrl', url);
-        // Chuyển đến chính trang entrans.html (refresh)
-        window.location.href = '/entrans.html';
+        if (href.startsWith('http://') || href.startsWith('https://')) {
+            return href;
+        }
+        if (href.startsWith('//')) {
+            return 'https:' + href;
+        }
+        if (href.startsWith('/')) {
+            return href;
+        }
+        
+        if (href.startsWith('./')) {
+            href = href.substring(2);
+        }
+        
+        let basePath = baseUrl;
+        if (basePath.includes('/')) {
+            const lastSlash = basePath.lastIndexOf('/');
+            if (lastSlash > 0) {
+                basePath = basePath.substring(0, lastSlash + 1);
+            }
+        }
+        
+        let result = basePath + href;
+        while (result.includes('../')) {
+            result = result.replace(/[^/]+\/\.\.\//, '');
+        }
+        
+        return result;
     }
     
     // Hàm chặn tất cả link trong iframe
-    function interceptIframeLinks(iframeDoc) {
+    function interceptIframeLinks(iframeDoc, currentBaseUrl) {
         if (!iframeDoc) return;
         
-        // Chặn tất cả thẻ a
         const allLinks = iframeDoc.querySelectorAll('a');
         allLinks.forEach(link => {
             const originalHref = link.getAttribute('href');
             if (!originalHref || originalHref === '#' || originalHref.startsWith('javascript:')) return;
             
-            // Lưu href gốc
             link.setAttribute('data-original-href', originalHref);
-            
-            // Thay thế onclick để chặn
-            link.removeAttribute('onclick');
             link.style.cursor = 'pointer';
+            link.removeAttribute('onclick');
             
-            // Gắn sự kiện click mới
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -201,32 +226,19 @@
                 let href = this.getAttribute('data-original-href') || this.getAttribute('href');
                 if (!href || href === '#') return;
                 
-                // Xử lý đường dẫn tương đối
-                if (href.startsWith('./')) {
-                    const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
-                    href = currentPath + href.substring(2);
-                } else if (href.startsWith('../')) {
-                    // Xử lý đường dẫn lên cấp
-                    let parts = targetUrl.split('/');
-                    let levels = (href.match(/\.\.\//g) || []).length;
-                    for (let i = 0; i < levels; i++) parts.pop();
-                    let basePath = parts.join('/') + '/';
-                    href = basePath + href.replace(/\.\.\//g, '');
-                } else if (!href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('/')) {
-                    // Đường dẫn tương đối khác
-                    const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
-                    href = currentPath + href;
+                let absoluteUrl = resolveRelativePath(href, currentBaseUrl);
+                
+                if (absoluteUrl && (absoluteUrl.includes('entrans.html') || absoluteUrl === window.location.href)) {
+                    return;
                 }
                 
-                // Chuyển hướng qua entrans.html
-                if (href && !href.includes('entrans.html')) {
-                    localStorage.setItem('pendingTranslateUrl', href);
+                if (absoluteUrl) {
+                    localStorage.setItem('pendingTranslateUrl', absoluteUrl);
                     window.location.href = '/entrans.html';
                 }
             });
         });
         
-        // Chặn sự kiện click trên body (cho các link được tạo động)
         iframeDoc.body.addEventListener('click', function(e) {
             let target = e.target;
             while (target && target !== iframeDoc.body) {
@@ -235,13 +247,11 @@
                     if (href && href !== '#' && !href.startsWith('javascript:') && !href.includes('entrans.html')) {
                         e.preventDefault();
                         e.stopPropagation();
-                        let finalHref = href;
-                        if (!finalHref.startsWith('http') && !finalHref.startsWith('/')) {
-                            const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
-                            finalHref = currentPath + href;
+                        let absoluteUrl = resolveRelativePath(href, currentBaseUrl);
+                        if (absoluteUrl) {
+                            localStorage.setItem('pendingTranslateUrl', absoluteUrl);
+                            window.location.href = '/entrans.html';
                         }
-                        localStorage.setItem('pendingTranslateUrl', finalHref);
-                        window.location.href = '/entrans.html';
                     }
                     break;
                 }
@@ -250,16 +260,13 @@
         }, true);
     }
     
-    // Hàm sửa tất cả link về trang chủ
     function fixHomeLinksInIframe(iframeDoc) {
         if (!iframeDoc) return;
         
         const allLinks = iframeDoc.querySelectorAll('a[href]');
         allLinks.forEach(link => {
-            const href = link.getAttribute('href') || '';
             const linkText = link.textContent || '';
             
-            // Sửa link "Về trang chủ"
             if (linkText.includes('Về trang chủ') || 
                 linkText.includes('Back to home') ||
                 linkText.includes('← Về trang chủ') ||
@@ -281,24 +288,10 @@
             const elements = doc.querySelectorAll(selector);
             elements.forEach(el => { if (el) el.remove(); });
         });
-        const allElements = doc.querySelectorAll('button, a, div');
-        allElements.forEach(el => {
-            const text = el.textContent || '';
-            if ((text.includes('VI') || text.includes('EN') || text.includes('🇻🇳') || text.includes('🇬🇧')) && 
-                (el.tagName === 'BUTTON' || el.classList.contains('lang-btn') || el.classList.contains('lang-nav-btn'))) {
-                el.remove();
-            }
-        });
     }
     
-    function triggerTranslateToEnglish() {
+    function triggerTranslateToEnglish(iframeDoc) {
         try {
-            const iframe = document.getElementById('contentFrame');
-            if (!iframe || !iframe.contentWindow || !iframe.contentDocument) {
-                setTimeout(triggerTranslateToEnglish, 300);
-                return;
-            }
-            const iframeDoc = iframe.contentDocument;
             const select = iframeDoc.querySelector('.goog-te-combo');
             if (select && select.value !== 'en') {
                 select.value = 'en';
@@ -306,14 +299,12 @@
                 setTimeout(() => {
                     hideGoogleTranslateElements(iframeDoc);
                     removeAllLanguageButtons(iframeDoc);
-                    interceptIframeLinks(iframeDoc);
+                    interceptIframeLinks(iframeDoc, currentBaseUrl);
                     fixHomeLinksInIframe(iframeDoc);
                 }, 500);
-            } else if (!select) {
-                setTimeout(triggerTranslateToEnglish, 300);
             }
         } catch(e) {
-            setTimeout(triggerTranslateToEnglish, 300);
+            console.log('Trigger translate error:', e);
         }
     }
     
@@ -334,62 +325,58 @@
         }
     }
     
-    async function fetchAndCleanContent(url) {
+    async function loadContent() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'flex';
+        
+        const iframe = document.getElementById('contentFrame');
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
         try {
-            const response = await fetch(url);
+            const response = await fetch(targetUrl);
             let html = await response.text();
+            
             html = html.replace(/<div[^>]*class="[^"]*lang-switch[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<div[^>]*class="[^"]*lang-buttons[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/<button[^>]*class="[^"]*lang-btn[^"]*"[^>]*>[\s\S]*?<\/button>/gi, '');
             html = html.replace(/<button[^>]*class="[^"]*lang-nav-btn[^"]*"[^>]*>[\s\S]*?<\/button>/gi, '');
             html = html.replace(/<div[^>]*class="[^"]*translate-toolbar[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
-            html = html.replace(/<div[^>]*class="[^"]*lang-en-switch[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
             html = html.replace(/function switchLanguage[^{]*\{[\s\S]*?\}/gi, '');
             html = html.replace(/switchLanguage\s*\([^)]*\)/gi, '');
-            return html;
+            
+            iframeDoc.open();
+            iframeDoc.write(html);
+            iframeDoc.close();
+            
+            currentBaseUrl = targetUrl;
+            
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+                if (isFirstLoad) {
+                    isFirstLoad = false;
+                    removeAllLanguageButtons(iframeDoc);
+                    injectTranslateToIframe();
+                }
+            }, 800);
+            
         } catch(e) {
-            console.error('Fetch error:', e);
-            return null;
-        }
-    }
-    
-    async function loadCleanedContent() {
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        loadingOverlay.style.display = 'flex';
-        const cleanedHtml = await fetchAndCleanContent(targetUrl);
-        if (!cleanedHtml) {
-            const iframe = document.getElementById('contentFrame');
+            console.error('Load content error:', e);
             iframe.src = targetUrl;
+            currentBaseUrl = targetUrl;
             iframe.onload = function() {
                 setTimeout(() => {
                     loadingOverlay.style.display = 'none';
                     if (isFirstLoad) {
                         isFirstLoad = false;
                         setTimeout(() => {
-                            try {
-                                const iframeDoc = iframe.contentDocument;
-                                removeAllLanguageButtons(iframeDoc);
-                                injectTranslateToIframe();
-                            } catch(e) {}
+                            const iframeDoc2 = iframe.contentDocument;
+                            removeAllLanguageButtons(iframeDoc2);
+                            injectTranslateToIframe();
                         }, 500);
                     }
                 }, 800);
             };
-            return;
         }
-        const iframe = document.getElementById('contentFrame');
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(cleanedHtml);
-        iframeDoc.close();
-        setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-            if (isFirstLoad) {
-                isFirstLoad = false;
-                removeAllLanguageButtons(iframeDoc);
-                injectTranslateToIframe();
-            }
-        }, 800);
     }
     
     function injectTranslateToIframe() {
@@ -397,10 +384,12 @@
             const iframe = document.getElementById('contentFrame');
             const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
             const iframeWin = iframe.contentWindow;
+            
             if (iframeDoc.querySelector('#google-translate-script')) {
-                triggerTranslateToEnglish();
+                triggerTranslateToEnglish(iframeDoc);
                 return;
             }
+            
             iframeWin.setupGoogleTranslate = function() {
                 if (iframeWin.google && iframeWin.google.translate) {
                     new iframeWin.google.translate.TranslateElement({
@@ -412,17 +401,19 @@
                     setTimeout(() => {
                         hideGoogleTranslateElements(iframeDoc);
                         removeAllLanguageButtons(iframeDoc);
-                        interceptIframeLinks(iframeDoc);
+                        interceptIframeLinks(iframeDoc, currentBaseUrl);
                         fixHomeLinksInIframe(iframeDoc);
-                        triggerTranslateToEnglish();
+                        triggerTranslateToEnglish(iframeDoc);
                     }, 300);
                 }
             };
+            
             const script = iframeDoc.createElement('script');
             script.id = 'google-translate-script';
             script.src = 'https://translate.google.com/translate_a/element.js?cb=setupGoogleTranslate';
             script.async = true;
             iframeDoc.head.appendChild(script);
+            
             const translateDiv = iframeDoc.createElement('div');
             translateDiv.id = 'google_translate_element';
             translateDiv.style.position = 'absolute';
@@ -430,6 +421,7 @@
             translateDiv.style.width = '0';
             translateDiv.style.height = '0';
             iframeDoc.body.appendChild(translateDiv);
+            
             const style = iframeDoc.createElement('style');
             style.textContent = `
                 .goog-te-banner-frame, .goog-te-menu-frame, .goog-te-ftab-frame,
@@ -439,6 +431,7 @@
                 body { top: 0px !important; position: relative !important; }
             `;
             iframeDoc.head.appendChild(style);
+            
         } catch(e) {
             console.error('Inject error:', e);
             setTimeout(injectTranslateToIframe, 500);
@@ -450,6 +443,7 @@
         const btnEn = document.getElementById('btnEn');
         btnEn.classList.add('active');
         btnVi.classList.remove('active');
+        
         setTimeout(() => {
             try {
                 const iframe = document.getElementById('contentFrame');
@@ -459,8 +453,6 @@
                     select.value = 'en';
                     select.dispatchEvent(new Event('change'));
                 }
-                removeAllLanguageButtons(iframeDoc);
-                interceptIframeLinks(iframeDoc);
             } catch(e) {}
         }, 200);
     }
@@ -471,14 +463,16 @@
     
     async function init() {
         targetUrl = localStorage.getItem('pendingTranslateUrl') || '/';
+        currentBaseUrl = targetUrl;
+        
         const btnVi = document.getElementById('btnVi');
         const btnEn = document.getElementById('btnEn');
         btnVi.onclick = handleViClick;
         btnEn.onclick = handleEnClick;
-        await loadCleanedContent();
-        // Không xóa localStorage ngay để dùng cho lần chuyển trang tiếp theo
-        setTimeout(() => { 
-            // Chỉ xóa nếu không phải đang chờ chuyển trang
+        
+        await loadContent();
+        
+        setTimeout(() => {
             if (!localStorage.getItem('pendingTranslateUrl')) {
                 localStorage.removeItem('pendingTranslateUrl');
             }
