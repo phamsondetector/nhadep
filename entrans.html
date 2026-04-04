@@ -166,6 +166,111 @@
     let targetUrl = '';
     let isFirstLoad = true;
     
+    // Hàm chuyển hướng qua entrans.html để tự động dịch
+    function redirectToTranslatedPage(url) {
+        if (!url || url === 'about:blank' || url.includes('entrans.html')) return;
+        
+        // Lưu URL cần dịch
+        localStorage.setItem('pendingTranslateUrl', url);
+        // Chuyển đến chính trang entrans.html (refresh)
+        window.location.href = '/entrans.html';
+    }
+    
+    // Hàm chặn tất cả link trong iframe
+    function interceptIframeLinks(iframeDoc) {
+        if (!iframeDoc) return;
+        
+        // Chặn tất cả thẻ a
+        const allLinks = iframeDoc.querySelectorAll('a');
+        allLinks.forEach(link => {
+            const originalHref = link.getAttribute('href');
+            if (!originalHref || originalHref === '#' || originalHref.startsWith('javascript:')) return;
+            
+            // Lưu href gốc
+            link.setAttribute('data-original-href', originalHref);
+            
+            // Thay thế onclick để chặn
+            link.removeAttribute('onclick');
+            link.style.cursor = 'pointer';
+            
+            // Gắn sự kiện click mới
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                let href = this.getAttribute('data-original-href') || this.getAttribute('href');
+                if (!href || href === '#') return;
+                
+                // Xử lý đường dẫn tương đối
+                if (href.startsWith('./')) {
+                    const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
+                    href = currentPath + href.substring(2);
+                } else if (href.startsWith('../')) {
+                    // Xử lý đường dẫn lên cấp
+                    let parts = targetUrl.split('/');
+                    let levels = (href.match(/\.\.\//g) || []).length;
+                    for (let i = 0; i < levels; i++) parts.pop();
+                    let basePath = parts.join('/') + '/';
+                    href = basePath + href.replace(/\.\.\//g, '');
+                } else if (!href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('/')) {
+                    // Đường dẫn tương đối khác
+                    const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
+                    href = currentPath + href;
+                }
+                
+                // Chuyển hướng qua entrans.html
+                if (href && !href.includes('entrans.html')) {
+                    localStorage.setItem('pendingTranslateUrl', href);
+                    window.location.href = '/entrans.html';
+                }
+            });
+        });
+        
+        // Chặn sự kiện click trên body (cho các link được tạo động)
+        iframeDoc.body.addEventListener('click', function(e) {
+            let target = e.target;
+            while (target && target !== iframeDoc.body) {
+                if (target.tagName === 'A') {
+                    const href = target.getAttribute('href');
+                    if (href && href !== '#' && !href.startsWith('javascript:') && !href.includes('entrans.html')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let finalHref = href;
+                        if (!finalHref.startsWith('http') && !finalHref.startsWith('/')) {
+                            const currentPath = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
+                            finalHref = currentPath + href;
+                        }
+                        localStorage.setItem('pendingTranslateUrl', finalHref);
+                        window.location.href = '/entrans.html';
+                    }
+                    break;
+                }
+                target = target.parentElement;
+            }
+        }, true);
+    }
+    
+    // Hàm sửa tất cả link về trang chủ
+    function fixHomeLinksInIframe(iframeDoc) {
+        if (!iframeDoc) return;
+        
+        const allLinks = iframeDoc.querySelectorAll('a[href]');
+        allLinks.forEach(link => {
+            const href = link.getAttribute('href') || '';
+            const linkText = link.textContent || '';
+            
+            // Sửa link "Về trang chủ"
+            if (linkText.includes('Về trang chủ') || 
+                linkText.includes('Back to home') ||
+                linkText.includes('← Về trang chủ') ||
+                linkText.includes('← Quay lại trang chủ') ||
+                link.classList.contains('back-btn')) {
+                link.setAttribute('data-original-href', '/');
+                link.setAttribute('href', 'javascript:void(0)');
+            }
+        });
+    }
+    
     function removeAllLanguageButtons(doc) {
         if (!doc) return;
         const selectorsToRemove = [
@@ -201,7 +306,9 @@
                 setTimeout(() => {
                     hideGoogleTranslateElements(iframeDoc);
                     removeAllLanguageButtons(iframeDoc);
-                }, 200);
+                    interceptIframeLinks(iframeDoc);
+                    fixHomeLinksInIframe(iframeDoc);
+                }, 500);
             } else if (!select) {
                 setTimeout(triggerTranslateToEnglish, 300);
             }
@@ -305,6 +412,8 @@
                     setTimeout(() => {
                         hideGoogleTranslateElements(iframeDoc);
                         removeAllLanguageButtons(iframeDoc);
+                        interceptIframeLinks(iframeDoc);
+                        fixHomeLinksInIframe(iframeDoc);
                         triggerTranslateToEnglish();
                     }, 300);
                 }
@@ -351,6 +460,7 @@
                     select.dispatchEvent(new Event('change'));
                 }
                 removeAllLanguageButtons(iframeDoc);
+                interceptIframeLinks(iframeDoc);
             } catch(e) {}
         }, 200);
     }
@@ -360,13 +470,19 @@
     }
     
     async function init() {
-        targetUrl = localStorage.getItem('pendingTranslateUrl') || './index.html';
+        targetUrl = localStorage.getItem('pendingTranslateUrl') || '/';
         const btnVi = document.getElementById('btnVi');
         const btnEn = document.getElementById('btnEn');
         btnVi.onclick = handleViClick;
         btnEn.onclick = handleEnClick;
         await loadCleanedContent();
-        setTimeout(() => { localStorage.removeItem('pendingTranslateUrl'); }, 1000);
+        // Không xóa localStorage ngay để dùng cho lần chuyển trang tiếp theo
+        setTimeout(() => { 
+            // Chỉ xóa nếu không phải đang chờ chuyển trang
+            if (!localStorage.getItem('pendingTranslateUrl')) {
+                localStorage.removeItem('pendingTranslateUrl');
+            }
+        }, 2000);
     }
     
     if (document.readyState === 'loading') {
