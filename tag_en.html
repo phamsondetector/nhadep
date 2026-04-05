@@ -365,7 +365,7 @@
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
 
-document.title = activeTag ? `Tag: ${activeTag} — NhàĐẹp.vn` : 'Tags — BeautifulHome';
+document.title = activeTag ? `Tag: ${activeTag} — BeautifulHome` : 'Tags — BeautifulHome';
 document.getElementById('hero-tag-name').textContent = activeTag || 'All';
 
 function escapeHtml(str) {
@@ -373,8 +373,13 @@ function escapeHtml(str) {
     return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
+// Thêm _en trước .html cho link bài viết liên quan
 function buildArticleUrl(item) {
-    return item.url || '#';
+    let url = item.url || '#';
+    if (url.endsWith('.html') && !url.endsWith('_en.html')) {
+        url = url.replace('.html', '_en.html');
+    }
+    return url;
 }
 
 function buildThumbUrl(item) {
@@ -400,7 +405,7 @@ function formatDate(dateStr) {
     }
 }
 
-// Render card KHÔNG có thẻ a, dùng div và data-url để xử lý click
+// Sử dụng title_en và summary_en cho card
 function renderCard(item) {
     if (!item || !item.title || !item.url || item.title.trim() === '') {
         return '';
@@ -413,17 +418,16 @@ function renderCard(item) {
     
     const thumbUrl = buildThumbUrl(item);
     const tags = getTags(item);
-    const title = escapeHtml(item.title.trim());
-    const summary = escapeHtml((item.summary || '').substring(0, 100));
+    const title = escapeHtml((item.title_en || item.title || '').trim());
+    const summary = escapeHtml((item.summary_en || item.summary || '').substring(0, 100));
     const date = formatDate(item.date || '');
-    const displaySummary = summary + (item.summary && item.summary.length > 100 ? '…' : '');
+    const displaySummary = summary + ((item.summary_en || item.summary) && (item.summary_en || item.summary).length > 100 ? '…' : '');
 
     const tagsHtml = tags.map(t => {
         const isActive = t === activeTag ? ' active-tag' : '';
-        return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
+        return `<a class="card-tag" href="./tag_en.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
-    // KHÔNG còn thẻ a.card, thay vào đó là div.card với data-url
     return '<div class="card" data-url="' + escapeHtml(url) + '">' +
         '<div class="card-thumb-wrap">' +
             '<img class="card-thumb" src="' + escapeHtml(thumbUrl) + '" alt="' + title + '" loading="lazy" onerror="this.style.opacity=\'0.6\'">' +
@@ -458,13 +462,13 @@ function renderTagsBar(allPosts) {
     
     const pills = [...tagSet].sort().map(t => {
         const isActive = t === activeTag ? ' active' : '';
-        return `<a class="tag-pill${isActive}" href="./tag.html?tag=${encodeURIComponent(t)}">${escapeHtml(t)}</a>`;
+        return `<a class="tag-pill${isActive}" href="./tag_en.html?tag=${encodeURIComponent(t)}">${escapeHtml(t)}</a>`;
     }).join('');
     
     bar.innerHTML = `<span class="bar-label"><i class="fa-solid fa-tags"></i> Tags:</span>${pills}`;
 }
 
-// Xử lý click trên card (điều hướng đến URL)
+// Xử lý click trên card
 function attachCardClickHandlers() {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
@@ -474,11 +478,7 @@ function attachCardClickHandlers() {
 }
 
 function handleCardClick(event) {
-    // Không xử lý nếu click vào tag (tag đã có link riêng)
-    if (event.target.closest('.card-tag')) {
-        return;
-    }
-    
+    if (event.target.closest('.card-tag')) return;
     const card = event.currentTarget;
     const url = card.getAttribute('data-url');
     if (url && url !== '#') {
@@ -493,7 +493,6 @@ function handleCardClick(event) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
-        // Lọc articles hợp lệ
         const validPosts = posts.filter(p => {
             return p && 
                    p.title && 
@@ -504,35 +503,31 @@ function handleCardClick(event) {
         });
         
         if (validPosts.length === 0) {
-            grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có articles nào</div></div>`;
+            grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>No articles found</div></div>`;
             return;
         }
 
         renderTagsBar(validPosts);
 
-        // Lọc theo tag
         const filtered = activeTag
-            ? validPosts.filter(p =>
-                getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase())
-              )
+            ? validPosts.filter(p => getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase()))
             : validPosts;
 
         const countText = filtered.length > 0
             ? `${filtered.length} articles`
-            : 'Chưa có articles nào';
+            : 'No articles found';
         document.getElementById('hero-count').innerHTML = `<i class="fa-regular fa-newspaper"></i> ${countText}`;
 
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty">
                     <i class="fa-regular fa-folder-open"></i>
-                    <div>Không tìm thấy articles nào với tag <strong>"${escapeHtml(activeTag)}"</strong></div>
+                    <div>No articles found with tag <strong>"${escapeHtml(activeTag)}"</strong></div>
                     <div style="margin-top: 16px; font-size: 0.85rem;">
-                        <a href="./tag.html" style="color: var(--gold); text-decoration: none;">← Xem tất cả articles</a>
+                        <a href="./tag_en.html" style="color: var(--gold); text-decoration: none;">← View all articles</a>
                     </div>
                 </div>`;
         } else {
-            // Render tất cả card
             let cardsHtml = '';
             for (let i = 0; i < filtered.length; i++) {
                 const cardHtml = renderCard(filtered[i]);
@@ -542,10 +537,9 @@ function handleCardClick(event) {
             }
             
             if (!cardsHtml || cardsHtml.trim() === '') {
-                grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có articles nào để hiển thị</div></div>`;
+                grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>No articles to display</div></div>`;
             } else {
                 grid.innerHTML = cardsHtml;
-                // Gắn sự kiện click sau khi render
                 attachCardClickHandlers();
             }
         }
@@ -560,6 +554,7 @@ function handleCardClick(event) {
     }
 })();
 </script>
+
 <!-- Nút chuyển đổi ngôn ngữ góc phải dưới -->
 <style>
     .lang-switch-bottom {
@@ -621,13 +616,11 @@ function setupLanguageSwitch() {
     const currentUrl = window.location.href;
     const currentPath = window.location.pathname;
 
-    // Hàm chuyển đổi giữa .html và _en.html
     function switchToVi() {
         if (currentPath.includes('_en.html')) {
             let viUrl = currentUrl.replace('_en.html', '.html');
             window.location.href = viUrl;
         }
-        // Nếu đã là tiếng Việt thì không làm gì
     }
 
     function switchToEn() {
@@ -635,29 +628,17 @@ function setupLanguageSwitch() {
             let enUrl = currentUrl.replace('.html', '_en.html');
             window.location.href = enUrl;
         }
-        // Nếu đã là tiếng Anh thì không làm gì
     }
 
-    // Gán sự kiện
-    viBtn.onclick = (e) => {
-        e.preventDefault();
-        switchToVi();
-    };
+    viBtn.onclick = (e) => { e.preventDefault(); switchToVi(); };
+    enBtn.onclick = (e) => { e.preventDefault(); switchToEn(); };
 
-    enBtn.onclick = (e) => {
-        e.preventDefault();
-        switchToEn();
-    };
-
-    // Cập nhật giao diện nút
     if (currentPath.includes('_en.html')) {
-        // Đang ở trang EN
         enBtn.style.background = 'rgba(198,164,59,0.25)';
         enBtn.style.color = '#C6A43B';
         viBtn.style.background = 'none';
         viBtn.style.color = '#9C9C9C';
     } else {
-        // Đang ở trang VI
         viBtn.style.background = 'rgba(198,164,59,0.25)';
         viBtn.style.color = '#C6A43B';
         enBtn.style.background = 'none';
@@ -665,8 +646,6 @@ function setupLanguageSwitch() {
     }
 }
 
-// Hàm loadData và initMobileMenu cần được định nghĩa trước nếu chưa có
-// Giả sử bạn đã có sẵn các hàm này ở nơi khác, nếu chưa thì thêm định nghĩa rỗng tạm thời
 window.loadData = window.loadData || function() {};
 window.initMobileMenu = window.initMobileMenu || function() {};
 window.initLazyLoading = window.initLazyLoading || function() {};
