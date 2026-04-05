@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag — NhaDep.vn</title>
+    <title>Tag — BeautifulHome</title>
     <meta name="robots" content="index, follow">
     <!-- Google tag (gtag.js) - Async loading -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B51EJTDD2L"></script>
@@ -339,7 +339,7 @@
         <img src="./logo.webp" alt="Logo"
              style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;"
              onerror="this.style.display='none'">
-        Nha<span>Đẹp</span>
+        Beautiful<span>Home</span>
     </h1>
     <a href="./index_en.html">← Back to Home</a>
 </nav>
@@ -365,7 +365,7 @@
 const params = new URLSearchParams(window.location.search);
 const activeTag = (params.get('tag') || '').trim();
 
-document.title = activeTag ? `Tag: ${activeTag} — NhaDep.vn` : 'Tags — NhaDep.vn';
+document.title = activeTag ? `Tag: ${activeTag} — NhàĐẹp.vn` : 'Tags — BeautifulHome';
 document.getElementById('hero-tag-name').textContent = activeTag || 'All';
 
 function escapeHtml(str) {
@@ -400,7 +400,7 @@ function formatDate(dateStr) {
     }
 }
 
-// Render card
+// Render card KHÔNG có thẻ a, dùng div và data-url để xử lý click
 function renderCard(item) {
     if (!item || !item.title || !item.url || item.title.trim() === '') {
         return '';
@@ -420,9 +420,10 @@ function renderCard(item) {
 
     const tagsHtml = tags.map(t => {
         const isActive = t === activeTag ? ' active-tag' : '';
-        return `<a class="card-tag" href="./tag_en.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
+        return `<a class="card-tag" href="./tag.html?tag=${encodeURIComponent(t)}" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`;
     }).join('');
 
+    // KHÔNG còn thẻ a.card, thay vào đó là div.card với data-url
     return '<div class="card" data-url="' + escapeHtml(url) + '">' +
         '<div class="card-thumb-wrap">' +
             '<img class="card-thumb" src="' + escapeHtml(thumbUrl) + '" alt="' + title + '" loading="lazy" onerror="this.style.opacity=\'0.6\'">' +
@@ -457,13 +458,13 @@ function renderTagsBar(allPosts) {
     
     const pills = [...tagSet].sort().map(t => {
         const isActive = t === activeTag ? ' active' : '';
-        return `<a class="tag-pill${isActive}" href="./tag_en.html?tag=${encodeURIComponent(t)}">${escapeHtml(t)}</a>`;
+        return `<a class="tag-pill${isActive}" href="./tag.html?tag=${encodeURIComponent(t)}">${escapeHtml(t)}</a>`;
     }).join('');
     
     bar.innerHTML = `<span class="bar-label"><i class="fa-solid fa-tags"></i> Tags:</span>${pills}`;
 }
 
-// Xử lý click trên card
+// Xử lý click trên card (điều hướng đến URL)
 function attachCardClickHandlers() {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
@@ -473,9 +474,11 @@ function attachCardClickHandlers() {
 }
 
 function handleCardClick(event) {
+    // Không xử lý nếu click vào tag (tag đã có link riêng)
     if (event.target.closest('.card-tag')) {
         return;
     }
+    
     const card = event.currentTarget;
     const url = card.getAttribute('data-url');
     if (url && url !== '#') {
@@ -490,6 +493,7 @@ function handleCardClick(event) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         
+        // Lọc articles hợp lệ
         const validPosts = posts.filter(p => {
             return p && 
                    p.title && 
@@ -500,12 +504,13 @@ function handleCardClick(event) {
         });
         
         if (validPosts.length === 0) {
-            grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>No articles found</div></div>`;
+            grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có articles nào</div></div>`;
             return;
         }
 
         renderTagsBar(validPosts);
 
+        // Lọc theo tag
         const filtered = activeTag
             ? validPosts.filter(p =>
                 getTags(p).some(t => t.toLowerCase() === activeTag.toLowerCase())
@@ -514,19 +519,20 @@ function handleCardClick(event) {
 
         const countText = filtered.length > 0
             ? `${filtered.length} articles`
-            : 'No articles found';
+            : 'Chưa có articles nào';
         document.getElementById('hero-count').innerHTML = `<i class="fa-regular fa-newspaper"></i> ${countText}`;
 
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div class="empty">
                     <i class="fa-regular fa-folder-open"></i>
-                    <div>No articles found for tag <strong>"${escapeHtml(activeTag)}"</strong></div>
+                    <div>Không tìm thấy articles nào với tag <strong>"${escapeHtml(activeTag)}"</strong></div>
                     <div style="margin-top: 16px; font-size: 0.85rem;">
-                        <a href="./tag_en.html" style="color: var(--gold); text-decoration: none;">← View all articles</a>
+                        <a href="./tag.html" style="color: var(--gold); text-decoration: none;">← Xem tất cả articles</a>
                     </div>
                 </div>`;
         } else {
+            // Render tất cả card
             let cardsHtml = '';
             for (let i = 0; i < filtered.length; i++) {
                 const cardHtml = renderCard(filtered[i]);
@@ -536,9 +542,10 @@ function handleCardClick(event) {
             }
             
             if (!cardsHtml || cardsHtml.trim() === '') {
-                grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>No articles to display</div></div>`;
+                grid.innerHTML = `<div class="empty"><i class="fa-regular fa-folder-open"></i><div>Không có articles nào để hiển thị</div></div>`;
             } else {
                 grid.innerHTML = cardsHtml;
+                // Gắn sự kiện click sau khi render
                 attachCardClickHandlers();
             }
         }
@@ -553,18 +560,18 @@ function handleCardClick(event) {
     }
 })();
 </script>
-<!-- Nút chuyển đổi ngôn ngữ góc phải dưới - sát nhau nhất -->
+<!-- Nút chuyển đổi ngôn ngữ góc phải dưới -->
 <style>
     .lang-switch-bottom {
         position: fixed;
         bottom: 24px;
         right: 24px;
         display: flex;
-        gap: 1px;
-        background: rgba(10,10,10,0.95);
+        gap: 0px;
+        background: rgba(10,10,10,0.9);
         backdrop-filter: blur(20px);
-        border-radius: 50px;
-        padding: 3px;
+        border-radius: 40px;
+        padding: 4px;
         border: 1px solid rgba(198,164,59,0.3);
         z-index: 10000;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -575,23 +582,17 @@ function handleCardClick(event) {
         border: none;
         color: #9C9C9C;
         cursor: pointer;
-        font-size: 0.82rem;
-        padding: 8px 15px;
-        border-radius: 50px;
+        font-size: 0.8rem;
+        padding: 8px 18px;
+        border-radius: 30px;
         transition: all 0.2s;
         font-weight: 600;
         font-family: 'Open Sans', sans-serif;
-        white-space: nowrap;
-        min-width: 68px;
+        margin: 0;
     }
     
     .lang-switch-bottom .lang-btn-bottom:hover {
-        background: rgba(198,164,59,0.18);
-        color: #C6A43B;
-    }
-
-    .lang-switch-bottom .lang-btn-bottom.active {
-        background: rgba(198,164,59,0.28);
+        background: rgba(198,164,59,0.15);
         color: #C6A43B;
     }
     
@@ -600,12 +601,10 @@ function handleCardClick(event) {
             bottom: 16px;
             right: 16px;
             padding: 3px;
-            gap: 0px;
         }
         .lang-switch-bottom .lang-btn-bottom {
-            padding: 7px 13px;
-            font-size: 0.73rem;
-            min-width: 64px;
+            padding: 5px 12px;
+            font-size: 0.7rem;
         }
     }
 </style>
@@ -622,11 +621,13 @@ function setupLanguageSwitch() {
     const currentUrl = window.location.href;
     const currentPath = window.location.pathname;
 
+    // Hàm chuyển đổi giữa .html và _en.html
     function switchToVi() {
         if (currentPath.includes('_en.html')) {
             let viUrl = currentUrl.replace('_en.html', '.html');
             window.location.href = viUrl;
         }
+        // Nếu đã là tiếng Việt thì không làm gì
     }
 
     function switchToEn() {
@@ -634,8 +635,10 @@ function setupLanguageSwitch() {
             let enUrl = currentUrl.replace('.html', '_en.html');
             window.location.href = enUrl;
         }
+        // Nếu đã là tiếng Anh thì không làm gì
     }
 
+    // Gán sự kiện
     viBtn.onclick = (e) => {
         e.preventDefault();
         switchToVi();
@@ -646,12 +649,15 @@ function setupLanguageSwitch() {
         switchToEn();
     };
 
+    // Cập nhật giao diện nút
     if (currentPath.includes('_en.html')) {
+        // Đang ở trang EN
         enBtn.style.background = 'rgba(198,164,59,0.25)';
         enBtn.style.color = '#C6A43B';
         viBtn.style.background = 'none';
         viBtn.style.color = '#9C9C9C';
     } else {
+        // Đang ở trang VI
         viBtn.style.background = 'rgba(198,164,59,0.25)';
         viBtn.style.color = '#C6A43B';
         enBtn.style.background = 'none';
@@ -659,6 +665,8 @@ function setupLanguageSwitch() {
     }
 }
 
+// Hàm loadData và initMobileMenu cần được định nghĩa trước nếu chưa có
+// Giả sử bạn đã có sẵn các hàm này ở nơi khác, nếu chưa thì thêm định nghĩa rỗng tạm thời
 window.loadData = window.loadData || function() {};
 window.initMobileMenu = window.initMobileMenu || function() {};
 window.initLazyLoading = window.initLazyLoading || function() {};
