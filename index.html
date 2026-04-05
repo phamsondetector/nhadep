@@ -818,17 +818,14 @@ function articleMatchesFilter(article, filterValue) {
     return articleTags.includes(filterValue);
 }
 
-// Lấy bài ngẫu nhiên mỗi ngày dựa trên ngày hiện tại (seed theo ngày)
-function getRandomArticleOfDay(articles) {
+// Lấy bài viết mới nhất dựa trên trường date (định dạng YYYY-MM-DD)
+function getLatestArticle(articles) {
     if (!articles.length) return null;
-    const today = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-    let hash = 0;
-    for(let i = 0; i < today.length; i++) {
-        hash = ((hash << 5) - hash) + today.charCodeAt(i);
-        hash |= 0;
-    }
-    const index = Math.abs(hash) % articles.length;
-    return articles[index];
+    return articles.reduce((latest, current) => {
+        if (!latest.date) return current;
+        if (!current.date) return latest;
+        return current.date > latest.date ? current : latest;
+    }, articles[0]);
 }
 
 function renderFeaturedOfTheDay(articles) {
@@ -837,7 +834,7 @@ function renderFeaturedOfTheDay(articles) {
         container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>Chưa có bài viết nào.</p></div>`;
         return;
     }
-    const featuredArticle = getRandomArticleOfDay(articles);
+    const featuredArticle = getLatestArticle(articles);
     if (!featuredArticle) {
         container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>Không thể chọn bài viết.</p></div>`;
         return;
@@ -993,7 +990,7 @@ function updateContentByFilter() {
     const nhadepArticles = posted.filter(a => a.kind === 'nhadep');
     const blogsArticles = posted.filter(a => a.kind === 'blogs');
     if (nhadepArticles.length > 0) {
-        const featuredArticle = getRandomArticleOfDay(nhadepArticles);
+        const featuredArticle = getLatestArticle(nhadepArticles);
         const featuredId = featuredArticle ? featuredArticle.id : null;
         renderFeaturedOfTheDay(nhadepArticles);
         renderMauKhacWithFilter(nhadepArticles, featuredId);

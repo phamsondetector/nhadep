@@ -709,6 +709,16 @@
         return match ? match[1] : null;
     }
 
+    // Lấy bài viết mới nhất dựa trên trường date (định dạng YYYY-MM-DD)
+    function getLatestArticle(articles) {
+        if (!articles.length) return null;
+        return articles.reduce((latest, current) => {
+            if (!latest.date) return current;
+            if (!current.date) return latest;
+            return current.date > latest.date ? current : latest;
+        }, articles[0]);
+    }
+
     // ==================== QUAN TRỌNG: TẤT CẢ LINK BÀI VIẾT ĐỀU CÓ DẠNG xxx_en.html ====================
     function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
@@ -765,24 +775,13 @@
         return articleTags.includes(filterValue);
     }
 
-    function getRandomArticleOfDay(articles) {
-        if (!articles.length) return null;
-        const today = new Date().toISOString().slice(0,10);
-        let hash = 0;
-        for(let i = 0; i < today.length; i++) { 
-            hash = ((hash << 5) - hash) + today.charCodeAt(i); 
-            hash |= 0; 
-        }
-        return articles[Math.abs(hash) % articles.length];
-    }
-
     function renderFeaturedOfTheDay(articles) {
         const container = document.getElementById('nhadep-featured');
         if (!articles.length) {
             container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>No articles available.</p></div>`;
             return;
         }
-        const featured = getRandomArticleOfDay(articles);
+        const featured = getLatestArticle(articles);
         if (!featured) return;
 
         const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title_en || featured.title);
@@ -924,7 +923,7 @@
         const blogs = posted.filter(a => a.kind === 'blogs');
 
         if (nhadep.length) {
-            const featured = getRandomArticleOfDay(nhadep);
+            const featured = getLatestArticle(nhadep);
             renderFeaturedOfTheDay(nhadep);
             renderMauKhacWithFilter(nhadep, featured?.id);
         } else {
@@ -1013,42 +1012,58 @@
         const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
         const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
 
-        viBtn.onclick = (e) => {
-            e.preventDefault();
-            if (isEnPage) {
-                let viUrl = currentUrl
-                    .replace('_en.html', '.html')
-                    .replace('_en', '');
-                window.location.href = viUrl;
-            }
-        };
+        if (viBtn) {
+            viBtn.onclick = (e) => {
+                e.preventDefault();
+                if (isEnPage) {
+                    let viUrl = currentUrl
+                        .replace('_en.html', '.html')
+                        .replace('_en', '');
+                    window.location.href = viUrl;
+                }
+            };
+        }
 
-        enBtn.onclick = (e) => {
-            e.preventDefault();
-            if (isOrgPage) {
-                window.location.href = 'https://nhadepviet.org/index_en.html';
-            } 
-            else if (!isEnPage) {
-                let enUrl = currentUrl.replace('.html', '_en.html');
-                window.location.href = enUrl;
-            }
-        };
+        if (enBtn) {
+            enBtn.onclick = (e) => {
+                e.preventDefault();
+                if (isOrgPage) {
+                    window.location.href = 'https://nhadepviet.org/index_en.html';
+                } 
+                else if (!isEnPage) {
+                    let enUrl = currentUrl.replace('.html', '_en.html');
+                    window.location.href = enUrl;
+                }
+            };
+        }
 
         if (isEnPage) {
-            enBtn.style.background = 'rgba(198,164,59,0.25)';
-            enBtn.style.color = '#C6A43B';
-            viBtn.style.background = 'none';
-            viBtn.style.color = '#9C9C9C';
+            if (enBtn) {
+                enBtn.style.background = 'rgba(198,164,59,0.25)';
+                enBtn.style.color = '#C6A43B';
+            }
+            if (viBtn) {
+                viBtn.style.background = 'none';
+                viBtn.style.color = '#9C9C9C';
+            }
         } else if (isOrgPage) {
-            viBtn.style.background = 'rgba(198,164,59,0.25)';
-            viBtn.style.color = '#C6A43B';
-            enBtn.style.background = 'none';
-            enBtn.style.color = '#9C9C9C';
+            if (viBtn) {
+                viBtn.style.background = 'rgba(198,164,59,0.25)';
+                viBtn.style.color = '#C6A43B';
+            }
+            if (enBtn) {
+                enBtn.style.background = 'none';
+                enBtn.style.color = '#9C9C9C';
+            }
         } else {
-            viBtn.style.background = 'rgba(198,164,59,0.25)';
-            viBtn.style.color = '#C6A43B';
-            enBtn.style.background = 'none';
-            enBtn.style.color = '#9C9C9C';
+            if (viBtn) {
+                viBtn.style.background = 'rgba(198,164,59,0.25)';
+                viBtn.style.color = '#C6A43B';
+            }
+            if (enBtn) {
+                enBtn.style.background = 'none';
+                enBtn.style.color = '#9C9C9C';
+            }
         }
     }
 
