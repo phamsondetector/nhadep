@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>tieng anh — NhaDep.vn</title>
+<meta name="description" content="tieng anh">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root{--bg:#0A0A0A;--gold:#C6A43B;--gold2:#D4AF37;--text:#F5F5F5;--muted:#9C9C9C;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+nav{background:rgba(10,10,10,.95);border-bottom:1px solid rgba(198,164,59,.2);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;}
+nav h1{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);}
+nav a{color:var(--muted);text-decoration:none;transition:color .2s;}
+nav a:hover{color:var(--gold);}
+.container{max-width:1200px;margin:0 auto;padding:48px 24px;}
+.meta{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+.tag{background:rgba(198,164,59,.2);color:var(--gold2);padding:6px 16px;border-radius:30px;font-size:.75rem;text-decoration:none;transition:background .2s;}
+.tag:hover{background:rgba(198,164,59,.4);color:#fff;}
+.date{color:var(--muted);font-size:.85rem;line-height:2;}
+.content{line-height:1.8;font-size:1.05rem;}
+.content h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin:40px 0 20px;color:var(--gold);}
+.content h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin:30px 0 15px;}
+.content p{margin-bottom:24px;}
+.content img{max-width:100%;border-radius:16px;margin:30px 0;display:block;height:auto;}
+.back-btn{display:inline-block;margin-top:48px;padding:12px 32px;background:var(--gold);color:#0A0A0A;text-decoration:none;border-radius:40px;font-weight:600;transition:all .2s;}
+.back-btn:hover{transform:translateY(-2px);background:#D4AF37;}
+@media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}}
+</style>
+</head>
+<body>
+<nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../../index_en.html">← Back home</a></nav>
+<div class="container">
+  <div class="meta"><a class="tag" href="../../tag.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><span class="date">5/4/2026</span></div>
+  <div class="content">tieng anh<div><span style="background-color: rgba(198, 164, 59, 0.2); padding: 2px 6px; border-radius: 4px; font-family: monospace;"><img src="../../images/nhadep/test/image_1.webp" alt="Hình ảnh 1" loading="lazy" style="max-width:100%;border-radius:12px;margin:20px auto;display:block;"></span><br></div></div>
+  
+    <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold);"><i class="fa-regular fa-star" style="margin-right:12px;"></i>You might also like</h3>
+        <div id="related-posts-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;"><div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+    <style>.related-card{text-decoration:none;display:block;background:rgba(255,255,255,.03);border-radius:16px;overflow:hidden;transition:all .3s;border:1px solid rgba(198,164,59,.2);}.related-card:hover{transform:translateY(-5px);border-color:var(--gold);}.related-card img{width:100%;height:140px;object-fit:cover;}.related-card .card-content{padding:12px;}.related-card .card-tag{font-size:.65rem;color:var(--gold);text-transform:uppercase;}.related-card .card-title{font-size:.85rem;margin-top:6px;color:var(--text);font-weight:600;}</style>
+    <script>
+        async function loadRelatedPosts() {
+            const currentSlug = 'test';
+            const currentType = 'nhadep';
+            const lang = 'en';
+            let dataJsonPath = '../../data.json';
+            try {
+                const resp = await fetch(dataJsonPath + '?t='+Date.now());
+                const articles = await resp.json();
+                let filtered = articles.filter(a => (a.Status||a.status||'').toLowerCase() === 'posted' && a.kind === currentType && !a.relatedlink.includes(currentSlug));
+                filtered.sort(() => Math.random() - 0.5);
+                const related = filtered.slice(0,5);
+                const grid = document.getElementById('related-posts-grid');
+                if(related.length===0) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;">No related posts</div>'; return; }
+                let html = '';
+                related.forEach(a => {
+                    let displayTitle = (lang === 'en' && a.title_en) ? a.title_en : a.title;
+                    let baseFile = a.relatedlink.replace('./', '').replace('.html', '');
+                    let targetFile = (lang === 'en') ? baseFile + '_en.html' : baseFile + '.html';
+                    let link = '../../' + a.kind + '/' + targetFile;
+                    const relatedSlug = baseFile;
+                    html += `<a href="${link}" class="related-card"><img src="../../thumbnail/${a.kind}/${relatedSlug}.webp" onerror="this.style.display='none'"><div class="card-content"><span class="card-tag">${(a.tag||'').split(',')[0]}</span><div class="card-title">${escapeHtmlStatic(displayTitle)}</div></div></a>`;
+                });
+                grid.innerHTML = html;
+            } catch(e) { console.error(e); }
+        }
+        function escapeHtmlStatic(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+        document.addEventListener('DOMContentLoaded', loadRelatedPosts);
+    </script>
+  <div style="text-align:center;"><a href="../../index_en.html" class="back-btn">← Back to homepage</a></div>
+</div>
+
+    <style>
+        .lang-switch-bottom {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            gap: 1px;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 3px;
+            border: 1px solid rgba(198,164,59,0.3);
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .lang-switch-bottom .lang-btn-bottom {
+            background: none;
+            border: none;
+            color: #9C9C9C;
+            cursor: pointer;
+            font-size: 0.82rem;
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-family: 'Open Sans', sans-serif;
+            white-space: nowrap;
+            min-width: 68px;
+        }
+        .lang-switch-bottom .lang-btn-bottom:hover {
+            background: rgba(198,164,59,0.18);
+            color: #C6A43B;
+        }
+        .lang-switch-bottom .lang-btn-bottom.active {
+            background: rgba(198,164,59,0.28);
+            color: #C6A43B;
+        }
+        @media (max-width: 768px) {
+            .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; gap: 0px; }
+            .lang-switch-bottom .lang-btn-bottom { padding: 7px 13px; font-size: 0.73rem; min-width: 64px; }
+        }
+    </style>
+    <div class="lang-switch-bottom">
+        <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
+        <button class="lang-btn-bottom" id="langEnBottom">🇬🇧 EN</button>
+    </div>
+    <script>
+    function setupLanguageSwitch() {
+        const viBtn = document.getElementById('langViBottom');
+        const enBtn = document.getElementById('langEnBottom');
+        const currentUrl = window.location.href;
+        const currentPath = window.location.pathname;
+        function switchToVi() {
+            if (currentPath.includes('_en.html')) {
+                let viUrl = currentUrl.replace('_en.html', '.html');
+                window.location.href = viUrl;
+            }
+        }
+        function switchToEn() {
+            if (!currentPath.includes('_en.html')) {
+                let enUrl = currentUrl.replace('.html', '_en.html');
+                window.location.href = enUrl;
+            }
+        }
+        viBtn.onclick = (e) => { e.preventDefault(); switchToVi(); };
+        enBtn.onclick = (e) => { e.preventDefault(); switchToEn(); };
+        if (currentPath.includes('_en.html')) {
+            enBtn.style.background = 'rgba(198,164,59,0.25)';
+            enBtn.style.color = '#C6A43B';
+            viBtn.style.background = 'none';
+            viBtn.style.color = '#9C9C9C';
+        } else {
+            viBtn.style.background = 'rgba(198,164,59,0.25)';
+            viBtn.style.color = '#C6A43B';
+            enBtn.style.background = 'none';
+            enBtn.style.color = '#9C9C9C';
+        }
+    }
+    window.loadData = window.loadData || function() {};
+    window.initMobileMenu = window.initMobileMenu || function() {};
+    window.initLazyLoading = window.initLazyLoading || function() {};
+    window.toggleFilterDropdown = window.toggleFilterDropdown || function() {};
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof loadData === 'function') loadData();
+        if (typeof initMobileMenu === 'function') initMobileMenu();
+        setupLanguageSwitch();
+        setTimeout(() => { if (typeof initLazyLoading === 'function') initLazyLoading(); }, 100);
+    });
+    </script>
+</body>
+</html>
