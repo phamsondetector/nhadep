@@ -52,29 +52,16 @@
     "summary_en": "Lỗ Ban is a legendary figure closely associated with the construction industry and carpentry in East Asia, especially in Vietnam and China"
   },
   {
-    "id": "1775311933668",
-    "date": "04/04/2026",
-    "title": "tiếng việt",
-    "summary": "tiếng việt",
-    "url": "./nhadep/test1.html",
+    "id": "1775353998098",
+    "date": "05/04/2026",
+    "title": "tieng viet",
+    "summary": "tieng viet",
+    "url": "./nhadep/test.html",
     "tag": "Hiện đại",
     "kind": "nhadep",
     "Status": "posted",
-    "relatedlink": "./test1.html",
-    "title_en": "english",
-    "summary_en": "english"
-  },
-  {
-    "id": "1775313045322",
-    "date": "04/04/2026",
-    "title": "tieng viet 2",
-    "summary": "tieng viet 2",
-    "url": "./nhadep/test2.html",
-    "tag": "Hiện đại",
-    "kind": "nhadep",
-    "Status": "posted",
-    "relatedlink": "./test2.html",
-    "title_en": "english 2",
-    "summary_en": "english 2"
+    "relatedlink": "./test.html",
+    "title_en": "tieng anh",
+    "summary_en": "tieng anh"
   }
 ]
