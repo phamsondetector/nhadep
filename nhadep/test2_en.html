@@ -139,7 +139,6 @@ nav a:hover{color:var(--gold);}
                 var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
                 var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
                 var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
-                // BỎ HẲN ONERROR - không xử lý lỗi ảnh nữa
                 html += '<a href="' + artUrl + '" class="related-card">' +
                     '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy">' +
                     '<div class="card-content">' +
@@ -161,7 +160,7 @@ nav a:hover{color:var(--gold);}
                 var filtered = posted.filter(function(a) {
                     if (!a.relatedlink) return false;
                     var slug = a.relatedlink.replace('./', '').replace('.html', '');
-                    try { slug = decodeURIComponent(slug); } catch(e) {}
+                    try { slug = decodeURIComponent(artSlug); } catch(e) {}
                     return !(slug === currentSlug && (a.kind || '') === currentType);
                 });
                 for (var i = filtered.length - 1; i > 0; i--) {
