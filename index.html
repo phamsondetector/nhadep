@@ -72,26 +72,31 @@
         .featured-meta i { margin-right:6px; }
         .card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; width:100%; max-width:1300px; margin:0 auto; padding:0 40px; }
 
-        /* ==================== PHẦN ĐÃ SỬA: Horizontal scroll + card nhỏ (khoảng 5 thẻ) ==================== */
+        /* ==================== Horizontal scroll + card nhỏ (khoảng 5 thẻ) ==================== */
         #maukhac-grid, #blogs-grid {
             display: flex !important;
+            grid-template-columns: none !important;
             overflow-x: auto;
-            gap: 24px;
+            gap: 20px;
             padding: 0 40px 40px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: var(--gold) var(--bg);
+            max-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
         }
-        #maukhac-grid::-webkit-scrollbar, #blogs-grid::-webkit-scrollbar { height: 8px; }
+        #maukhac-grid::-webkit-scrollbar, #blogs-grid::-webkit-scrollbar { height: 6px; }
         #maukhac-grid::-webkit-scrollbar-thumb, #blogs-grid::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
         #maukhac-grid .base-card, #blogs-grid .base-card {
-            min-width: 260px;
+            min-width: calc(20% - 16px);
+            max-width: calc(20% - 16px);
             flex-shrink: 0;
             scroll-snap-align: start;
         }
-        .card-img { height: 180px; overflow: hidden; background: var(--mid); position: relative; }
-        /* End sửa */
+        .card-img { height: 160px; overflow: hidden; background: var(--mid); position: relative; }
+        /* End */
 
         .base-card { background:rgba(20,18,12,0.65); backdrop-filter:blur(16px) saturate(120%); border:1px solid rgba(198,164,59,0.09); border-radius:20px; overflow:hidden; cursor:pointer; transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease; }
         .base-card:hover { border-color:rgba(198,164,59,.42); transform:translateY(-4px); box-shadow:0 12px 36px rgba(198,164,59,0.07), 0 4px 14px rgba(0,0,0,0.35); }
@@ -120,7 +125,7 @@
         @keyframes loading { 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
         .skeleton-card { height:320px; border-radius:20px; }
 
-        @media (max-width:1024px) { .card-grid { grid-template-columns:repeat(2,1fr); } }
+        @media (max-width:1024px) { .card-grid { grid-template-columns:repeat(2,1fr); } #maukhac-grid .base-card, #blogs-grid .base-card { min-width: calc(33.333% - 14px); max-width: calc(33.333% - 14px); } }
         @media (max-width:768px) { 
             .nav-in { padding:0 20px; height:64px; }
             .hamburger { display:block; }
@@ -131,7 +136,8 @@
             .hero { padding:70px 20px 50px; }
             .hero-title { font-size:clamp(2.2rem,7vw,3.8rem); }
             #maukhac-grid, #blogs-grid { padding:0 20px 32px; }
-            .card-img { height:170px; }
+            #maukhac-grid .base-card, #blogs-grid .base-card { min-width: 200px; max-width: 200px; }
+            .card-img { height:140px; }
             .featured-img { height:350px; }
             .featured-body { padding:24px; }
             .featured-title { font-size:1.5rem; }
@@ -141,6 +147,7 @@
             .nav-in { height:60px; }
             .logo { font-size:1.2rem; }
             .hero { padding:60px 20px 40px; }
+            #maukhac-grid .base-card, #blogs-grid .base-card { min-width: 180px; max-width: 180px; }
         }
     </style>
 </head>
@@ -184,12 +191,12 @@
 
 <section id="maukhac" class="sec">
     <div class="sec-title"><i class="fa-regular fa-building"></i> Các mẫu nhà khác</div>
-    <div class="card-grid" id="maukhac-grid"></div>
+    <div id="maukhac-grid"></div>
 </section>
 
 <section id="blogs" class="sec">
     <div class="sec-title"><i class="fa-regular fa-pen-to-square"></i> Blogs</div>
-    <div class="card-grid" id="blogs-grid"></div>
+    <div id="blogs-grid"></div>
 </section>
 
 <section id="about">
@@ -203,10 +210,10 @@
 
 <footer>
     <p><img src="logo.png" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:8px;" loading="lazy"> <strong>Nhà Đẹp</strong> — Kiến tạo không gian sống</p>
-    <p style="margin-top: 12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color: var(--gold);">phamsondetector@gmail.com</a></p>
+    <p style="margin-top: 12px;">Email: <a href="/cdn-cgi/l/email-protection#67170f060a140809030213020413081527000a060e0b4904080a" style="color: var(--gold);"><span class="__cf_email__" data-cfemail="5d2d353c302e3233393829383e29322f1d3a303c3431733e3230">[email&#160;protected]</span></a></p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ==================== FULL SCRIPT (không rút gọn) ====================
 function initLazyLoading() {
     if ('IntersectionObserver' in window) {
@@ -543,9 +550,4 @@ if (document.readyState === 'loading') {
     if (viBtn) viBtn.onclick = e => { e.preventDefault(); if (isEnPage) window.location.href = currentUrl.replace('_en.html', '.html'); };
     if (enBtn) enBtn.onclick = e => { e.preventDefault(); if (isOrgPage) window.location.href = 'https://nhadepviet.org/index_en.html'; else if (!isEnPage) window.location.href = currentUrl.replace('.html', '_en.html'); };
     if (isEnPage) { enBtn.style.background = 'rgba(198,164,59,0.25)'; enBtn.style.color = '#C6A43B'; viBtn.style.background = 'none'; viBtn.style.color = '#9C9C9C'; }
-    else if (isOrgPage) { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; enBtn.style.background = 'none'; enBtn.style.color = '#9C9C9C'; }
-    else { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; enBtn.style.background = 'none'; enBtn.style.color = '#9C9C9C'; }
-})();
-</script>
-</body>
-</html>
+    else if (isOrgPage) { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; 
