@@ -42,6 +42,24 @@ gtag('config', 'G-B51EJTDD2L');
         .back-btn{display:inline-block;margin-top:48px;padding:12px 32px;background:var(--gold);color:#0A0A0A;text-decoration:none;border-radius:40px;font-weight:600;transition:all .2s;}
         .back-btn:hover{transform:translateY(-2px);background:#D4AF37;}
         @media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}}
+/* Sticky navbar - neo trên cùng */
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Sticky cho meta (tag và date) */
+.sticky-meta {
+    position: sticky;
+    top: 70px; /* Điều chỉnh theo chiều cao của nav, thường là 60-70px */
+    z-index: 99;
+    background: var(--bg);
+    padding: 12px 0;
+    margin-top: -12px;
+}
     </style>
 </head>
 <body>
