@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Minimalist Concrete House in the Forest — NhaDep.vn</title>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Minimalist Concrete House in the Forest — nhadepviet.org</title>
 <meta name="description" content="Nestled deep within a lush tropical forest, this residence embraces a modern brutalist aesthetic — where raw, powerful concrete">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -27,70 +27,29 @@ nav a:hover{color:var(--gold);}
 @media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}}
 
 /* ===== RESPONSIVE RELATED POSTS ===== */
-#related-posts-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-}
-@media (max-width: 1200px) {
-    #related-posts-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 992px) {
-    #related-posts-grid { grid-template-columns: repeat(3, 1fr); }
-}
+.related-section { margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold); }
+.related-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 30px; }
+.related-header h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
+.carousel-nav { display: flex; gap: 12px; }
+.carousel-btn { background: rgba(198,164,59,0.15); border: 1px solid rgba(198,164,59,0.3); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; color: var(--gold); display: flex; align-items: center; justify-content: center; }
+.carousel-btn:hover { background: rgba(198,164,59,0.3); transform: scale(1.05); }
+.carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.carousel-container { overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.carousel-container::-webkit-scrollbar { display: none; }
+.carousel-track { display: flex; gap: 20px; padding: 8px 4px 20px 4px; }
+.related-card { flex: 0 0 220px; text-decoration: none; background: rgba(255,255,255,.03); border-radius: 16px; overflow: hidden; transition: all 0.3s ease; border: 1px solid rgba(198,164,59,.2); }
+.related-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+.related-card img { width: 100%; height: 140px; object-fit: cover; background: #2a2a2a; }
+.related-card .card-content { padding: 12px; }
+.related-card .card-tag { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; display: inline-block; margin-bottom: 6px; }
+.related-card .card-title { font-size: 0.85rem; margin-top: 6px; color: var(--text); line-height: 1.4; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 @media (max-width: 768px) {
-    #related-posts-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .related-card img { height: 120px; }
-    .related-card .card-title { font-size: 0.8rem; }
-}
-@media (max-width: 480px) {
-    #related-posts-grid { grid-template-columns: 1fr; gap: 12px; }
-    .related-card { display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 8px; }
-    .related-card img { width: 90px; height: 70px; border-radius: 12px; flex-shrink: 0; }
+    .carousel-nav { display: none; }
+    .carousel-container { overflow-x: visible; }
+    .carousel-track { flex-direction: column; gap: 16px; padding: 0; }
+    .related-card { flex: 1 1 auto; display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 8px; }
+    .related-card img { width: 90px; height: 70px; flex-shrink: 0; border-radius: 12px; }
     .related-card .card-content { padding: 0; flex: 1; }
-    .related-card .card-tag { font-size: 0.6rem; }
-    .related-card .card-title { font-size: 0.8rem; margin-top: 4px; -webkit-line-clamp: 2; }
-}
-.related-card {
-    text-decoration: none;
-    display: block;
-    background: rgba(255,255,255,.03);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(198,164,59,.2);
-}
-.related-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--gold);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-.related-card img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-}
-.related-card .card-content {
-    padding: 12px;
-}
-.related-card .card-tag {
-    font-size: 0.65rem;
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: inline-block;
-    margin-bottom: 6px;
-}
-.related-card .card-title {
-    font-size: 0.85rem;
-    margin-top: 6px;
-    color: var(--text);
-    line-height: 1.4;
-    font-weight: 600;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 </style>
 </head>
@@ -100,83 +59,139 @@ nav a:hover{color:var(--gold);}
   <div class="meta"><a class="tag" href="../../tag_en.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><a class="tag" href="../../tag_en.html?tag=Xu%20h%C6%B0%E1%BB%9Bng">Xu hướng</a><span class="date">5/4/2026</span></div>
   <div class="content"><h2>The Minimalist Concrete House in the Forest<br>A Perfect Harmony Between Rawness and Refinement</h2><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_4.webp" alt="Hình ảnh 4" loading="lazy"><br></div><div>In the world of contemporary architecture, where luxury is often expressed through intricate details and expensive materials, true elegance sometimes emerges from pure minimalism. The concrete house we are exploring today stands as a powerful testament to this philosophy. Nestled deep within a lush tropical forest, this residence embraces a modern brutalist aesthetic — where raw, powerful concrete forms meet the gentle embrace of nature, creating a living space that is both bold and profoundly serene.</div><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_7.webp" alt="Hình ảnh 7" loading="lazy"><br></div><div>From a bird's-eye view, the house appears as a massive geometric volume gently placed amid a sea of green. Its expansive flat roof and overlapping concrete blocks form clean, sculptural masses. There are no curved roof tiles or ornate decorations — only the pure honesty of grey concrete and thoughtfully integrated garden spaces. Winding stone pathways meander around the structure, softly connecting the building to the surrounding forest in perfect harmony.</div><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_8.webp" alt="Hình ảnh 8" loading="lazy"><br></div><div>As one approaches through the side and rear views, the beauty of the house reveals itself even more clearly. The raw concrete walls, still bearing the imprint of wooden formwork, are warmed by the golden light of the setting sun and dappled shadows from the tall trees. Lush tropical plants — palms, banana trees, giant monstera, and vibrant foliage — embrace the structure, softening the hard lines of the concrete and making the entire composition feel alive and inviting. The evening light filtering through the leaves creates dramatic patterns of light and shadow across the facades — a living artwork no designer could replicate.</div><div><br></div><div>Stepping inside, the philosophy of "less is more" is expressed with subtlety and deep emotion. Open spaces, abundant natural light, and constant connection to the outdoors are the defining elements.</div><div><br></div><h3>The Bathroom – Where Daily Rituals Become a Meditative Experience</h3><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_2.webp" alt="Hình ảnh 2" loading="lazy"><br></div><div>One of the most striking spaces in the house, the bathroom features a long floating concrete vanity, minimalist faucets, and warm indirect lighting running along the shelves. A large rain showerhead hangs from the ceiling like a sculptural element. Floor-to-ceiling glass doors open directly onto the tropical garden, giving the sensation of showering in the heart of the forest — the sound of falling water blending with rustling leaves and birdsong. The contrast between the cool concrete and the vibrant greenery creates a refreshing and deeply relaxing atmosphere.</div><div><br></div><h3>The Master Bedroom – Pure Tranquility</h3><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_3.webp" alt="Hình ảnh 3" loading="lazy"><br></div><div>The master bedroom is designed with a low platform bed dressed in crisp white linen, a simple floating wooden shelf, and no unnecessary furniture. Instead of an elaborate headboard or bulky wardrobes, one entire wall consists of large sliding glass doors that can be fully opened, leaving only a sheer curtain gently swaying in the breeze. Morning light filters through the tree canopy, casting long sunbeams across the warm wooden floor. Lying in bed, one can gaze directly into the vast forest — a perfect way to awaken and unwind.</div><div><br></div><h3>The Kitchen and Dining Area – The Heart of Connection</h3><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_1.webp" alt="Hình ảnh 1" loading="lazy"><br></div><div>The massive concrete kitchen island serves as a strong focal point, beautifully balanced by warm walnut cabinetry below. Simple wooden bar stools line the island. One entire side of the space is enclosed by floor-to-ceiling glass, completely dissolving the boundary between interior and exterior. Dining here feels less like a routine meal and more like an elegant picnic surrounded by nature. Abundant natural light and gentle forest breezes create a warm yet refined atmosphere.</div><div><br></div><h3>The Living Area – An Open Space That Invites Nature In</h3><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_6.webp" alt="Hình ảnh 6" loading="lazy"><br></div><div>Light-toned wooden floors, neutral linen sofas, a comfortable leather armchair, and a low wooden coffee table form the core of the furnishings. Large glass doors open completely to the garden, where a white stone pathway leads deeper into the lush greenery. This space does not force interaction but gently encourages quiet contemplation. Whether reading by the large windows or simply admiring the meticulously curated garden with its tropical plants and river stones, the feeling is one of rare and profound calm.</div><div><br></div><div>Overall, this house is more than just a residence — it is an architectural statement. It celebrates raw concrete as a material, transforming it into a symbol of quiet luxury. The interplay between heavy concrete volumes, transparent glass, natural wood, and vibrant tropical greenery achieves a perfect balance: strong yet never harsh, minimal yet never cold, modern yet deeply connected to nature.</div><div><img src="../../images/nhadep/ngoi-nha-be-tong-toi-gian-giua-rung/image_5.webp" alt="Hình ảnh 5" loading="lazy"><br></div><div>This is a home for those who seek genuine peace amid the rush of modern life. A place to reconnect with oneself, with nature, and with the most authentic values. In the context of contemporary tropical architecture, which increasingly values sustainability and integration with the environment, this minimalist concrete house stands out as a true masterpiece — where humans do not conquer nature, but quietly become part of it.</div><div>If you dream of a real sanctuary, where every corner tells a story of stillness and refined simplicity, this is the house for you. A living work of art nestled in the green forest, forever inviting souls who appreciate beauty in its purest and most profound form.</div><div><br></div></div>
   
-    <div id="related-posts-container" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold);">
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 30px; color: var(--gold);"><i class="fa-regular fa-star" style="margin-right:12px;"></i>You might also like</h3>
-        <div id="related-posts-grid"><div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+    <div class="related-section">
+        <div class="related-header">
+            <h3><i class="fa-regular fa-star" style="margin-right:12px;"></i>You might also like</h3>
+            <div class="carousel-nav">
+                <button class="carousel-btn" id="carouselPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="carousel-btn" id="carouselNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-track" id="carouselTrack">
+                <div style="text-align: center; padding: 40px; color: var(--muted); width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+        </div>
     </div>
     <script>
-        async function loadRelatedPosts() {
-            const currentSlug = 'ngoi-nha-be-tong-toi-gian-giua-rung';
-            const currentType = 'nhadep';
-            const lang = 'en';
-            let dataJsonPath = '../../data.json';
+        var allRelated = [];
+        var cardWidth = 240;
+        var isEnglish = true;
+        var currentSlug = 'ngoi-nha-be-tong-toi-gian-giua-rung';
+        var currentType = 'nhadep';
+        
+        function getDataJsonPath() {
+            var path = window.location.pathname;
+            var parts = path.split('/').filter(function(p) { return p && !p.includes('.html'); });
+            var prefix = '';
+            for (var i = 0; i < parts.length; i++) prefix += '../';
+            if (prefix === '') prefix = './';
+            return prefix + 'data.json';
+        }
+        
+        function escapeHtmlStatic(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function updateButtons() {
+            var container = document.getElementById('carouselContainer');
+            var prev = document.getElementById('carouselPrevBtn');
+            var next = document.getElementById('carouselNextBtn');
+            if (!container || window.innerWidth <= 768) return;
+            var maxScroll = container.scrollWidth - container.clientWidth;
+            var curScroll = container.scrollLeft;
+            if (prev) prev.disabled = curScroll <= 5;
+            if (next) next.disabled = curScroll >= maxScroll - 5;
+        }
+        
+        function scrollCarousel(dir) {
+            var container = document.getElementById('carouselContainer');
+            if (container) container.scrollBy({ left: dir * cardWidth * 2, behavior: 'smooth' });
+            setTimeout(updateButtons, 350);
+        }
+        
+        function renderCarousel() {
+            var track = document.getElementById('carouselTrack');
+            if (!track) return;
+            if (allRelated.length === 0) {
+                track.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);width:100%;">No related articles</div>';
+                return;
+            }
+            var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
+            var backPath = '';
+            for (var d = 0; d < depth; d++) backPath += '../';
+            if (backPath === '') backPath = './';
+            var html = '';
+            for (var i = 0; i < allRelated.length; i++) {
+                var a = allRelated[i];
+                var artTitle = isEnglish ? (a.title_en || a.title || '') : (a.title || '');
+                var artKind = a.kind || 'nhadep';
+                var artSlug = (a.relatedlink || '').replace('./', '').replace('.html', '');
+                try { artSlug = decodeURIComponent(artSlug); } catch(e) {}
+                var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
+                var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
+                var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
+                html += '<a href="' + artUrl + '" class="related-card">' +
+                    '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy">' +
+                    '<div class="card-content">' +
+                    '<span class="card-tag">' + escapeHtmlStatic(artTag) + '</span>' +
+                    '<h4 class="card-title">' + escapeHtmlStatic(artTitle) + '</h4>' +
+                    '</div></a>';
+            }
+            track.innerHTML = html;
+        }
+        
+        async function loadRelated() {
             try {
-                const resp = await fetch(dataJsonPath + '?t='+Date.now());
-                const articles = await resp.json();
-                let filtered = articles.filter(a => (a.Status||a.status||'').toLowerCase() === 'posted' && a.kind === currentType && !a.relatedlink.includes(currentSlug));
-                filtered.sort(() => Math.random() - 0.5);
-                const related = filtered.slice(0,5);
-                const grid = document.getElementById('related-posts-grid');
-                if(related.length===0) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;">No related posts</div>'; return; }
-                let html = '';
-                related.forEach(a => {
-                    let displayTitle = (lang === 'en' && a.title_en) ? a.title_en : a.title;
-                    let baseFile = a.relatedlink.replace('./', '').replace('.html', '');
-                    let targetFile = (lang === 'en') ? baseFile + '_en.html' : baseFile + '.html';
-                    let link = '../../' + a.kind + '/' + targetFile;
-                    const relatedSlug = baseFile;
-                    html += `<a href="${link}" class="related-card"><img src="../../thumbnail/${a.kind}/${relatedSlug}.webp" onerror="this.style.display='none'"><div class="card-content"><span class="card-tag">${(a.tag||'').split(',')[0]}</span><div class="card-title">${escapeHtmlStatic(displayTitle)}</div></div></a>`;
+                var resp = await fetch(getDataJsonPath() + '?t=' + Date.now());
+                var articles = await resp.json();
+                var posted = articles.filter(function(a) {
+                    var status = (a.Status || a.status || '').toLowerCase();
+                    return status === 'posted';
                 });
-                grid.innerHTML = html;
+                var filtered = posted.filter(function(a) {
+                    if (!a.relatedlink) return false;
+                    var slug = a.relatedlink.replace('./', '').replace('.html', '');
+                    try { slug = decodeURIComponent(slug); } catch(e) {}
+                    return !(slug === currentSlug && (a.kind || '') === currentType);
+                });
+                for (var i = filtered.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = filtered[i];
+                    filtered[i] = filtered[j];
+                    filtered[j] = temp;
+                }
+                allRelated = filtered;
+                renderCarousel();
+                var container = document.getElementById('carouselContainer');
+                var prev = document.getElementById('carouselPrevBtn');
+                var next = document.getElementById('carouselNextBtn');
+                if (container && window.innerWidth > 768) {
+                    container.addEventListener('scroll', updateButtons);
+                    setTimeout(updateButtons, 100);
+                }
+                if (prev) prev.addEventListener('click', function() { scrollCarousel(-1); });
+                if (next) next.addEventListener('click', function() { scrollCarousel(1); });
             } catch(e) { console.error(e); }
         }
-        function escapeHtmlStatic(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
-        document.addEventListener('DOMContentLoaded', loadRelatedPosts);
+        
+        document.addEventListener('DOMContentLoaded', loadRelated);
     </script>
   <div style="text-align:center;"><a href="../../index_en.html" class="back-btn">← Back to homepage</a></div>
 </div>
 
     <style>
-        .lang-switch-bottom {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            gap: 1px;
-            background: rgba(10,10,10,0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 3px;
-            border: 1px solid rgba(198,164,59,0.3);
-            z-index: 10000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .lang-switch-bottom .lang-btn-bottom {
-            background: none;
-            border: none;
-            color: #9C9C9C;
-            cursor: pointer;
-            font-size: 0.82rem;
-            padding: 8px 15px;
-            border-radius: 50px;
-            transition: all 0.2s;
-            font-weight: 600;
-            font-family: 'Open Sans', sans-serif;
-            white-space: nowrap;
-            min-width: 68px;
-        }
-        .lang-switch-bottom .lang-btn-bottom:hover {
-            background: rgba(198,164,59,0.18);
-            color: #C6A43B;
-        }
-        .lang-switch-bottom .lang-btn-bottom.active {
-            background: rgba(198,164,59,0.28);
-            color: #C6A43B;
-        }
-        @media (max-width: 768px) {
-            .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; gap: 0px; }
-            .lang-switch-bottom .lang-btn-bottom { padding: 7px 13px; font-size: 0.73rem; min-width: 64px; }
-        }
+        .lang-switch-bottom { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 1px; background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border-radius: 50px; padding: 3px; border: 1px solid rgba(198,164,59,0.3); z-index: 10000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .lang-switch-bottom .lang-btn-bottom { background: none; border: none; color: #9C9C9C; cursor: pointer; font-size: 0.82rem; padding: 8px 15px; border-radius: 50px; transition: all 0.2s; font-weight: 600; font-family: 'Open Sans', sans-serif; white-space: nowrap; min-width: 68px; }
+        .lang-switch-bottom .lang-btn-bottom:hover { background: rgba(198,164,59,0.18); color: #C6A43B; }
+        .lang-switch-bottom .lang-btn-bottom.active { background: rgba(198,164,59,0.28); color: #C6A43B; }
+        @media (max-width: 768px) { .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; gap: 0px; } .lang-switch-bottom .lang-btn-bottom { padding: 7px 13px; font-size: 0.73rem; min-width: 64px; } }
     </style>
     <div class="lang-switch-bottom">
         <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
@@ -214,16 +229,7 @@ nav a:hover{color:var(--gold);}
             enBtn.style.color = '#9C9C9C';
         }
     }
-    window.loadData = window.loadData || function() {};
-    window.initMobileMenu = window.initMobileMenu || function() {};
-    window.initLazyLoading = window.initLazyLoading || function() {};
-    window.toggleFilterDropdown = window.toggleFilterDropdown || function() {};
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof loadData === 'function') loadData();
-        if (typeof initMobileMenu === 'function') initMobileMenu();
-        setupLanguageSwitch();
-        setTimeout(() => { if (typeof initLazyLoading === 'function') initLazyLoading(); }, 100);
-    });
+    document.addEventListener('DOMContentLoaded', setupLanguageSwitch);
     </script>
 </body>
 </html>
