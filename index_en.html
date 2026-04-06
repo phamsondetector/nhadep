@@ -601,65 +601,6 @@
             .nav-links.active { display: flex; }
             .nl { font-size: 0.95rem; padding: 12px; text-align: center; width: 100%; }
         }
-
-        /* === Slider wrapper === */
-        .slider-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-        .slider-track-outer { overflow: hidden; }
-        .slider-track {
-            display: flex;
-            gap: 28px;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .slider-track .base-card {
-            flex: 0 0 calc((100% - 112px) / 5);
-            min-width: 0;
-        }
-        .slider-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(12,10,5,0.85);
-            border: 1px solid rgba(198,164,59,0.35);
-            color: var(--gold);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .25s;
-            z-index: 5;
-            backdrop-filter: blur(12px);
-        }
-        .slider-nav:hover { background: rgba(198,164,59,0.15); border-color: var(--gold); box-shadow: 0 4px 16px rgba(198,164,59,0.2); }
-        .slider-nav:disabled { opacity: 0.3; cursor: default; }
-        .slider-nav.prev { left: 0; }
-        .slider-nav.next { right: 0; }
-        .slider-dots { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
-        .slider-dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--mid);
-            border: 1px solid rgba(198,164,59,0.25);
-            cursor: pointer; transition: all .25s;
-        }
-        .slider-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
-        @media (max-width: 1024px) {
-            .slider-track .base-card { flex: 0 0 calc((100% - 56px) / 3); }
-        }
-        @media (max-width: 768px) {
-            .slider-wrapper { padding: 0 20px; }
-            .slider-nav { width: 36px; height: 36px; font-size: .85rem; }
-            .slider-track .base-card { flex: 0 0 100%; }
-            .slider-track { gap: 20px; }
-        }
     </style>
 </head>
 <body>
@@ -702,33 +643,19 @@
 
 <section id="maukhac" class="sec">
     <div class="sec-title"><i class="fa-regular fa-building"></i> More House Designs</div>
-    <div class="slider-wrapper" id="maukhac-slider-wrapper">
-        <button class="slider-nav prev" id="maukhac-prev" onclick="slideSection('maukhac',-1)" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="slider-track-outer">
-            <div class="slider-track" id="maukhac-grid">
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-            </div>
-        </div>
-        <button class="slider-nav next" id="maukhac-next" onclick="slideSection('maukhac',1)" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-        <div class="slider-dots" id="maukhac-dots"></div>
+    <div class="card-grid" id="maukhac-grid">
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
     </div>
 </section>
 
 <section id="blogs" class="sec">
     <div class="sec-title"><i class="fa-regular fa-pen-to-square"></i> Blogs</div>
-    <div class="slider-wrapper" id="blogs-slider-wrapper">
-        <button class="slider-nav prev" id="blogs-prev" onclick="slideSection('blogs',-1)" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="slider-track-outer">
-            <div class="slider-track" id="blogs-grid">
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 56px)/3);height:320px;"></div>
-            </div>
-        </div>
-        <button class="slider-nav next" id="blogs-next" onclick="slideSection('blogs',1)" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-        <div class="slider-dots" id="blogs-dots"></div>
+    <div class="card-grid" id="blogs-grid">
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
+        <div class="skeleton skeleton-card" style="height:320px;"></div>
     </div>
 </section>
 
@@ -743,7 +670,7 @@
 
 <footer>
     <p><img src="../logo.png" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:8px;" loading="lazy" onerror="this.src='logo.png'"> <strong>Beautiful Houses</strong> — Crafting Living Spaces</p>
-    <p style="margin-top: 12px;">Email: <a href="/cdn-cgi/l/email-protection#1d6d757c706e7273797869787e69726f5d7a707c7471337e7270" style="color: var(--gold);"><span class="__cf_email__" data-cfemail="09796168647a66676d6c7d6c6a7d667b496e64686065276a6664">[email&#160;protected]</span></a></p>
+    <p style="margin-top: 12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color: var(--gold);">phamsondetector@gmail.com</a></p>
 </footer>
 
 <div class="lang-switch-bottom">
@@ -751,7 +678,7 @@
     <button class="lang-btn-bottom" id="langEnBottom">🇬🇧 EN</button>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
     const DATA_JSON_PATH = '../data.json';
     let allArticles = [];
     let currentTagFilter = 'all';
@@ -880,71 +807,17 @@
         initLazyLoading();
     }
 
-    // === Slider state ===
-    const sliderState = {
-        maukhac: { index: 0, total: 0 },
-        blogs: { index: 0, total: 0 }
-    };
-    function getVisibleCount() {
-        if (window.innerWidth <= 768) return 1;
-        if (window.innerWidth <= 1024) return 3;
-        return 5;
-    }
-    function getCardWidth(sectionId) {
-        const track = document.getElementById(sectionId + '-grid');
-        if (!track) return 0;
-        const card = track.querySelector('.base-card');
-        if (!card) return 0;
-        return card.offsetWidth + 28;
-    }
-    function updateSliderUI(sectionId) {
-        const state = sliderState[sectionId];
-        const visible = getVisibleCount();
-        const maxIndex = Math.max(0, state.total - visible);
-        const prevBtn = document.getElementById(sectionId + '-prev');
-        const nextBtn = document.getElementById(sectionId + '-next');
-        if (prevBtn) prevBtn.disabled = state.index <= 0;
-        if (nextBtn) nextBtn.disabled = state.index >= maxIndex;
-        const track = document.getElementById(sectionId + '-grid');
-        if (track) track.style.transform = `translateX(-${state.index * getCardWidth(sectionId)}px)`;
-        const dotsContainer = document.getElementById(sectionId + '-dots');
-        if (dotsContainer && state.total > visible) {
-            dotsContainer.innerHTML = Array.from({length: maxIndex + 1}, (_, i) =>
-                `<div class="slider-dot ${i === state.index ? 'active' : ''}" onclick="goToSlide('${sectionId}',${i})"></div>`
-            ).join('');
-        } else if (dotsContainer) {
-            dotsContainer.innerHTML = '';
-        }
-    }
-    function slideSection(sectionId, dir) {
-        const state = sliderState[sectionId];
-        const maxIndex = Math.max(0, state.total - getVisibleCount());
-        state.index = Math.max(0, Math.min(maxIndex, state.index + dir));
-        updateSliderUI(sectionId);
-    }
-    function goToSlide(sectionId, idx) {
-        sliderState[sectionId].index = idx;
-        updateSliderUI(sectionId);
-    }
-    window.addEventListener('resize', () => {
-        updateSliderUI('maukhac');
-        updateSliderUI('blogs');
-    });
-
     function renderMauKhacWithFilter(allNhadep, featuredId) {
         const container = document.getElementById('maukhac-grid');
         let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
         filtered = filtered.filter(a => a.id !== featuredId);
-        sliderState.maukhac.index = 0;
-        sliderState.maukhac.total = filtered.length;
 
         if (!filtered.length) {
-            container.innerHTML = `<div class="empty-state" style="flex:1"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;
-            document.getElementById('maukhac-dots').innerHTML = '';
+            container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;
             return;
         }
 
-        container.innerHTML = filtered.map(article => {
+        container.innerHTML = filtered.slice(0, 6).map(article => {
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
@@ -964,22 +837,18 @@
                 </div>`;
         }).join('');
         initLazyLoading();
-        requestAnimationFrame(() => updateSliderUI('maukhac'));
     }
 
     function renderBlogsWithFilter(blogs) {
         const container = document.getElementById('blogs-grid');
         let filtered = currentTagFilter === 'all' ? blogs : blogs.filter(a => articleMatchesFilter(a, currentTagFilter));
-        sliderState.blogs.index = 0;
-        sliderState.blogs.total = filtered.length;
 
         if (!filtered.length) {
-            container.innerHTML = `<div class="empty-state" style="flex:1"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;
-            document.getElementById('blogs-dots').innerHTML = '';
+            container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;
             return;
         }
 
-        container.innerHTML = filtered.map(article => {
+        container.innerHTML = filtered.slice(0, 6).map(article => {
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
@@ -1001,7 +870,6 @@
                 </div>`;
         }).join('');
         initLazyLoading();
-        requestAnimationFrame(() => updateSliderUI('blogs'));
     }
 
     function collectUniqueTags(articles) {
@@ -1200,4 +1068,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        
+        loadData();
+        initMobileMenu();
+        setupLanguageSwitch();
+        setTimeout(() => initLazyLoading(), 100);
+    });
+
+    window.initLazyLoading = initLazyLoading;
+    window.toggleFilterDropdown = toggleFilterDropdown;
+</script>
+</body>
+</html>
