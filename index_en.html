@@ -988,6 +988,30 @@
         initLazyLoading();
     }
     
+    // Helper để gắn sự kiện click an toàn cho card, tránh bị chặn trên mobile do touch events
+    function attachSafeClickHandler(element, url) {
+        if (!element) return;
+        // Xóa mọi handler cũ để tránh trùng lặp
+        element.removeEventListener('click', handleClick);
+        element.removeEventListener('touchstart', handleTouchStart);
+        function handleClick(e) {
+            e.stopPropagation();
+            if (url && url !== '#') {
+                window.open(url, '_blank');
+            }
+        }
+        function handleTouchStart(e) {
+            // Không preventDefault để tránh ảnh hưởng đến cuộn, chỉ mở link khi không phải kéo
+            // Chỉ mở nếu không có sự kiện kéo đang diễn ra
+            if (url && url !== '#') {
+                window.open(url, '_blank');
+            }
+            e.stopPropagation();
+        }
+        element.addEventListener('click', handleClick);
+        element.addEventListener('touchstart', handleTouchStart);
+    }
+    
     function renderMauKhacCarousel(allNhadep, featuredId) {
         let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
         filtered = filtered.filter(a => a.id !== featuredId);
@@ -1003,9 +1027,10 @@
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
             const articleUrl = getEnglishArticleUrl(article.url);
+            const uniqueId = `card_${article.id || Math.random()}`;
             return `
-                <div class="carousel-card">
-                    <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+                <div class="carousel-card" data-url="${articleUrl}" data-card-id="${uniqueId}">
+                    <div class="base-card" data-url="${articleUrl}">
                         <div class="card-img">
                             ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
                             ${getCardTagsHtml(article)}
@@ -1019,6 +1044,17 @@
                 </div>`;
         }).join('');
         track.innerHTML = html;
+        // Gắn sự kiện click trực tiếp an toàn cho từng card sau khi render
+        const allCards = track.querySelectorAll('.carousel-card');
+        allCards.forEach(card => {
+            const url = card.getAttribute('data-url');
+            const innerCard = card.querySelector('.base-card');
+            if (innerCard && url && url !== '#') {
+                attachSafeClickHandler(innerCard, url);
+                // Đảm bảo card cũng có thể click được
+                attachSafeClickHandler(card, url);
+            }
+        });
         if (maukhacCarousel) maukhacCarousel.updateTrack(html);
         initLazyLoading();
     }
@@ -1039,9 +1075,10 @@
             const articleUrl = getEnglishArticleUrl(article.url);
             let firstTag = 'Blog';
             if (article.tag) firstTag = article.tag.split(',')[0].trim();
+            const uniqueId = `blog_${article.id || Math.random()}`;
             return `
-                <div class="carousel-card">
-                    <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+                <div class="carousel-card" data-url="${articleUrl}" data-card-id="${uniqueId}">
+                    <div class="base-card" data-url="${articleUrl}">
                         <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
                         <div class="card-body">
                             <div class="blog-meta">
@@ -1055,6 +1092,15 @@
                 </div>`;
         }).join('');
         track.innerHTML = html;
+        const allCards = track.querySelectorAll('.carousel-card');
+        allCards.forEach(card => {
+            const url = card.getAttribute('data-url');
+            const innerCard = card.querySelector('.base-card');
+            if (innerCard && url && url !== '#') {
+                attachSafeClickHandler(innerCard, url);
+                attachSafeClickHandler(card, url);
+            }
+        });
         if (blogsCarousel) blogsCarousel.updateTrack(html);
         initLazyLoading();
     }
