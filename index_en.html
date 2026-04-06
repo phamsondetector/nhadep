@@ -35,6 +35,7 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:var(--font-sans); background:#0d0b07; color:var(--text); position:relative; opacity:0; animation:fadeIn 0.3s ease forwards; }
         @keyframes fadeIn { to { opacity:1; } }
+
         nav { background:rgba(12,10,5,0.82); border-bottom:1px solid rgba(198,164,59,0.12); backdrop-filter:blur(24px) saturate(150%); position:sticky; top:0; z-index:100; }
         .nav-in { max-width:1400px; margin:0 auto; padding:0 40px; height:68px; display:flex; align-items:center; justify-content:space-between; }
         .logo { font-size:1.4rem; text-decoration:none; color:var(--text); display:flex; align-items:center; gap:8px; }
@@ -45,15 +46,17 @@
         .btn-pro { background:transparent; border:1px solid rgba(198,164,59,.4); color:var(--gold); padding:8px 22px; border-radius:40px; cursor:pointer; font-size:.8rem; transition:all .25s; }
         .btn-pro:hover { background:rgba(198,164,59,.1); }
         .hamburger { display:none; background:none; border:none; font-size:1.6rem; color:var(--text); cursor:pointer; padding:8px; }
+
         .hero { max-width:1400px; margin:0 auto; padding:100px 40px 70px; text-align:center; }
         .hero-title { font-family:var(--font-serif); font-size:clamp(2.5rem,5.5vw,4.5rem); background:linear-gradient(135deg,#fff,var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:20px; line-height:1.3; }
         .hero-sub { color:var(--muted); font-size:clamp(0.85rem,2.2vw,0.95rem); line-height:1.45; max-width:720px; margin:0 auto; }
+
         .sec { max-width:1400px; margin:0 auto; padding:0 40px 80px; }
         .sec-title { font-size:1.6rem; margin-bottom:48px; display:flex; align-items:center; gap:12px; font-family:var(--font-serif); }
-        .sec-title-center { font-size:clamp(2.4rem,5vw,3.8rem); margin-bottom:48px; display:flex; align-items:center; justify-content:center; gap:16px; text-align:center; background:linear-gradient(120deg,#fff 30%,var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
         .filter-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:48px; justify-content:center; align-items:center; position:relative; }
         .filter-btn, .filter-dropdown-btn { background:transparent; border:1px solid var(--bord); border-radius:40px; padding:8px 26px; color:var(--muted); cursor:pointer; font-size:.8rem; transition:all .25s; }
         .filter-btn:hover, .filter-btn.active { background:var(--gold); color:#0A0A0A; border-color:var(--gold); }
+
         .featured-grid { display:flex; justify-content:center; align-items:center; width:100%; max-width:1200px; margin:0 auto; padding:0 40px; }
         .featured-card { background:rgba(22,20,14,0.68); backdrop-filter:blur(18px) saturate(130%); border-radius:32px; overflow:hidden; cursor:pointer; transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease; border:1px solid rgba(198,164,59,0.1); width:100%; max-width:1000px; margin:0 auto; }
         .featured-card:hover { transform:translateY(-8px); border-color:rgba(198,164,59,.45); box-shadow:0 20px 56px rgba(198,164,59,0.10), 0 6px 20px rgba(0,0,0,0.45); }
@@ -65,10 +68,10 @@
         .featured-title { font-size:2rem; margin-bottom:16px; }
         .featured-desc { color:var(--muted); font-size:1rem; line-height:1.6; margin-bottom:24px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
         .featured-meta { display:flex; gap:24px; color:var(--dim); font-size:0.9rem; }
-        .featured-meta i { margin-right:6px; }
+
         .card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; width:100%; max-width:1300px; margin:0 auto; padding:0 40px; }
 
-        /* ==================== PHẦN ĐÃ SỬA: Horizontal scroll + card nhỏ (khoảng 5 thẻ) ==================== */
+        /* ==================== HORIZONTAL SCROLL + RESPONSIVE CARD SIZE ==================== */
         #maukhac-grid, #blogs-grid {
             display: flex !important;
             overflow-x: auto;
@@ -81,18 +84,38 @@
         }
         #maukhac-grid::-webkit-scrollbar, #blogs-grid::-webkit-scrollbar { height: 8px; }
         #maukhac-grid::-webkit-scrollbar-thumb, #blogs-grid::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+        /* Desktop: 5 cards */
         #maukhac-grid .base-card, #blogs-grid .base-card {
-            min-width: 260px;
+            min-width: 250px;
             flex-shrink: 0;
             scroll-snap-align: start;
         }
-        .card-img { height: 180px; overflow: hidden; background: var(--mid); position: relative; }
-        /* End sửa */
+
+        /* Tablet: 3 cards */
+        @media (max-width: 1024px) {
+            #maukhac-grid .base-card, #blogs-grid .base-card {
+                min-width: 310px;
+            }
+        }
+
+        /* Mobile: ~1 card */
+        @media (max-width: 767px) {
+            #maukhac-grid .base-card, #blogs-grid .base-card {
+                min-width: 280px;
+            }
+            #maukhac-grid, #blogs-grid {
+                padding: 0 20px 32px;
+                gap: 20px;
+            }
+        }
 
         .base-card { background:rgba(20,18,12,0.65); backdrop-filter:blur(16px) saturate(120%); border:1px solid rgba(198,164,59,0.09); border-radius:20px; overflow:hidden; cursor:pointer; transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease; }
         .base-card:hover { border-color:rgba(198,164,59,.42); transform:translateY(-4px); box-shadow:0 12px 36px rgba(198,164,59,0.07), 0 4px 14px rgba(0,0,0,0.35); }
+        .card-img { height: 180px; overflow:hidden; background:var(--mid); position:relative; }
         .card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
         .base-card:hover .card-img img { transform:scale(1.04); }
+
         .card-tags-group { position:absolute; top:10px; right:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width:80%; }
         .card-tag-item { background:rgba(0,0,0,.7); backdrop-filter:blur(8px); color:var(--gold); padding:4px 12px; border-radius:30px; font-size:.65rem; border:1px solid rgba(198,164,59,.4); white-space:nowrap; font-weight:500; }
         .card-body { padding:20px; }
@@ -104,34 +127,21 @@
         .blog-tag { background:rgba(198,164,59,.12); color:var(--gold); padding:3px 12px; border-radius:30px; font-size:.65rem; }
         .empty-state { text-align:center; padding:70px; color:var(--dim); }
         .empty-state i { font-size:2.5rem; margin-bottom:18px; display:block; color:var(--gold); }
+
         footer { background:rgba(10,8,4,0.75); backdrop-filter:blur(20px); border-top:1px solid rgba(198,164,59,0.12); padding:60px 40px; text-align:center; }
         footer p { color:var(--dim); font-size:.75rem; }
         footer strong { color:var(--gold); }
-        #about { max-width:1200px; margin:0 auto; padding:60px 40px 80px; }
-        .about-content { background:rgba(22,20,14,0.68); backdrop-filter:blur(18px) saturate(130%); border-radius:32px; border:1px solid rgba(198,164,59,0.1); padding:50px; text-align:center; }
-        .about-content h2 { font-family:var(--font-serif); font-size:2rem; margin-bottom:24px; color:var(--gold); }
-        .about-content p { color:var(--muted); line-height:1.8; margin-bottom:20px; font-size:1rem; }
-        .about-content i { font-size:3rem; color:var(--gold); margin-bottom:20px; display:inline-block; }
-        .skeleton { background:linear-gradient(90deg,var(--mid) 25%,rgba(198,164,59,0.1) 50%,var(--mid) 75%); background-size:200% 100%; animation:loading 1.5s infinite; border-radius:12px; }
-        @keyframes loading { 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
-        .skeleton-card { height:320px; border-radius:20px; }
 
         @media (max-width:768px) { 
             .nav-in { padding:0 20px; height:64px; }
             .hamburger { display:block; }
             .nav-links { display:none; position:absolute; top:64px; left:0; right:0; background:rgba(12,10,5,0.98); backdrop-filter:blur(24px); flex-direction:column; padding:20px; gap:8px; z-index:99; border-top:1px solid rgba(198,164,59,0.15); }
             .nav-links.active { display:flex; }
-            #maukhac-grid, #blogs-grid { padding:0 20px 32px; }
-            .card-img { height:170px; }
-            .featured-img { height:350px; }
-            .featured-body { padding:24px; }
-            .featured-title { font-size:1.5rem; }
-            .sec { padding:0 20px 60px; }
         }
     </style>
 </head>
 <body>
-
+<!-- HTML phần tiếng Anh giữ nguyên -->
 <nav>
     <div class="nav-in">
         <a href="#" class="logo">
@@ -145,9 +155,7 @@
             <a href="#about" class="nl">About</a>
             <button class="btn-pro" onclick="window.location.href='mailto:phamsondetector@gmail.com'">📞 Contact</button>
         </div>
-        <button class="hamburger" aria-label="Open menu" id="hamburger-btn">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <button class="hamburger" aria-label="Open menu" id="hamburger-btn"><i class="fa-solid fa-bars"></i></button>
     </div>
 </nav>
 
@@ -160,12 +168,8 @@
     <div style="text-align:center; padding: 0 40px;">
         <div class="sec-title sec-title-center"><img src="../featured.png" alt="" style="height:1em;width:1em;object-fit:contain;" loading="lazy"> Home of the Day</div>
     </div>
-    <div class="featured-grid" id="nhadep-featured">
-        <div class="skeleton skeleton-card" style="width:100%; max-width:1000px; height:650px;"></div>
-    </div>
-    <div style="max-width:1400px; margin: 40px auto 0; padding: 0 40px;">
-        <div class="filter-bar" id="filter-bar"></div>
-    </div>
+    <div class="featured-grid" id="nhadep-featured"><div class="skeleton skeleton-card" style="width:100%;max-width:1000px;height:650px;"></div></div>
+    <div style="max-width:1400px;margin:40px auto 0;padding:0 40px;"><div class="filter-bar" id="filter-bar"></div></div>
 </section>
 
 <section id="maukhac" class="sec">
@@ -189,7 +193,7 @@
 
 <footer>
     <p><img src="../logo.png" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:8px;" loading="lazy" onerror="this.src='logo.png'"> <strong>Beautiful Houses</strong> — Crafting Living Spaces</p>
-    <p style="margin-top: 12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color: var(--gold);">phamsondetector@gmail.com</a></p>
+    <p style="margin-top:12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color:var(--gold);">phamsondetector@gmail.com</a></p>
 </footer>
 
 <div class="lang-switch-bottom">
@@ -198,314 +202,31 @@
 </div>
 
 <script>
-const DATA_JSON_PATH = '../data.json';
-let allArticles = [];
-let currentTagFilter = 'all';
-let allUniqueTags = [];
-
-function slugify(str) {
-    if (!str) return 'bai-viet';
-    return str.toLowerCase()
-        .replace(/[àáảãạăắặẳẵằâấậẩẫ]/g, 'a')
-        .replace(/[èéẹẻẽêếềệểễ]/g, 'e')
-        .replace(/[ìíịỉĩ]/g, 'i')
-        .replace(/[òóọỏõôốồộổỗơớờợởỡ]/g, 'o')
-        .replace(/[ùúụủũưứừựửữ]/g, 'u')
-        .replace(/[ỳýỵỷỹ]/g, 'y')
-        .replace(/đ/g, 'd')
-        .replace(/[^a-z0-9\s-]/g, '')
-        .trim().replace(/\s+/g, '-').slice(0, 60);
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-}
-
-function getFileNameFromUrl(url) {
-    if (!url) return null;
-    const match = url.match(/\/([^\/]+)\.html$/);
-    return match ? match[1] : null;
-}
-
-function getLatestArticle(articles) {
-    if (!articles.length) return null;
-    return articles.reduce((latest, current) => current.date > latest.date ? current : latest, articles[0]);
-}
-
-function getEnglishArticleUrl(originalUrl) {
-    if (!originalUrl) return '#';
-    let url = originalUrl.trim();
-    if (url.startsWith('./')) url = url.substring(2);
-    else if (url.startsWith('../')) url = url.substring(3);
-    if (url.includes('_en.html')) url = url.replace(/_en\.html$/, '.html');
-    if (url.endsWith('.html')) url = url.replace(/\.html$/, '_en.html');
-    else url += '_en.html';
-    return './' + url;
-}
-
-function getThumbnailHtml(fileName, type, altText) {
-    const basePath = `../thumbnail/${type}/${fileName}`;
-    return `<img data-src="${basePath}.webp" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${escapeHtml(altText)}" loading="lazy" onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${basePath}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();" style="width:100%; height:100%; object-fit:cover;">`;
-}
-
-function getCardTagsHtml(article) {
-    if (!article.tag) return '<div class="card-tags-group"><span class="card-tag-item">Design</span></div>';
-    const tags = article.tag.split(',').map(t => t.trim()).filter(t => t);
-    if (tags.length === 0) return '<div class="card-tags-group"><span class="card-tag-item">Design</span></div>';
-    const maxShow = 2;
-    let html = '<div class="card-tags-group">';
-    tags.slice(0, maxShow).forEach(tag => { html += `<span class="card-tag-item">${escapeHtml(tag)}</span>`; });
-    if (tags.length > maxShow) html += `<span class="card-tag-item">+${tags.length - maxShow}</span>`;
-    html += '</div>';
-    return html;
-}
-
-function getFeaturedTagsHtml(article) {
-    if (!article.tag) return '<span class="featured-cat">⭐ Featured</span>';
-    const tags = article.tag.split(',').map(t => t.trim()).filter(t => t);
-    if (tags.length === 0) return '<span class="featured-cat">⭐ Featured</span>';
-    if (tags.length === 1) return `<span class="featured-cat">⭐ ${escapeHtml(tags[0])}</span>`;
-    return `<span class="featured-cat">⭐ ${escapeHtml(tags[0])} +${tags.length - 1}</span>`;
-}
-
-function articleMatchesFilter(article, filterValue) {
-    if (filterValue === 'all') return true;
-    const articleTags = article.tag ? article.tag.split(',').map(t => t.trim()) : [];
-    return articleTags.includes(filterValue);
-}
-
-function renderFeaturedOfTheDay(articles) {
-    const container = document.getElementById('nhadep-featured');
-    if (!articles.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-images"></i><p>No articles available.</p></div>`;
-        return;
-    }
-    const featured = getLatestArticle(articles);
-    const fileName = getFileNameFromUrl(featured.url) || slugify(featured.title_en || featured.title);
-    const displayTitle = featured.title_en || featured.title;
-    const displaySummary = featured.summary_en || featured.summary || 'Discover sophisticated living spaces with modern design.';
-    const articleUrl = getEnglishArticleUrl(featured.url);
-    container.innerHTML = `
-        <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
-            <div class="featured-img">
-                ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
-                ${getFeaturedTagsHtml(featured)}
-            </div>
-            <div class="featured-body">
-                <h3 class="featured-title">${escapeHtml(displayTitle)}</h3>
-                <p class="featured-desc">${escapeHtml(displaySummary)}</p>
-                <div class="featured-meta">
-                    <span><i class="fa-regular fa-calendar"></i> ${featured.date || ''}</span>
-                    <span><i class="fa-regular fa-star"></i> Featured of the day</span>
-                </div>
-            </div>
-        </div>`;
-    initLazyLoading();
-}
-
-function renderMauKhacWithFilter(allNhadep, featuredId) {
-    const container = document.getElementById('maukhac-grid');
-    let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
-    filtered = filtered.filter(a => a.id !== featuredId);
-    if (!filtered.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;
-        return;
-    }
-    container.innerHTML = filtered.map(article => {
-        const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
-        const displayTitle = article.title_en || article.title;
-        const displaySummary = article.summary_en || article.summary || '';
-        const articleUrl = getEnglishArticleUrl(article.url);
-        return `
-            <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
-                <div class="card-img">
-                    ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
-                    ${getCardTagsHtml(article)}
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title">${escapeHtml(displayTitle)}</h3>
-                    <p class="card-desc">${escapeHtml(displaySummary)}</p>
-                    <div class="card-meta"><span><i class="fa-regular fa-calendar"></i> ${article.date || ''}</span></div>
-                </div>
-            </div>`;
-    }).join('');
-    initLazyLoading();
-}
-
-function renderBlogsWithFilter(blogs) {
-    const container = document.getElementById('blogs-grid');
-    let filtered = currentTagFilter === 'all' ? blogs : blogs.filter(a => articleMatchesFilter(a, currentTagFilter));
-    if (!filtered.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;
-        return;
-    }
-    container.innerHTML = filtered.map(article => {
-        const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
-        const displayTitle = article.title_en || article.title;
-        const displaySummary = article.summary_en || article.summary || '';
-        const articleUrl = getEnglishArticleUrl(article.url);
-        let firstTag = 'Blog';
-        if (article.tag) firstTag = article.tag.split(',')[0].trim();
-        return `
-            <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
-                <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
-                <div class="card-body">
-                    <div class="blog-meta">
-                        <span class="blog-date">${article.date || ''}</span>
-                        <span class="blog-tag">${escapeHtml(firstTag)}</span>
-                    </div>
-                    <h3 class="card-title">${escapeHtml(displayTitle)}</h3>
-                    <p class="card-desc">${escapeHtml(displaySummary)}</p>
-                </div>
-            </div>`;
-    }).join('');
-    initLazyLoading();
-}
-
-function collectUniqueTags(articles) {
-    const set = new Set();
-    articles.forEach(a => {
-        if (a.tag) a.tag.split(',').map(t => t.trim()).forEach(t => t && set.add(t));
-    });
-    return Array.from(set).sort();
-}
-
-function renderFilterBar() {
-    const bar = document.getElementById('filter-bar');
-    const maxShow = 4;
-    const visible = allUniqueTags.slice(0, maxShow);
-    const hidden = allUniqueTags.slice(maxShow);
-    let html = `<button class="filter-btn ${currentTagFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>`;
-    visible.forEach(tag => {
-        html += `<button class="filter-btn ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`;
-    });
-    if (hidden.length) {
-        html += `<div class="filter-dropdown">
-            <button class="filter-dropdown-btn" onclick="toggleFilterDropdown(event)">... <i class="fa-solid fa-chevron-down"></i></button>
-            <div class="filter-dropdown-content" id="filter-dropdown-content">
-                ${hidden.map(tag => `<button class="filter-dropdown-item ${currentTagFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join('')}
-            </div>
-        </div>`;
-    }
-    bar.innerHTML = html;
-    document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            currentTagFilter = btn.dataset.filter;
-            renderFilterBar();
-            updateAllContent();
-        });
-    });
-    document.querySelectorAll('.filter-dropdown-item').forEach(item => {
-        item.addEventListener('click', () => {
-            currentTagFilter = item.dataset.filter;
-            renderFilterBar();
-            updateAllContent();
-            document.getElementById('filter-dropdown-content')?.classList.remove('show');
-        });
-    });
-}
-
-function updateAllContent() {
-    const posted = allArticles.filter(a => a.Status === 'posted');
-    const nhadep = posted.filter(a => a.kind === 'nhadep');
-    const blogs = posted.filter(a => a.kind === 'blogs');
-    if (nhadep.length) {
-        const featured = getLatestArticle(nhadep);
-        renderFeaturedOfTheDay(nhadep);
-        renderMauKhacWithFilter(nhadep, featured?.id);
-    } else {
-        document.getElementById('maukhac-grid').innerHTML = `<div class="empty-state"><p>No designs available.</p></div>`;
-    }
-    renderBlogsWithFilter(blogs);
-}
-
-function toggleFilterDropdown(event) {
-    event.stopPropagation();
-    document.getElementById('filter-dropdown-content')?.classList.toggle('show');
-}
-
-document.addEventListener('click', () => {
-    document.getElementById('filter-dropdown-content')?.classList.remove('show');
-});
-
-function initLazyLoading() {
-    const images = document.querySelectorAll('img[data-src]');
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                    }
-                    observer.unobserve(img);
-                }
-            });
-        });
-        images.forEach(img => observer.observe(img));
-    } else {
-        images.forEach(img => { if (img.dataset.src) img.src = img.dataset.src; });
-    }
-}
-
-async function loadData() {
-    try {
-        const res = await fetch(DATA_JSON_PATH + '?t=' + Date.now());
-        if (!res.ok) throw new Error('Network error');
-        const articles = await res.json();
-        allArticles = articles;
-        const posted = allArticles.filter(a => a.Status === 'posted');
-        allUniqueTags = collectUniqueTags(posted);
-        renderFilterBar();
-        updateAllContent();
-    } catch(e) {
-        console.error(e);
-        document.getElementById('nhadep-featured').innerHTML = `<div class="empty-state"><i class="fa-regular fa-circle-xmark"></i><p>Failed to load data.</p></div>`;
-    }
-}
-
-function initMobileMenu() {
-    const hamburger = document.getElementById('hamburger-btn');
-    const navLinks = document.querySelector('.nav-links');
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            const icon = hamburger.querySelector('i');
-            if (icon) {
-                icon.classList.toggle('fa-bars', !navLinks.classList.contains('active'));
-                icon.classList.toggle('fa-xmark', navLinks.classList.contains('active'));
-            }
-        });
-        navLinks.querySelectorAll('a, button').forEach(link => {
-            link.addEventListener('click', () => navLinks.classList.remove('active'));
-        });
-    }
-}
-
-function setupLanguageSwitch() {
-    const viBtn = document.getElementById('langViBottom');
-    const enBtn = document.getElementById('langEnBottom');
-    const currentUrl = window.location.href;
-    const isEnPage = currentUrl.includes('_en.html') || currentUrl.endsWith('_en');
-    const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
-    if (viBtn) viBtn.onclick = e => { e.preventDefault(); if (isEnPage) window.location.href = currentUrl.replace('_en.html', '.html').replace('_en',''); };
-    if (enBtn) enBtn.onclick = e => { e.preventDefault(); if (isOrgPage) window.location.href = 'https://nhadepviet.org/index_en.html'; else if (!isEnPage) window.location.href = currentUrl.replace('.html', '_en.html'); };
-    if (isEnPage) { enBtn.style.background = 'rgba(198,164,59,0.25)'; enBtn.style.color = '#C6A43B'; viBtn.style.background = 'none'; viBtn.style.color = '#9C9C9C'; }
-    else if (isOrgPage) { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; enBtn.style.background = 'none'; enBtn.style.color = '#9C9C9C'; }
-    else { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; enBtn.style.background = 'none'; enBtn.style.color = '#9C9C9C'; }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    initMobileMenu();
-    setupLanguageSwitch();
-    setTimeout(() => initLazyLoading(), 100);
-});
-
-window.initLazyLoading = initLazyLoading;
-window.toggleFilterDropdown = toggleFilterDropdown;
+/* Script tiếng Anh đầy đủ (giống file trước, render không giới hạn) */
+const DATA_JSON_PATH='../data.json';let allArticles=[];let currentTagFilter='all';let allUniqueTags=[];
+function slugify(str){if(!str)return'bai-viet';return str.toLowerCase().replace(/[àáảãạăắặẳẵằâấậẩẫ]/g,'a').replace(/[èéẹẻẽêếềệểễ]/g,'e').replace(/[ìíịỉĩ]/g,'i').replace(/[òóọỏõôốồộổỗơớờợởỡ]/g,'o').replace(/[ùúụủũưứừựửữ]/g,'u').replace(/[ỳýỵỷỹ]/g,'y').replace(/đ/g,'d').replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,60);}
+function escapeHtml(str){if(!str)return'';return str.replace(/[&<>]/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+function getFileNameFromUrl(url){if(!url)return null;const m=url.match(/\/([^\/]+)\.html$/);return m?m[1]:null;}
+function getLatestArticle(articles){if(!articles.length)return null;return articles.reduce((l,c)=>c.date>l.date?c:l,articles[0]);}
+function getEnglishArticleUrl(u){if(!u)return'#';let url=u.trim();if(url.startsWith('./'))url=url.substring(2);else if(url.startsWith('../'))url=url.substring(3);if(url.includes('_en.html'))url=url.replace(/_en\.html$/,'.html');if(url.endsWith('.html'))url=url.replace(/\.html$/,'_en.html');else url+='_en.html';return './'+url;}
+function getThumbnailHtml(fn,type,alt){const p=`../thumbnail/${type}/${fn}`;return `<img data-src="${p}.webp" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="${escapeHtml(alt)}" loading="lazy" onerror="this.onerror=null; const exts=['png','jpg','jpeg']; let i=0; const tryExt=()=>{if(i<exts.length){this.src='${p}.'+exts[i]; i++;}else{this.style.display='none';}}; tryExt();" style="width:100%;height:100%;object-fit:cover;">`;}
+function getCardTagsHtml(a){if(!a.tag)return'<div class="card-tags-group"><span class="card-tag-item">Design</span></div>';const t=a.tag.split(',').map(x=>x.trim()).filter(x=>x);if(!t.length)return'<div class="card-tags-group"><span class="card-tag-item">Design</span></div>';const max=2;let h='<div class="card-tags-group">';t.slice(0,max).forEach(tag=>{h+=`<span class="card-tag-item">${escapeHtml(tag)}</span>`;});if(t.length>max)h+=`<span class="card-tag-item">+${t.length-max}</span>`;h+='</div>';return h;}
+function getFeaturedTagsHtml(a){if(!a.tag)return'<span class="featured-cat">⭐ Featured</span>';const t=a.tag.split(',').map(x=>x.trim()).filter(x=>x);if(!t.length)return'<span class="featured-cat">⭐ Featured</span>';if(t.length===1)return`<span class="featured-cat">⭐ ${escapeHtml(t[0])}</span>`;return`<span class="featured-cat">⭐ ${escapeHtml(t[0])} +${t.length-1}</span>`;}
+function articleMatchesFilter(article,filter){if(filter==='all')return true;const tags=article.tag?article.tag.split(',').map(t=>t.trim()):[];return tags.includes(filter);}
+function renderFeaturedOfTheDay(articles){const container=document.getElementById('nhadep-featured');if(!articles.length){container.innerHTML=`<div class="empty-state"><i class="fa-regular fa-images"></i><p>No articles available.</p></div>`;return;}const f=getLatestArticle(articles);const fn=getFileNameFromUrl(f.url)||slugify(f.title_en||f.title);const title=f.title_en||f.title;const summary=f.summary_en||f.summary||'Discover sophisticated living spaces with modern design.';const url=getEnglishArticleUrl(f.url);container.innerHTML=`<div class="featured-card" onclick="window.open('${url}','_blank')"><div class="featured-img">${getThumbnailHtml(fn,'nhadep',title)}${getFeaturedTagsHtml(f)}</div><div class="featured-body"><h3 class="featured-title">${escapeHtml(title)}</h3><p class="featured-desc">${escapeHtml(summary)}</p><div class="featured-meta"><span><i class="fa-regular fa-calendar"></i> ${f.date||''}</span><span><i class="fa-regular fa-star"></i> Featured of the day</span></div></div></div>`;initLazyLoading();}
+function renderMauKhacWithFilter(all,featuredId){const container=document.getElementById('maukhac-grid');let filtered=currentTagFilter==='all'?all:all.filter(a=>articleMatchesFilter(a,currentTagFilter));filtered=filtered.filter(a=>a.id!==featuredId);if(!filtered.length){container.innerHTML=`<div class="empty-state"><i class="fa-regular fa-building"></i><p>No designs match "${escapeHtml(currentTagFilter)}".</p></div>`;return;}container.innerHTML=filtered.map(article=>{const fn=getFileNameFromUrl(article.url)||slugify(article.title_en||article.title);const title=article.title_en||article.title;const summary=article.summary_en||article.summary||'';const url=getEnglishArticleUrl(article.url);return `<div class="base-card" onclick="window.open('${url}','_blank')"><div class="card-img">${getThumbnailHtml(fn,'nhadep',title)}${getCardTagsHtml(article)}</div><div class="card-body"><h3 class="card-title">${escapeHtml(title)}</h3><p class="card-desc">${escapeHtml(summary)}</p><div class="card-meta"><span><i class="fa-regular fa-calendar"></i> ${article.date||''}</span></div></div></div>`;}).join('');initLazyLoading();}
+function renderBlogsWithFilter(blogs){const container=document.getElementById('blogs-grid');let filtered=currentTagFilter==='all'?blogs:blogs.filter(a=>articleMatchesFilter(a,currentTagFilter));if(!filtered.length){container.innerHTML=`<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>No blogs match "${escapeHtml(currentTagFilter)}".</p></div>`;return;}container.innerHTML=filtered.map(article=>{const fn=getFileNameFromUrl(article.url)||slugify(article.title_en||article.title);const title=article.title_en||article.title;const summary=article.summary_en||article.summary||'';const url=getEnglishArticleUrl(article.url);let firstTag='Blog';if(article.tag)firstTag=article.tag.split(',')[0].trim();return `<div class="base-card" onclick="window.open('${url}','_blank')"><div class="card-img">${getThumbnailHtml(fn,'blogs',title)}</div><div class="card-body"><div class="blog-meta"><span class="blog-date">${article.date||''}</span><span class="blog-tag">${escapeHtml(firstTag)}</span></div><h3 class="card-title">${escapeHtml(title)}</h3><p class="card-desc">${escapeHtml(summary)}</p></div></div>`;}).join('');initLazyLoading();}
+function collectUniqueTags(articles){const set=new Set();articles.forEach(a=>{if(a.tag)a.tag.split(',').map(t=>t.trim()).forEach(t=>t&&set.add(t));});return Array.from(set).sort();}
+function renderFilterBar(){const bar=document.getElementById('filter-bar');const max=4;const vis=allUniqueTags.slice(0,max);const hid=allUniqueTags.slice(max);let html=`<button class="filter-btn ${currentTagFilter==='all'?'active':''}" data-filter="all">All</button>`;vis.forEach(t=>{html+=`<button class="filter-btn ${currentTagFilter===t?'active':''}" data-filter="${escapeHtml(t)}">${escapeHtml(t)}</button>`;});if(hid.length){html+=`<div class="filter-dropdown"><button class="filter-dropdown-btn" onclick="toggleFilterDropdown(event)">... <i class="fa-solid fa-chevron-down"></i></button><div class="filter-dropdown-content" id="filter-dropdown-content">${hid.map(t=>`<button class="filter-dropdown-item ${currentTagFilter===t?'active':''}" data-filter="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('')}</div></div>`;}bar.innerHTML=html;document.querySelectorAll('.filter-btn[data-filter]').forEach(b=>{b.addEventListener('click',()=>{currentTagFilter=b.dataset.filter;renderFilterBar();updateAllContent();});});document.querySelectorAll('.filter-dropdown-item').forEach(i=>{i.addEventListener('click',()=>{currentTagFilter=i.dataset.filter;renderFilterBar();updateAllContent();document.getElementById('filter-dropdown-content')?.classList.remove('show');});});}
+function updateAllContent(){const posted=allArticles.filter(a=>a.Status==='posted');const nhadep=posted.filter(a=>a.kind==='nhadep');const blogs=posted.filter(a=>a.kind==='blogs');if(nhadep.length){const f=getLatestArticle(nhadep);renderFeaturedOfTheDay(nhadep);renderMauKhacWithFilter(nhadep,f?f.id:null);}else{document.getElementById('maukhac-grid').innerHTML=`<div class="empty-state"><p>No designs available.</p></div>`;}renderBlogsWithFilter(blogs);}
+function toggleFilterDropdown(e){e.stopPropagation();document.getElementById('filter-dropdown-content')?.classList.toggle('show');}
+document.addEventListener('click',()=>{document.getElementById('filter-dropdown-content')?.classList.remove('show');});
+function initLazyLoading(){const imgs=document.querySelectorAll('img[data-src]');if('IntersectionObserver'in window){const obs=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){const img=entry.target;if(img.dataset.src){img.src=img.dataset.src;img.removeAttribute('data-src');}obs.unobserve(img);}});});imgs.forEach(img=>obs.observe(img));}else{imgs.forEach(img=>{if(img.dataset.src)img.src=img.dataset.src;});}}
+async function loadData(){try{const res=await fetch(DATA_JSON_PATH+'?t='+Date.now());if(!res.ok)throw new Error();const articles=await res.json();allArticles=articles;const posted=allArticles.filter(a=>a.Status==='posted');allUniqueTags=collectUniqueTags(posted);renderFilterBar();updateAllContent();}catch(e){console.error(e);document.getElementById('nhadep-featured').innerHTML=`<div class="empty-state"><i class="fa-regular fa-circle-xmark"></i><p>Failed to load data.</p></div>`;}}
+function initMobileMenu(){const ham=document.getElementById('hamburger-btn');const links=document.querySelector('.nav-links');if(ham&&links){ham.addEventListener('click',()=>{links.classList.toggle('active');const i=ham.querySelector('i');if(i){i.classList.toggle('fa-bars',!links.classList.contains('active'));i.classList.toggle('fa-xmark',links.classList.contains('active'));}});} }
+function setupLanguageSwitch(){const vi=document.getElementById('langViBottom');const en=document.getElementById('langEnBottom');const url=window.location.href;const isEn=url.includes('_en.html')||url.endsWith('_en');const isOrg=url.includes('nhadepviet.org')||url.includes('.org');if(vi)vi.onclick=e=>{e.preventDefault();if(isEn)window.location.href=url.replace('_en.html','.html').replace('_en','');};if(en)en.onclick=e=>{e.preventDefault();if(isOrg)window.location.href='https://nhadepviet.org/index_en.html';else if(!isEn)window.location.href=url.replace('.html','_en.html');};if(isEn){en.style.background='rgba(198,164,59,0.25)';en.style.color='#C6A43B';vi.style.background='none';vi.style.color='#9C9C9C';}else if(isOrg){vi.style.background='rgba(198,164,59,0.25)';vi.style.color='#C6A43B';en.style.background='none';en.style.color='#9C9C9C';}else{vi.style.background='rgba(198,164,59,0.25)';vi.style.color='#C6A43B';en.style.background='none';en.style.color='#9C9C9C';}}
+document.addEventListener('DOMContentLoaded',()=>{loadData();initMobileMenu();setupLanguageSwitch();setTimeout(()=>initLazyLoading(),100);});
+window.initLazyLoading=initLazyLoading;window.toggleFilterDropdown=toggleFilterDropdown;
 </script>
 </body>
 </html>
