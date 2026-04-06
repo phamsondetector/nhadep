@@ -649,6 +649,65 @@
                 padding: 3px 8px;
             }
         }
+
+        /* === Slider wrapper === */
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        .slider-track-outer { overflow: hidden; }
+        .slider-track {
+            display: flex;
+            gap: 28px;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .slider-track .base-card {
+            flex: 0 0 calc((100% - 112px) / 5);
+            min-width: 0;
+        }
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(12,10,5,0.85);
+            border: 1px solid rgba(198,164,59,0.35);
+            color: var(--gold);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .25s;
+            z-index: 5;
+            backdrop-filter: blur(12px);
+        }
+        .slider-nav:hover { background: rgba(198,164,59,0.15); border-color: var(--gold); box-shadow: 0 4px 16px rgba(198,164,59,0.2); }
+        .slider-nav:disabled { opacity: 0.3; cursor: default; }
+        .slider-nav.prev { left: 0; }
+        .slider-nav.next { right: 0; }
+        .slider-dots { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
+        .slider-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--mid);
+            border: 1px solid rgba(198,164,59,0.25);
+            cursor: pointer; transition: all .25s;
+        }
+        .slider-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
+        @media (max-width: 1024px) {
+            .slider-track .base-card { flex: 0 0 calc((100% - 56px) / 3); }
+        }
+        @media (max-width: 768px) {
+            .slider-wrapper { padding: 0 20px; }
+            .slider-nav { width: 36px; height: 36px; font-size: .85rem; }
+            .slider-track .base-card { flex: 0 0 100%; }
+            .slider-track { gap: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -699,20 +758,34 @@
 <!-- Các mẫu nhà khác (hiển thị dựa theo bộ lọc tag) -->
 <section id="maukhac" class="sec">
     <div class="sec-title"><i class="fa-regular fa-building"></i> Các mẫu nhà khác</div>
-    <div class="card-grid" id="maukhac-grid">
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
+    <div class="slider-wrapper">
+        <button class="slider-nav prev" id="maukhac-prev" onclick="slideSection('maukhac',-1)" aria-label="Trước"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="slider-track-outer">
+            <div class="slider-track" id="maukhac-grid">
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+            </div>
+        </div>
+        <button class="slider-nav next" id="maukhac-next" onclick="slideSection('maukhac',1)" aria-label="Tiếp"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="slider-dots" id="maukhac-dots"></div>
     </div>
 </section>
 
 <!-- Blogs (cũng lọc theo tag) -->
 <section id="blogs" class="sec">
     <div class="sec-title"><i class="fa-regular fa-pen-to-square"></i> Blogs</div>
-    <div class="card-grid" id="blogs-grid">
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
-        <div class="skeleton skeleton-card" style="height:320px;"></div>
+    <div class="slider-wrapper">
+        <button class="slider-nav prev" id="blogs-prev" onclick="slideSection('blogs',-1)" aria-label="Trước"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="slider-track-outer">
+            <div class="slider-track" id="blogs-grid">
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+                <div class="skeleton skeleton-card" style="flex:0 0 calc((100% - 112px)/5);height:320px;"></div>
+            </div>
+        </div>
+        <button class="slider-nav next" id="blogs-next" onclick="slideSection('blogs',1)" aria-label="Tiếp"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="slider-dots" id="blogs-dots"></div>
     </div>
 </section>
 
@@ -727,10 +800,10 @@
 
 <footer>
     <p><img src="logo.png" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:8px;" loading="lazy"> <strong>Nhà Đẹp</strong> — Kiến tạo không gian sống</p>
-    <p style="margin-top: 12px;">Email: <a href="mailto:phamsondetector@gmail.com" style="color: var(--gold);">phamsondetector@gmail.com</a></p>
+    <p style="margin-top: 12px;">Email: <a href="/cdn-cgi/l/email-protection#12627a737f617d7c7677667771667d6052757f737b7e3c717d7f" style="color: var(--gold);"><span class="__cf_email__" data-cfemail="77071f161a041819131203121403180537101a161e1b5914181a">[email&#160;protected]</span></a></p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ==================== OPTIMIZED CODE ====================
 // Debounce utility
 function debounce(func, wait) {
@@ -863,19 +936,80 @@ function renderFeaturedOfTheDay(articles) {
     initLazyLoading();
 }
 
+// === Slider state ===
+const sliderState = {
+    maukhac: { index: 0, total: 0 },
+    blogs:   { index: 0, total: 0 }
+};
+
+function getVisibleCount() {
+    if (window.innerWidth <= 768) return 1;
+    if (window.innerWidth <= 1024) return 3;
+    return 5;
+}
+
+function getCardWidth(sectionId) {
+    const track = document.getElementById(sectionId + '-grid');
+    if (!track) return 0;
+    const card = track.querySelector('.base-card');
+    if (!card) return 0;
+    return card.offsetWidth + 28;
+}
+
+function updateSliderUI(sectionId) {
+    const state = sliderState[sectionId];
+    const visible = getVisibleCount();
+    const maxIndex = Math.max(0, state.total - visible);
+    const prevBtn = document.getElementById(sectionId + '-prev');
+    const nextBtn = document.getElementById(sectionId + '-next');
+    if (prevBtn) prevBtn.disabled = state.index <= 0;
+    if (nextBtn) nextBtn.disabled = state.index >= maxIndex;
+    const track = document.getElementById(sectionId + '-grid');
+    if (track) track.style.transform = `translateX(-${state.index * getCardWidth(sectionId)}px)`;
+    const dotsEl = document.getElementById(sectionId + '-dots');
+    if (dotsEl) {
+        if (state.total > visible) {
+            dotsEl.innerHTML = Array.from({length: maxIndex + 1}, (_, i) =>
+                `<div class="slider-dot ${i === state.index ? 'active' : ''}" onclick="goToSlide('${sectionId}',${i})"></div>`
+            ).join('');
+        } else {
+            dotsEl.innerHTML = '';
+        }
+    }
+}
+
+function slideSection(sectionId, dir) {
+    const state = sliderState[sectionId];
+    const maxIndex = Math.max(0, state.total - getVisibleCount());
+    state.index = Math.max(0, Math.min(maxIndex, state.index + dir));
+    updateSliderUI(sectionId);
+}
+
+function goToSlide(sectionId, idx) {
+    sliderState[sectionId].index = idx;
+    updateSliderUI(sectionId);
+}
+
+window.addEventListener('resize', debounce(() => {
+    updateSliderUI('maukhac');
+    updateSliderUI('blogs');
+}, 150));
+
 // Render "các mẫu nhà khác" dựa trên tag filter (bỏ qua bài đã featured)
 function renderMauKhacWithFilter(allNhadepArticles, featuredArticleId) {
     const container = document.getElementById('maukhac-grid');
     let filtered = currentTagFilter === 'all' 
         ? allNhadepArticles 
         : allNhadepArticles.filter(a => articleMatchesFilter(a, currentTagFilter));
-    // Loại bỏ bài featured khỏi danh sách (tránh trùng)
     filtered = filtered.filter(a => a.id !== featuredArticleId);
+    sliderState.maukhac.index = 0;
+    sliderState.maukhac.total = filtered.length;
     if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>Không có bài viết nào phù hợp với tag "${currentTagFilter}".</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="flex:1"><i class="fa-regular fa-building"></i><p>Không có bài viết nào phù hợp với tag "${currentTagFilter}".</p></div>`;
+        const d = document.getElementById('maukhac-dots'); if (d) d.innerHTML = '';
         return;
     }
-    container.innerHTML = filtered.slice(0, 6).map(article => {
+    container.innerHTML = filtered.map(article => {
         const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
         const desc = article.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
         const articleUrl = article.url || '#';
@@ -897,6 +1031,7 @@ function renderMauKhacWithFilter(allNhadepArticles, featuredArticleId) {
             </div>`;
     }).join('');
     initLazyLoading();
+    requestAnimationFrame(() => updateSliderUI('maukhac'));
 }
 
 function renderBlogsWithFilter(blogsArticles) {
@@ -904,11 +1039,14 @@ function renderBlogsWithFilter(blogsArticles) {
     let filtered = currentTagFilter === 'all' 
         ? blogsArticles 
         : blogsArticles.filter(a => articleMatchesFilter(a, currentTagFilter));
+    sliderState.blogs.index = 0;
+    sliderState.blogs.total = filtered.length;
     if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>Không có bài blog nào với tag "${currentTagFilter}".</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="flex:1"><i class="fa-regular fa-pen-to-square"></i><p>Không có bài blog nào với tag "${currentTagFilter}".</p></div>`;
+        const d = document.getElementById('blogs-dots'); if (d) d.innerHTML = '';
         return;
     }
-    container.innerHTML = filtered.slice(0, 6).map(article => {
+    container.innerHTML = filtered.map(article => {
         const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
@@ -934,6 +1072,7 @@ function renderBlogsWithFilter(blogsArticles) {
             </div>`;
     }).join('');
     initLazyLoading();
+    requestAnimationFrame(() => updateSliderUI('blogs'));
 }
 
 // Hàm tạo filter bar động (chỉ hiển thị tags từ tất cả bài viết)
@@ -1105,9 +1244,7 @@ function initMobileMenu() {
 
 async function init() {
     const articles = await loadArticlesFromJSON();
-    if (!articles || articles.length === 0) {
-        document.getElementById('nhadep-featured').innerHTML = `<div class="empty-state"><i class="fa-regular fa-circle-xmark"></i><p>Không thể tải dữ liệu.</p></div>`;
-        document.getElementById('maukhac-grid').innerHTML = `<div class="empty-state"><p>Lỗi tải dữ liệu</p></div>`;
+    if (!articles || articles.lengthlass="empty-state"><p>Lỗi tải dữ liệu</p></div>`;
         document.getElementById('blogs-grid').innerHTML = `<div class="empty-state"><p>Lỗi tải dữ liệu</p></div>`;
         return;
     }
