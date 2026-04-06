@@ -58,7 +58,7 @@ nav a:hover{color:var(--gold);}
     </style>
 </head>
 <body>
-<nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display='none'"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
+<nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;" onerror="this.style.display="none""> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
 <div class="container">
   <div class="meta"><a class="tag" href="../../tag.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><span class="date">6/4/2026</span></div>
   <div class="content"></div>
@@ -141,7 +141,7 @@ nav a:hover{color:var(--gold);}
                 var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
                 var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
                 var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
-                // SỬA LỖI: Gán trực tiếp onerror
+                // SỬA LỖI QUAN TRỌNG: Dùng dấu nháy kép cho onerror
                 html += '<a href="' + artUrl + '" class="related-card">' +
                     '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy" onerror="this.style.display='none'">' +
                     '<div class="card-content">' +
