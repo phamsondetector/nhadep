@@ -372,7 +372,36 @@
             margin: 0 auto;
             padding: 0 40px;
         }
-        
+
+        /* ==================== PHẦN ĐÃ SỬA: Hiển thị tất cả + Trượt ngang ==================== */
+        #maukhac-grid,
+        #blogs-grid {
+            display: flex !important;
+            overflow-x: auto;
+            gap: 28px;
+            padding: 0 40px 40px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) var(--bg);
+        }
+        #maukhac-grid::-webkit-scrollbar,
+        #blogs-grid::-webkit-scrollbar {
+            height: 8px;
+        }
+        #maukhac-grid::-webkit-scrollbar-thumb,
+        #blogs-grid::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+        #maukhac-grid .base-card,
+        #blogs-grid .base-card {
+            min-width: 320px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+        /* End sửa */
+
         .base-card {
             background: rgba(20,18,12,0.65);
             backdrop-filter: blur(16px) saturate(120%);
@@ -545,39 +574,10 @@
             border-radius: 20px;
         }
         
-        .lang-switch-bottom {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            gap: 0px;
-            background: rgba(10,10,10,0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            padding: 4px;
-            border: 1px solid rgba(198,164,59,0.3);
-            z-index: 10000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .lang-switch-bottom .lang-btn-bottom {
-            background: none;
-            border: none;
-            color: #9C9C9C;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 8px 18px;
-            border-radius: 30px;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-        .lang-switch-bottom .lang-btn-bottom:hover {
-            background: rgba(198,164,59,0.15);
-            color: #C6A43B;
-        }
         @media (max-width: 768px) {
             .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; }
             .lang-switch-bottom .lang-btn-bottom { padding: 5px 12px; font-size: 0.7rem; }
-            .card-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+            #maukhac-grid, #blogs-grid { padding: 0 20px 32px; }
             .featured-img { height: 350px; }
             .featured-body { padding: 24px; }
             .featured-title { font-size: 1.5rem; }
@@ -709,7 +709,6 @@
         return match ? match[1] : null;
     }
 
-    // Lấy bài viết mới nhất dựa trên trường date (định dạng YYYY-MM-DD)
     function getLatestArticle(articles) {
         if (!articles.length) return null;
         return articles.reduce((latest, current) => {
@@ -719,28 +718,17 @@
         }, articles[0]);
     }
 
-    // ==================== QUAN TRỌNG: TẤT CẢ LINK BÀI VIẾT ĐỀU CÓ DẠNG xxx_en.html ====================
     function getEnglishArticleUrl(originalUrl) {
         if (!originalUrl) return '#';
-        
         let url = originalUrl.trim();
-        
-        // Xóa các ký tự ./ hoặc ../ ở đầu nếu có
         if (url.startsWith('./')) url = url.substring(2);
         else if (url.startsWith('../')) url = url.substring(3);
-        
-        // Xóa phần đuôi _en nếu có (để tránh double _en)
-        if (url.includes('_en.html')) {
-            url = url.replace(/_en\.html$/, '.html');
-        }
-        
-        // Thêm _en trước .html
+        if (url.includes('_en.html')) url = url.replace(/_en\.html$/, '.html');
         if (url.endsWith('.html')) {
             url = url.replace(/\.html$/, '_en.html');
         } else {
             url += '_en.html';
         }
-        
         return './' + url;
     }
 
@@ -807,6 +795,7 @@
         initLazyLoading();
     }
 
+    // ==================== PHẦN ĐÃ SỬA: Bỏ giới hạn 6 bài + trượt ngang ====================
     function renderMauKhacWithFilter(allNhadep, featuredId) {
         const container = document.getElementById('maukhac-grid');
         let filtered = currentTagFilter === 'all' ? allNhadep : allNhadep.filter(a => articleMatchesFilter(a, currentTagFilter));
@@ -817,7 +806,7 @@
             return;
         }
 
-        container.innerHTML = filtered.slice(0, 6).map(article => {
+        container.innerHTML = filtered.map(article => {   // ← BỎ slice(0,6)
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
@@ -848,7 +837,7 @@
             return;
         }
 
-        container.innerHTML = filtered.slice(0, 6).map(article => {
+        container.innerHTML = filtered.map(article => {   // ← BỎ slice(0,6)
             const fileName = getFileNameFromUrl(article.url) || slugify(article.title_en || article.title);
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';

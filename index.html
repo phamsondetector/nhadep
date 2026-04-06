@@ -379,6 +379,35 @@
             padding: 0 40px;
         }
         
+        /* ==================== PHẦN ĐÃ SỬA: Hiển thị tất cả + Trượt ngang ==================== */
+        #maukhac-grid,
+        #blogs-grid {
+            display: flex !important;
+            overflow-x: auto;
+            gap: 28px;
+            padding: 0 40px 40px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) var(--bg);
+        }
+        #maukhac-grid::-webkit-scrollbar,
+        #blogs-grid::-webkit-scrollbar {
+            height: 8px;
+        }
+        #maukhac-grid::-webkit-scrollbar-thumb,
+        #blogs-grid::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+        #maukhac-grid .base-card,
+        #blogs-grid .base-card {
+            min-width: 320px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+        /* End sửa */
+
         .base-card {
             background: rgba(20,18,12,0.65);
             backdrop-filter: blur(16px) saturate(120%);
@@ -609,16 +638,13 @@
                 font-size: clamp(0.85rem, 3vw, 0.95rem);
                 max-width: 90%;
             }
-            .card-grid { 
-                grid-template-columns: 1fr; 
-                max-width: 500px; 
-                margin: 0 auto; 
+            #maukhac-grid, #blogs-grid { 
+                padding: 0 20px 32px; 
             }
             .featured-img { height: 350px; }
             .featured-body { padding: 24px; }
             .featured-title { font-size: 1.5rem; }
             .featured-grid { padding: 0 20px; }
-            .card-grid { padding: 0 20px; }
             .sec { padding: 0 20px 60px; }
             .about-content { padding: 30px 20px; }
             .about-content h2 { font-size: 1.5rem; }
@@ -771,7 +797,7 @@ function initLazyLoading() {
 
 const DATA_JSON_PATH = './data.json';
 let allArticles = [];
-let currentTagFilter = 'all';     // lọc theo tag cho nhà đẹp + blogs
+let currentTagFilter = 'all';     
 let allUniqueTags = [];
 
 async function loadArticlesFromJSON() {
@@ -793,7 +819,6 @@ async function loadArticlesFromJSON() {
     }
 }
 
-// Thu thập tất cả tag duy nhất từ các bài viết (chỉ lấy từ nhadep và blogs đã posted)
 function collectUniqueTagsFromAll(articles) {
     const tagsSet = new Set();
     articles.forEach(article => {
@@ -808,7 +833,6 @@ function collectUniqueTagsFromAll(articles) {
     return Array.from(tagsSet).sort();
 }
 
-// Kiểm tra bài viết có chứa tag cần lọc không (hỗ trợ nhiều tag)
 function articleMatchesFilter(article, filterValue) {
     if (filterValue === 'all') return true;
     let articleTags = [];
@@ -818,7 +842,6 @@ function articleMatchesFilter(article, filterValue) {
     return articleTags.includes(filterValue);
 }
 
-// Lấy bài viết mới nhất dựa trên trường date (định dạng YYYY-MM-DD)
 function getLatestArticle(articles) {
     if (!articles.length) return null;
     return articles.reduce((latest, current) => {
@@ -863,19 +886,18 @@ function renderFeaturedOfTheDay(articles) {
     initLazyLoading();
 }
 
-// Render "các mẫu nhà khác" dựa trên tag filter (bỏ qua bài đã featured)
+// ==================== PHẦN ĐÃ SỬA: Bỏ giới hạn 6 bài + trượt ngang ====================
 function renderMauKhacWithFilter(allNhadepArticles, featuredArticleId) {
     const container = document.getElementById('maukhac-grid');
     let filtered = currentTagFilter === 'all' 
         ? allNhadepArticles 
         : allNhadepArticles.filter(a => articleMatchesFilter(a, currentTagFilter));
-    // Loại bỏ bài featured khỏi danh sách (tránh trùng)
     filtered = filtered.filter(a => a.id !== featuredArticleId);
     if (filtered.length === 0) {
         container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-building"></i><p>Không có bài viết nào phù hợp với tag "${currentTagFilter}".</p></div>`;
         return;
     }
-    container.innerHTML = filtered.slice(0, 6).map(article => {
+    container.innerHTML = filtered.map(article => {   // ← BỎ slice(0,6)
         const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
         const desc = article.summary || 'Khám phá không gian sống tinh tế với thiết kế hiện đại.';
         const articleUrl = article.url || '#';
@@ -908,7 +930,7 @@ function renderBlogsWithFilter(blogsArticles) {
         container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-pen-to-square"></i><p>Không có bài blog nào với tag "${currentTagFilter}".</p></div>`;
         return;
     }
-    container.innerHTML = filtered.slice(0, 6).map(article => {
+    container.innerHTML = filtered.map(article => {   // ← BỎ slice(0,6)
         const fileName = getFileNameFromUrl(article.url) || slugify(article.title);
         const articleUrl = article.url || '#';
         const displayDate = article.date || '';
@@ -936,7 +958,6 @@ function renderBlogsWithFilter(blogsArticles) {
     initLazyLoading();
 }
 
-// Hàm tạo filter bar động (chỉ hiển thị tags từ tất cả bài viết)
 function renderFilterBar() {
     const filterBar = document.getElementById('filter-bar');
     if (!filterBar) return;
@@ -1190,7 +1211,6 @@ if (document.readyState === 'loading') {
     const isEnPage = currentUrl.includes('_en.html');
     const isOrgPage = currentUrl.includes('nhadepviet.org') || currentUrl.includes('.org');
     
-    // Nút VI
     if (viBtn) {
         viBtn.onclick = function(e) {
             e.preventDefault();
@@ -1201,7 +1221,6 @@ if (document.readyState === 'loading') {
         };
     }
     
-    // Nút EN
     if (enBtn) {
         enBtn.onclick = function(e) {
             e.preventDefault();
@@ -1215,7 +1234,6 @@ if (document.readyState === 'loading') {
         };
     }
     
-    // Highlight nút active
     if (isEnPage) {
         if (enBtn) {
             enBtn.style.background = 'rgba(198,164,59,0.25)';
