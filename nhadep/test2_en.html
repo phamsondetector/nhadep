@@ -141,9 +141,9 @@ nav a:hover{color:var(--gold);}
                 var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
                 var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
                 var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
-                // SỬA LỖI: Dùng onerror đúng cú pháp
+                // SỬA LỖI: Gán trực tiếp onerror
                 html += '<a href="' + artUrl + '" class="related-card">' +
-                    '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy" onerror="' + onerrorHandler + '">' +
+                    '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy" onerror="this.style.display='none'">' +
                     '<div class="card-content">' +
                     '<span class="card-tag">' + escapeHtmlStatic(artTag) + '</span>' +
                     '<h4 class="card-title">' + escapeHtmlStatic(artTitle) + '</h4>' +
