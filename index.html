@@ -864,6 +864,34 @@ function initLazyLoading() {
     }
 }
 
+// Hàm gắn sự kiện click an toàn cho card (giải quyết lỗi mobile)
+function attachSafeClickHandler(element, url) {
+    if (!element || !url || url === '#') return;
+    
+    // Loại bỏ các event listener cũ để tránh trùng lặp
+    element.removeEventListener('click', handleCardClick);
+    element.removeEventListener('touchstart', handleCardTouch);
+    
+    function handleCardClick(e) {
+        e.stopPropagation();
+        if (url && url !== '#') {
+            window.open(url, '_blank');
+        }
+    }
+    
+    function handleCardTouch(e) {
+        // Không preventDefault để không ảnh hưởng đến vuốt carousel
+        // Chỉ mở link khi chạm
+        if (url && url !== '#') {
+            window.open(url, '_blank');
+        }
+        e.stopPropagation();
+    }
+    
+    element.addEventListener('click', handleCardClick);
+    element.addEventListener('touchstart', handleCardTouch);
+}
+
 const DATA_JSON_PATH = './data.json';
 let allArticles = [];
 let currentTagFilter = 'all';     // lọc theo tag cho nhà đẹp + blogs
@@ -1057,7 +1085,7 @@ function renderFeaturedOfTheDay(articles) {
     const tagsHtml = getFeaturedTagsHtml(featuredArticle);
     
     container.innerHTML = `
-        <div class="featured-card" onclick="window.open('${articleUrl}', '_blank')">
+        <div class="featured-card" data-url="${articleUrl}">
             <div class="featured-img">
                 ${getThumbnailHtml(fileName, 'nhadep', featuredArticle.title)}
                 ${tagsHtml}
@@ -1071,6 +1099,13 @@ function renderFeaturedOfTheDay(articles) {
                 </div>
             </div>
         </div>`;
+    
+    // Gắn sự kiện an toàn cho featured card
+    const featuredCard = container.querySelector('.featured-card');
+    if (featuredCard && articleUrl !== '#') {
+        attachSafeClickHandler(featuredCard, articleUrl);
+    }
+    
     initLazyLoading();
 }
 
@@ -1098,8 +1133,8 @@ function renderMauKhacCarousel(allNhadepArticles, featuredArticleId) {
         const displayDate = article.date || '';
         const tagsHtml = getCardTagsHtml(article);
         return `
-            <div class="carousel-card">
-                <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+            <div class="carousel-card" data-url="${articleUrl}">
+                <div class="base-card" data-url="${articleUrl}">
                     <div class="card-img">
                         ${getThumbnailHtml(fileName, 'nhadep', article.title)}
                         ${tagsHtml}
@@ -1116,6 +1151,18 @@ function renderMauKhacCarousel(allNhadepArticles, featuredArticleId) {
     }).join('');
     
     track.innerHTML = html;
+    
+    // Gắn sự kiện an toàn cho từng card sau khi render
+    const allCards = track.querySelectorAll('.carousel-card');
+    allCards.forEach(card => {
+        const url = card.getAttribute('data-url');
+        const innerCard = card.querySelector('.base-card');
+        if (innerCard && url && url !== '#') {
+            attachSafeClickHandler(innerCard, url);
+            attachSafeClickHandler(card, url);
+        }
+    });
+    
     if (maukhacCarousel) {
         maukhacCarousel.updateTrack(html);
     }
@@ -1147,8 +1194,8 @@ function renderBlogsCarousel(blogsArticles) {
             if (tags.length > 0) firstTag = tags[0];
         }
         return `
-            <div class="carousel-card">
-                <div class="base-card" onclick="window.open('${articleUrl}', '_blank')">
+            <div class="carousel-card" data-url="${articleUrl}">
+                <div class="base-card" data-url="${articleUrl}">
                     <div class="card-img">
                         ${getThumbnailHtml(fileName, 'blogs', article.title)}
                     </div>
@@ -1165,6 +1212,18 @@ function renderBlogsCarousel(blogsArticles) {
     }).join('');
     
     track.innerHTML = html;
+    
+    // Gắn sự kiện an toàn cho từng card blog
+    const allCards = track.querySelectorAll('.carousel-card');
+    allCards.forEach(card => {
+        const url = card.getAttribute('data-url');
+        const innerCard = card.querySelector('.base-card');
+        if (innerCard && url && url !== '#') {
+            attachSafeClickHandler(innerCard, url);
+            attachSafeClickHandler(card, url);
+        }
+    });
+    
     if (blogsCarousel) {
         blogsCarousel.updateTrack(html);
     }
