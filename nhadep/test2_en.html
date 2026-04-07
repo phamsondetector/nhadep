@@ -4,6 +4,14 @@
 <meta name="description" content="test2">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B51EJTDD2L"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-B51EJTDD2L");
+</script>
 <style>
 :root{--bg:#0A0A0A;--gold:#C6A43B;--gold2:#D4AF37;--text:#F5F5F5;--muted:#9C9C9C;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -58,7 +66,7 @@ nav a:hover{color:var(--gold);}
 <body>
 <nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;"> Nhà<span>Đẹp</span></h1><a href="../../index_en.html">← Back home</a></nav>
 <div class="container">
-  <div class="meta"><a class="tag" href="../../tag_en.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><span class="date">6/4/2026</span></div>
+  <div class="meta"><a class="tag" href="../../tag_en.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><span class="date">7/4/2026</span></div>
   <div class="content"></div>
   
     <div class="related-section">
@@ -139,6 +147,7 @@ nav a:hover{color:var(--gold);}
                 var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
                 var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
                 var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
+                // BỎ HẲN ONERROR - không xử lý lỗi ảnh nữa
                 html += '<a href="' + artUrl + '" class="related-card">' +
                     '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy">' +
                     '<div class="card-content">' +
@@ -160,7 +169,7 @@ nav a:hover{color:var(--gold);}
                 var filtered = posted.filter(function(a) {
                     if (!a.relatedlink) return false;
                     var slug = a.relatedlink.replace('./', '').replace('.html', '');
-                    try { slug = decodeURIComponent(artSlug); } catch(e) {}
+                    try { slug = decodeURIComponent(slug); } catch(e) {}
                     return !(slug === currentSlug && (a.kind || '') === currentType);
                 });
                 for (var i = filtered.length - 1; i > 0; i--) {
