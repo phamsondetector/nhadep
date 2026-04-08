@@ -658,7 +658,7 @@
             color: #C6A43B;
         }
         
-        /* Mobile styles - GIỐNG HỆT file index.html về logo và nav */
+        /* ===== MOBILE STYLES - GIỐNG HỆT index.html ===== */
         @media (max-width: 768px) {
             .nav-in {
                 padding: 0 20px;
@@ -726,7 +726,7 @@
             .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; }
             .lang-switch-bottom .lang-btn-bottom { padding: 5px 12px; font-size: 0.7rem; }
             
-            /* QUAN TRỌNG: Logo và chữ trên mobile - GIỐNG HỆT index.html */
+            /* LOGO - GIỐNG HỆT index.html (không nhỏ hơn) */
             .logo {
                 font-size: 1.2rem !important;
                 gap: 0 !important;
@@ -1064,10 +1064,8 @@
         initLazyLoading();
     }
     
-    // Helper để gắn sự kiện click an toàn cho card, tránh bị chặn trên mobile do touch events
     function attachSafeClickHandler(element, url) {
         if (!element) return;
-        // Xóa mọi handler cũ để tránh trùng lặp
         element.removeEventListener('click', handleClick);
         element.removeEventListener('touchstart', handleTouchStart);
         function handleClick(e) {
@@ -1077,8 +1075,6 @@
             }
         }
         function handleTouchStart(e) {
-            // Không preventDefault để tránh ảnh hưởng đến cuộn, chỉ mở link khi không phải kéo
-            // Chỉ mở nếu không có sự kiện kéo đang diễn ra
             if (url && url !== '#') {
                 window.open(url, '_blank');
             }
@@ -1103,9 +1099,8 @@
             const displayTitle = article.title_en || article.title;
             const displaySummary = article.summary_en || article.summary || '';
             const articleUrl = getEnglishArticleUrl(article.url);
-            const uniqueId = `card_${article.id || Math.random()}`;
             return `
-                <div class="carousel-card" data-url="${articleUrl}" data-card-id="${uniqueId}">
+                <div class="carousel-card" data-url="${articleUrl}">
                     <div class="base-card" data-url="${articleUrl}">
                         <div class="card-img">
                             ${getThumbnailHtml(fileName, 'nhadep', displayTitle)}
@@ -1120,14 +1115,12 @@
                 </div>`;
         }).join('');
         track.innerHTML = html;
-        // Gắn sự kiện click trực tiếp an toàn cho từng card sau khi render
         const allCards = track.querySelectorAll('.carousel-card');
         allCards.forEach(card => {
             const url = card.getAttribute('data-url');
             const innerCard = card.querySelector('.base-card');
             if (innerCard && url && url !== '#') {
                 attachSafeClickHandler(innerCard, url);
-                // Đảm bảo card cũng có thể click được
                 attachSafeClickHandler(card, url);
             }
         });
@@ -1151,9 +1144,8 @@
             const articleUrl = getEnglishArticleUrl(article.url);
             let firstTag = 'Blog';
             if (article.tag) firstTag = article.tag.split(',')[0].trim();
-            const uniqueId = `blog_${article.id || Math.random()}`;
             return `
-                <div class="carousel-card" data-url="${articleUrl}" data-card-id="${uniqueId}">
+                <div class="carousel-card" data-url="${articleUrl}">
                     <div class="base-card" data-url="${articleUrl}">
                         <div class="card-img">${getThumbnailHtml(fileName, 'blogs', displayTitle)}</div>
                         <div class="card-body">
