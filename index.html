@@ -1067,6 +1067,16 @@ function getLatestArticle(articles) {
     }, articles[0]);
 }
 
+// Hàm sắp xếp mảng theo ngày giảm dần (mới nhất lên đầu)
+function sortByDateDesc(articles) {
+    return [...articles].sort((a, b) => {
+        if (!a.date && !b.date) return 0;
+        if (!a.date) return 1;
+        if (!b.date) return -1;
+        return b.date.localeCompare(a.date);
+    });
+}
+
 function renderFeaturedOfTheDay(articles) {
     const container = document.getElementById('nhadep-featured');
     if (!articles.length) {
@@ -1109,13 +1119,15 @@ function renderFeaturedOfTheDay(articles) {
     initLazyLoading();
 }
 
-// Render "các mẫu nhà khác" dưới dạng carousel (bỏ qua bài đã featured)
+// Render "các mẫu nhà khác" dưới dạng carousel (bỏ qua bài đã featured) - SẮP XẾP THEO NGÀY MỚI NHẤT LÊN TRƯỚC
 function renderMauKhacCarousel(allNhadepArticles, featuredArticleId) {
     let filtered = currentTagFilter === 'all' 
         ? allNhadepArticles 
         : allNhadepArticles.filter(a => articleMatchesFilter(a, currentTagFilter));
     // Loại bỏ bài featured khỏi danh sách (tránh trùng)
     filtered = filtered.filter(a => a.id !== featuredArticleId);
+    // Sắp xếp theo ngày mới nhất lên trước
+    filtered = sortByDateDesc(filtered);
     
     const track = document.getElementById('maukhac-track');
     if (!track) return;
@@ -1169,10 +1181,13 @@ function renderMauKhacCarousel(allNhadepArticles, featuredArticleId) {
     initLazyLoading();
 }
 
+// Render blogs carousel - SẮP XẾP THEO NGÀY MỚI NHẤT LÊN TRƯỚC
 function renderBlogsCarousel(blogsArticles) {
     let filtered = currentTagFilter === 'all' 
         ? blogsArticles 
         : blogsArticles.filter(a => articleMatchesFilter(a, currentTagFilter));
+    // Sắp xếp theo ngày mới nhất lên trước
+    filtered = sortByDateDesc(filtered);
     
     const track = document.getElementById('blogs-track');
     if (!track) return;
