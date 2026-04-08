@@ -657,9 +657,8 @@
             background: rgba(198,164,59,0.15);
             color: #C6A43B;
         }
-        @media (max-width: 1024px) { 
-            .carousel-card { width: calc(50% - 14px); }
-        }
+        
+        /* Fix logo size on mobile - ensures same as Vietnamese version */
         @media (max-width: 768px) {
             .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; }
             .lang-switch-bottom .lang-btn-bottom { padding: 5px 12px; font-size: 0.7rem; }
@@ -688,9 +687,29 @@
             .nl { font-size: 0.95rem; padding: 12px; text-align: center; width: 100%; }
             .carousel-card { width: calc(100% - 20px); min-width: 260px; }
             .carousel-track { padding: 8px 20px; gap: 16px; }
+            /* Standardize logo size on mobile */
+            .logo {
+                font-size: 1.2rem;
+            }
+            .logo img {
+                height: 32px !important;
+                width: 32px !important;
+            }
         }
+        
         @media (max-width: 480px) {
             .carousel-card { min-width: 240px; }
+            /* Further ensure consistency on very small screens */
+            .logo {
+                font-size: 1.1rem;
+            }
+            .logo img {
+                height: 28px !important;
+                width: 28px !important;
+            }
+        }
+        @media (max-width: 1024px) { 
+            .carousel-card { width: calc(50% - 14px); }
         }
     </style>
 </head>
