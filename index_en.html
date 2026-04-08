@@ -658,17 +658,15 @@
             color: #C6A43B;
         }
         
-        /* Fix logo size on mobile - ensures same as Vietnamese version */
+        /* Mobile styles - GIỐNG HỆT file index.html về logo và nav */
         @media (max-width: 768px) {
-            .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; }
-            .lang-switch-bottom .lang-btn-bottom { padding: 5px 12px; font-size: 0.7rem; }
-            .card-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
-            .featured-img { height: 350px; }
-            .featured-body { padding: 24px; }
-            .featured-title { font-size: 1.5rem; }
-            .sec { padding: 0 20px 60px; }
-            .nav-in { padding: 0 20px; height: 64px; }
-            .hamburger { display: block; }
+            .nav-in {
+                padding: 0 20px;
+                height: 64px;
+            }
+            .hamburger {
+                display: block;
+            }
             .nav-links {
                 display: none;
                 position: absolute;
@@ -678,36 +676,95 @@
                 background: rgba(12,10,5,0.98);
                 backdrop-filter: blur(24px);
                 flex-direction: column;
-                padding: 20px;
+                padding: 20px 20px 30px;
                 gap: 8px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.3);
                 z-index: 99;
                 border-top: 1px solid rgba(198,164,59,0.15);
             }
-            .nav-links.active { display: flex; }
-            .nl { font-size: 0.95rem; padding: 12px; text-align: center; width: 100%; }
+            .nav-links.active {
+                display: flex;
+            }
+            .nl {
+                font-size: 0.95rem;
+                padding: 12px 20px;
+                text-align: center;
+                width: 100%;
+            }
+            .btn-pro {
+                font-size: 0.9rem;
+                padding: 12px 24px;
+                width: 100%;
+                margin-top: 8px;
+            }
+            .hero {
+                padding: 70px 20px 50px;
+            }
+            .hero-title {
+                font-size: clamp(2.2rem, 7vw, 3.8rem);
+            }
+            .hero-sub {
+                font-size: clamp(0.85rem, 3vw, 0.95rem);
+                max-width: 90%;
+            }
+            .featured-img { height: 350px; }
+            .featured-body { padding: 24px; }
+            .featured-title { font-size: 1.5rem; }
+            .featured-grid { padding: 0 20px; }
+            .sec { padding: 0 20px 60px; }
+            .about-content { padding: 30px 20px; }
+            .about-content h2 { font-size: 1.5rem; }
+            .filter-bar {
+                gap: 8px;
+            }
+            .filter-btn, .filter-dropdown-btn {
+                padding: 6px 16px;
+                font-size: .75rem;
+            }
             .carousel-card { width: calc(100% - 20px); min-width: 260px; }
             .carousel-track { padding: 8px 20px; gap: 16px; }
-            /* Standardize logo size on mobile */
+            .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; }
+            .lang-switch-bottom .lang-btn-bottom { padding: 5px 12px; font-size: 0.7rem; }
+            
+            /* QUAN TRỌNG: Logo và chữ trên mobile - GIỐNG HỆT index.html */
             .logo {
-                font-size: 1.2rem;
+                font-size: 1.2rem !important;
+                gap: 0 !important;
             }
             .logo img {
                 height: 32px !important;
                 width: 32px !important;
+                margin-right: 4px !important;
+            }
+            .logo span {
+                letter-spacing: -1px;
             }
         }
         
         @media (max-width: 480px) {
-            .carousel-card { min-width: 240px; }
-            /* Further ensure consistency on very small screens */
+            .nav-in {
+                height: 60px;
+            }
             .logo {
-                font-size: 1.1rem;
+                font-size: 1.1rem !important;
             }
             .logo img {
                 height: 28px !important;
                 width: 28px !important;
             }
+            .hero {
+                padding: 60px 20px 40px;
+            }
+            .card-tags-group {
+                max-width: 90%;
+            }
+            .card-tag-item {
+                font-size: .6rem;
+                padding: 3px 8px;
+            }
+            .carousel-card { min-width: 240px; }
         }
+        
         @media (max-width: 1024px) { 
             .carousel-card { width: calc(50% - 14px); }
         }
