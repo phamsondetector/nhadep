@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes"><title>Nghệ Thuật Sống "Chạm" Thiên Nhiên — nhadepviet.org</title>
+<meta name="description" content="một công trình kiến trúc nhà vườn tiêu biểu—nơi mà ranh giới giữa nội thất và ngoại thất dường như bị xóa nhòa, tạo nên một bản giao hưởng tuyệt mỹ của ánh sáng">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B51EJTDD2L"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-B51EJTDD2L");
+</script>
+<style>
+:root{--bg:#0A0A0A;--gold:#C6A43B;--gold2:#D4AF37;--text:#F5F5F5;--muted:#9C9C9C;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Open Sans",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+nav{background:rgba(10,10,10,.95);border-bottom:1px solid rgba(198,164,59,.2);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+nav h1{font-family:"Playfair Display",serif;font-size:1.3rem;}
+nav h1 span{color:var(--gold);}
+nav a{color:var(--muted);text-decoration:none;}
+nav a:hover{color:var(--gold);}
+.container{max-width:1200px;margin:0 auto;padding:48px 24px;}
+.meta{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+.tag{background:rgba(198,164,59,.2);color:var(--gold2);padding:6px 16px;border-radius:30px;font-size:.75rem;text-decoration:none;transition:background .2s;}
+.tag:hover{background:rgba(198,164,59,.4);color:#fff;}
+.date{color:var(--muted);font-size:.85rem;line-height:2;}
+.content{line-height:1.8;font-size:1.05rem;}
+.content h2{font-family:"Playfair Display",serif;font-size:1.8rem;margin:40px 0 20px;color:var(--gold);}
+.content h3{font-family:"Playfair Display",serif;font-size:1.4rem;margin:30px 0 15px;}
+.content p{margin-bottom:24px;}
+.content img{max-width:80%; border-radius:16px; margin:30px auto; display:block; height:auto; box-shadow:0 6px 14px rgba(0,0,0,0.3);}
+.back-btn{display:inline-block;margin-top:48px;padding:12px 32px;background:var(--gold);color:#0A0A0A;text-decoration:none;border-radius:40px;font-weight:600;transition:all .2s;}
+.back-btn:hover{transform:translateY(-2px);background:#D4AF37;}
+@media (max-width:768px){nav{padding:12px 20px;}nav h1{font-size:1.1rem;}.container{padding:32px 20px;}.content h2{font-size:1.5rem;}.content h3{font-size:1.2rem;}.content img{max-width:95%; margin:20px auto;}}
+</style>
+
+    <style>
+        .related-section { margin-top: 60px; padding-top: 40px; border-top: 2px solid var(--gold); }
+        .related-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 30px; }
+        .related-header h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
+        .carousel-nav { display: flex; gap: 12px; }
+        .carousel-btn { background: rgba(198,164,59,0.15); border: 1px solid rgba(198,164,59,0.3); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; color: var(--gold); display: flex; align-items: center; justify-content: center; }
+        .carousel-btn:hover { background: rgba(198,164,59,0.3); transform: scale(1.05); }
+        .carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .carousel-container { overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        .carousel-track { display: flex; gap: 20px; padding: 8px 4px 20px 4px; }
+        .related-card { flex: 0 0 220px; text-decoration: none; background: rgba(255,255,255,.03); border-radius: 16px; overflow: hidden; transition: all 0.3s ease; border: 1px solid rgba(198,164,59,.2); }
+        .related-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .related-card img { width: 100%; height: 140px; object-fit: cover; background: #2a2a2a; }
+        .related-card .card-content { padding: 12px; }
+        .related-card .card-tag { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; display: inline-block; margin-bottom: 6px; }
+        .related-card .card-title { font-size: 0.85rem; margin-top: 6px; color: var(--text); line-height: 1.4; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        @media (max-width: 768px) {
+            .carousel-nav { display: none; }
+            .carousel-container { overflow-x: visible; }
+            .carousel-track { flex-direction: column; gap: 16px; padding: 0; }
+            .related-card { flex: 1 1 auto; display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 8px; }
+            .related-card img { width: 90px; height: 70px; flex-shrink: 0; border-radius: 12px; }
+            .related-card .card-content { padding: 0; flex: 1; }
+        }
+    </style>
+</head>
+<body>
+<nav><h1><img src="../logo.webp" alt="Logo" style="height:32px;width:32px;object-fit:cover;border-radius:7px;vertical-align:middle;margin-right:7px;"> Nhà<span>Đẹp</span></h1><a href="../index.html">← Về trang chủ</a></nav>
+<div class="container">
+  <div class="meta"><a class="tag" href="../../tag.html?tag=Hi%E1%BB%87n%20%C4%91%E1%BA%A1i">Hiện đại</a><a class="tag" href="../../tag.html?tag=Nh%C3%A0%20ph%E1%BB%91">Nhà phố</a><span class="date">20/4/2026</span></div>
+  <div class="content"><h2>Nghệ Thuật Sống "Chạm" Thiên Nhiên</h2><div><br></div><div>Trong bối cảnh đô thị hóa nhanh chóng, xu hướng tìm về những không gian sống xanh, yên bình nhưng vẫn đảm bảo sự tiện nghi, hiện đại đang trở thành ưu tiên hàng đầu. Hôm nay, chúng tôi xin giới thiệu đến quý độc giả một công trình kiến trúc nhà vườn tiêu biểu—nơi mà ranh giới giữa nội thất và ngoại thất dường như bị xóa nhòa, tạo nên một bản giao hưởng tuyệt mỹ của ánh sáng, gió trời và chất liệu tự nhiên.</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_1.webp" alt="Hình ảnh 1" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><h3>Kiến Trúc Hình Chữ U: Sự Kết Nối Hoàn Hảo</h3><div>Nhìn từ trên cao, công trình hiện lên với bố cục hình chữ U độc đáo, ôm trọn một khoảng sân vườn xanh mướt ở chính giữa. Đây không chỉ là một giải pháp thẩm mỹ mà còn là một ý đồ kiến trúc thông minh nhằm tối ưu hóa việc thông gió tự nhiên và đón ánh sáng cho mọi phòng chức năng.</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_2.webp" alt="Hình ảnh 2" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><div>Hệ mái ngói màu xám than sang trọng kết hợp cùng tường sơn trắng tối giản tạo nên một diện mạo thanh thoát, vừa mang nét truyền thống của những ngôi nhà Việt xưa, vừa toát lên hơi thở hiện đại.</div><div><br></div><h3>Phòng Khách: Không Gian Mở Đậm Chất Brutalist &amp; Minimalist</h3><div>Bước vào bên trong, phòng khách gây ấn tượng mạnh với hệ trần cao, để lộ các thanh xà gỗ khỏe khoắn—một đặc trưng của phong cách Minimalist kết hợp với chút thô mộc của Brutalist.</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_3.webp" alt="Hình ảnh 3" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><div>•<span style="white-space:pre">	</span>Vật liệu: Sàn đá tự nhiên màu xám trung tính tạo cảm giác mát lạnh vào mùa hè, kết hợp hoàn hảo với nội thất gỗ ấm áp.</div><div>•<span style="white-space:pre">	</span>Tầm nhìn: Hệ cửa kính kịch trần (floor-to-ceiling windows) thay thế hoàn toàn những bức tường bí bách, biến khu vườn trung tâm thành một bức tranh thiên nhiên sống động, thay đổi sắc thái theo từng khung giờ trong ngày.</div><div><br></div><h3>Phòng Ngủ: Chốn Nghỉ Ngơi Bình Yên</h3><div>Phòng ngủ chính được đặt tại gian bên trái của ngôi nhà, nơi đảm bảo sự riêng tư tuyệt đối nhưng vẫn không tách rời thiên nhiên.</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_4.webp" alt="Hình ảnh 4" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><div>Thiết kế nội thất ưu tiên các gam màu trung tính như beige, trắng và nâu gỗ. Chiếc giường với phần đầu giường bằng mây đan thủ công là điểm nhấn tinh tế, gợi nhắc về nét đẹp văn hóa bản địa. Những ô cửa sổ dọc được tính toán kỹ lưỡng để chủ nhân có thể ngắm nhìn mảng xanh ngay khi vừa thức giấc.</div><div><br></div><h3>Nhà Vệ Sinh: Trải Nghiệm Nghỉ Dưỡng Tại Gia</h3><div>Một trong những không gian đắt giá nhất của căn nhà chính là khu vực vệ sinh và phòng tắm. Được thiết kế theo phong cách resort 5 sao:</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_5.webp" alt="Hình ảnh 5" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><div>•<span style="white-space:pre">	</span>Phân khu thông minh: Khu vực lavabo, toilet và tắm đứng được ngăn cách bằng kính mờ, vừa đảm bảo sự kín đáo, vừa giữ cho không gian luôn thoáng đãng.</div><div>•<span style="white-space:pre">	</span>Kết nối thiên nhiên: Một khoảng vườn nhỏ (pocket garden) được bố trí ngay sau lớp kính của phòng tắm, mang lại cảm giác thư giãn tuyệt đối dưới làn nước và ánh sáng tự nhiên.</div><div><br></div><h3>Gara và Tiện Ích Hiện Đại</h3><div>Gara được tách biệt khéo léo ở một gian riêng, duy trì sự đồng nhất về kiến trúc với hệ mái dốc đặc trưng. Việc sử dụng cửa cuốn hiện đại giúp tối ưu diện tích và đảm bảo an toàn, đồng thời vẫn giữ được nét tinh gọn cho tổng thể mặt tiền.</div><div><img src="../../images/nhadep/nghe-thuat-song-cham-thien-nhien/image_6.webp" alt="Hình ảnh 6" loading="lazy" style="width:80%; max-width:80%; height:auto; display:block; margin:30px auto; border-radius:16px; box-shadow:0 6px 14px rgba(0,0,0,0.3);"><br></div><div><br></div><h3>Tổng Kết</h3><div>Ngôi nhà vườn này không chỉ là một công trình kiến trúc, mà là một thông điệp về lối sống bền vững. Bằng cách sử dụng các vật liệu tự nhiên như gỗ, đá, mây tre phối hợp cùng ngôn ngữ thiết kế hiện đại, kiến trúc sư đã tạo nên một không gian sống lý tưởng—nơi con người được thực sự "chạm" vào thiên nhiên và tìm thấy sự thư thái trong tâm hồn.</div><div><br></div></div>
+  
+    <div class="related-section">
+        <div class="related-header">
+            <h3><i class="fa-regular fa-star" style="margin-right:12px;"></i>Có thể bạn sẽ thích</h3>
+            <div class="carousel-nav">
+                <button class="carousel-btn" id="carouselPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="carousel-btn" id="carouselNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-track" id="carouselTrack">
+                <div style="text-align: center; padding: 40px; color: var(--muted); width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var allRelated = [];
+        var cardWidth = 240;
+        var isEnglish = false;
+        var currentSlug = 'nghe-thuat-song-cham-thien-nhien';
+        var currentType = 'nhadep';
+        
+        function getDataJsonPath() {
+            var path = window.location.pathname;
+            var parts = path.split('/').filter(function(p) { return p && !p.includes('.html'); });
+            var prefix = '';
+            for (var i = 0; i < parts.length; i++) prefix += '../';
+            if (prefix === '') prefix = './';
+            return prefix + 'data.json';
+        }
+        
+        function escapeHtmlStatic(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function updateButtons() {
+            var container = document.getElementById('carouselContainer');
+            var prev = document.getElementById('carouselPrevBtn');
+            var next = document.getElementById('carouselNextBtn');
+            if (!container || window.innerWidth <= 768) return;
+            var maxScroll = container.scrollWidth - container.clientWidth;
+            var curScroll = container.scrollLeft;
+            if (prev) prev.disabled = curScroll <= 5;
+            if (next) next.disabled = curScroll >= maxScroll - 5;
+        }
+        
+        function scrollCarousel(dir) {
+            var container = document.getElementById('carouselContainer');
+            if (container) container.scrollBy({ left: dir * cardWidth * 2, behavior: 'smooth' });
+            setTimeout(updateButtons, 350);
+        }
+        
+        function renderCarousel() {
+            var track = document.getElementById('carouselTrack');
+            if (!track) return;
+            if (allRelated.length === 0) {
+                track.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);width:100%;">Chưa có bài viết liên quan</div>';
+                return;
+            }
+            var depth = window.location.pathname.split('/').filter(function(p) { return p && !p.includes('.html'); }).length;
+            var backPath = '';
+            for (var d = 0; d < depth; d++) backPath += '../';
+            if (backPath === '') backPath = './';
+            var html = '';
+            for (var i = 0; i < allRelated.length; i++) {
+                var a = allRelated[i];
+                var artTitle = isEnglish ? (a.title_en || a.title || '') : (a.title || '');
+                var artKind = a.kind || 'nhadep';
+                var artSlug = (a.relatedlink || '').replace('./', '').replace('.html', '');
+                try { artSlug = decodeURIComponent(artSlug); } catch(e) {}
+                var artUrl = backPath + artKind + '/' + encodeURIComponent(artSlug) + (isEnglish ? '_en.html' : '.html');
+                var artTag = (a.tag || (isEnglish ? 'Article' : 'Bài viết')).split(',')[0];
+                var thumbPath = backPath + 'thumbnail/' + artKind + '/' + encodeURIComponent(artSlug) + '.webp';
+                // BỎ HẲN ONERROR - không xử lý lỗi ảnh nữa
+                html += '<a href="' + artUrl + '" class="related-card">' +
+                    '<img src="' + thumbPath + '" alt="' + escapeHtmlStatic(artTitle) + '" loading="lazy">' +
+                    '<div class="card-content">' +
+                    '<span class="card-tag">' + escapeHtmlStatic(artTag) + '</span>' +
+                    '<h4 class="card-title">' + escapeHtmlStatic(artTitle) + '</h4>' +
+                    '</div></a>';
+            }
+            track.innerHTML = html;
+        }
+        
+        async function loadRelated() {
+            try {
+                var resp = await fetch(getDataJsonPath() + '?t=' + Date.now());
+                var articles = await resp.json();
+                var posted = articles.filter(function(a) {
+                    var status = (a.Status || a.status || '').toLowerCase();
+                    return status === 'posted';
+                });
+                var filtered = posted.filter(function(a) {
+                    if (!a.relatedlink) return false;
+                    var slug = a.relatedlink.replace('./', '').replace('.html', '');
+                    try { slug = decodeURIComponent(slug); } catch(e) {}
+                    return !(slug === currentSlug && (a.kind || '') === currentType);
+                });
+                for (var i = filtered.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = filtered[i];
+                    filtered[i] = filtered[j];
+                    filtered[j] = temp;
+                }
+                allRelated = filtered;
+                renderCarousel();
+                var container = document.getElementById('carouselContainer');
+                var prev = document.getElementById('carouselPrevBtn');
+                var next = document.getElementById('carouselNextBtn');
+                if (container && window.innerWidth > 768) {
+                    container.addEventListener('scroll', updateButtons);
+                    setTimeout(updateButtons, 100);
+                }
+                if (prev) prev.addEventListener('click', function() { scrollCarousel(-1); });
+                if (next) next.addEventListener('click', function() { scrollCarousel(1); });
+            } catch(e) { console.error(e); }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadRelated);
+    </script>
+  <div style="text-align:center;"><a href="../index.html" class="back-btn">← Quay lại trang chủ</a></div>
+</div>
+
+    <style>
+        .lang-switch-bottom { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 1px; background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border-radius: 50px; padding: 3px; border: 1px solid rgba(198,164,59,0.3); z-index: 10000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .lang-switch-bottom .lang-btn-bottom { background: none; border: none; color: #9C9C9C; cursor: pointer; font-size: 0.82rem; padding: 8px 15px; border-radius: 50px; transition: all 0.2s; font-weight: 600; font-family: 'Open Sans', sans-serif; white-space: nowrap; min-width: 68px; }
+        .lang-switch-bottom .lang-btn-bottom:hover { background: rgba(198,164,59,0.18); color: #C6A43B; }
+        .lang-switch-bottom .lang-btn-bottom.active { background: rgba(198,164,59,0.28); color: #C6A43B; }
+        @media (max-width: 768px) { .lang-switch-bottom { bottom: 16px; right: 16px; padding: 3px; gap: 0px; } .lang-switch-bottom .lang-btn-bottom { padding: 7px 13px; font-size: 0.73rem; min-width: 64px; } }
+    </style>
+    <div class="lang-switch-bottom">
+        <button class="lang-btn-bottom" id="langViBottom">🇻🇳 VI</button>
+        <button class="lang-btn-bottom" id="langEnBottom">🇬🇧 EN</button>
+    </div>
+    <script>
+    function setupLangSwitch() {
+        var viBtn = document.getElementById('langViBottom');
+        var enBtn = document.getElementById('langEnBottom');
+        var path = window.location.pathname;
+        viBtn.onclick = function() { if (path.includes('_en.html')) { window.location.href = window.location.href.replace('_en.html', '.html'); } };
+        enBtn.onclick = function() { if (!path.includes('_en.html')) { window.location.href = window.location.href.replace('.html', '_en.html'); } };
+        if (path.includes('_en.html')) { enBtn.style.background = 'rgba(198,164,59,0.25)'; enBtn.style.color = '#C6A43B'; }
+        else { viBtn.style.background = 'rgba(198,164,59,0.25)'; viBtn.style.color = '#C6A43B'; }
+    }
+    document.addEventListener('DOMContentLoaded', setupLangSwitch);
+    </script>
+</body>
+</html>
